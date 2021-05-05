@@ -1,28 +1,19 @@
-VERBOSE:=TRUE
-
 CC:=gcc
-STRIP:=strip
  
-CFLAGS:=-w -O2 
+.PHONY: all clean
+
+TARGET:=test.exe
  
-.PHONY: all
-.DEFAULT: all
- 
-OBJDIR:=./obj
-SRCDIR:=./src
-SRCS:=$(wildcard $(SRCDIR)/*.c)
-OBJS:=$(patsubst $(SRCDIR)/%.c,%.o,$(SRCS))
- 
-PROGRAM:=main.elf
- 
-all: $(PROGRAM)
- 
-$(OBJS): $(OBJDIR)/%.o : %.c
-	$(CC) $(CFLAGS) -c $< -o $@
- 
-$(PROGRAM): $(OBJS)
-	$(CC) $(OBJS) -o $(PROGRAM)
-	$(STRIP) $(PROGRAM)
- 
-clean:
-	rm -f $(OBJDIR)/* $(PROGRAM)
+all: $(TARGET)
+
+test.exe : main.o strings.o
+	$(CC) -o $@	$^
+
+%.o : src/%.c
+	$(CC) $^ -c
+
+clean : 
+	-rm *.o *.exe
+
+clean_objs :
+	-rm *.o

@@ -32,7 +32,7 @@ string* realloc_string(string* str, size_t newSize)
 	newSize++;
 	char* temp = realloc(str->data, newSize);
 	if (temp == NULL)
-		return -1;
+		return (string *)-1;
 
 	memset(temp + str->len, (char)0, 
 		(newSize - str->len) * sizeof(char)

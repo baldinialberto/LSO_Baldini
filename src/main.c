@@ -1,11 +1,13 @@
 #include "../include/common.h"
-#include "../include/commonIO.h"
+#include "../include/commonio.h"
 #include "../include/procs.h"
 #include "../include/strings.h"
+#include "../include/locks.h"
 
 int main(int argc, char** argv)
 {
 	pid_t child = fork();
+	pthread_mutex_t mutex;
 
 	if (!child)
 	{
