@@ -1,6 +1,6 @@
 #ifndef _ERRORS_H
 #define _ERRORS_H
-
+ 
 #pragma once
 
 #include <assert.h>

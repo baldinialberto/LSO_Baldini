@@ -1,10 +1,20 @@
 CC:=gcc
-CFLAGS:=-Wall -pedantic -I ./include
-TARGETS= server.exe client.exe
+ 
+ 
+.PHONY: all clean
 
-.PHONY : all
+TARGET:=test.exe
+ 
+all: $(TARGET)
 
-all : $(TARGETS)
+test.exe : main.o strings.o
+	$(CC) -o $@	$^
 
-server.exe : server.o
-    
+%.o : src/%.c
+	$(CC) $^ -c
+
+clean : 
+	-rm *.o *.exe
+
+clean_objs :
+	-rm *.o
