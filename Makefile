@@ -1,17 +1,18 @@
 CC:=gcc
- 
- 
+
 .PHONY: all clean
 
-TARGET:=test.exe
+TARGETs:= client.exe server.exe
  
-all: $(TARGET)
+all: $(TARGETs)
 
-test.exe : main.o strings.o
+server.exe : server.o sockets.o server_utils.o
 	$(CC) -o $@	$^
 
-%.o : src/%.c
-	$(CC) $^ -c
+client.exe : client.o sockets.o
+
+%.o : src/%.c include/%.h
+	$(CC) $< -c 
 
 clean : 
 	-rm *.o *.exe
