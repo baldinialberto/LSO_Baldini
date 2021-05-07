@@ -1,5 +1,5 @@
-#ifndef _STRINGS_H
-#define _STRINGS_H
+#ifndef _STRING_UTILS_H
+#define _STRING_UTILS_H
 
 #pragma once
 

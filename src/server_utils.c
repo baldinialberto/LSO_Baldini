@@ -1,9 +1,35 @@
-#include "../include/server_utils.h"
+#include <server_utils.h>
 
 
 server_settings parse_settings()
 {
-	server_settings settings;
+	server_settings settings = {0};
+
+	FILE* configFile = NULL;
+	CHECK_BADVAL_PERROR_RETURN(
+		(configFile = fopen(SERVER_CONFIGFILE_PATH, "r")), 
+		NULL, "fopen", settings
+	);
+
+	while (!feof(configFile))
+	{
+		switch (fgetc(configFile))
+		{
+		case '#': // comment
+			f_skipline(configFile);
+			break;
+		case '\n': // emptyline
+			break;
+		default:
+			CHECK_BADVAL_PERROR_RETURN(
+				fseek(configFile, -1, SEEK_CUR),
+				-1, "fseek", settings
+			);
+
+			break;
+		}
+	}
+	
 
 	return settings;
 }

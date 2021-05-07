@@ -3,11 +3,16 @@
 
 #pragma once
 #include <stdio.h>
-#include <errno.h>
 #include <time.h>
 #include <string.h>
 
-#define SERVER_CONFIGFILE_PATH "serverConfig.text"
+#include "error_utils.h"
+
+#define CONFIG_NWORKERS "NWORKERS"
+#define CONFIG_CAPACITY "CAPACITY"
+#define SOCKET_NAME	"SOCKET_NAME"
+
+#define SERVER_CONFIGFILE_PATH "config.txt"
 
 typedef struct _server_settings
 {

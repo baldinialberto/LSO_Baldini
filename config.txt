@@ -1,0 +1,12 @@
+#   Server Config File #
+#   Each line starting with [#] is a comment
+#   Settings list :
+#   NWORKERS = [Number og Thread Workers]
+#   CAPACITY = [Server's Store Capacity (MB)]
+#   SOCKET_NAME = "Server Socket Name"
+#   ...
+
+#   example :
+#   NWORKERS = [4]
+#   CAPACITY = [32]
+#   SOCKET_NAME = "MyServerSocket"
