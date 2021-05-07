@@ -1,4 +1,5 @@
 CC:=gcc
+CFLAGS:= -Wall -pedantic -I ./include
 
 .PHONY: all clean
 
