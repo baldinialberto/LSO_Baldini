@@ -35,5 +35,12 @@ if (X == BADVAL)    \
 {                   \
    FUN;             \
 }
+#define CHECK_ERRNO_RETURN(RET, MSG) \
+if (errno)          \
+{                   \
+    perror(MSG);    \
+    errno = 0;      \
+    return RET;     \
+}
 
 #endif
