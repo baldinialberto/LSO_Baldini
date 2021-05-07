@@ -7,19 +7,20 @@
 #include <string.h>
 
 #include "error_utils.h"
+#include "commonio.h"
 
 #define CONFIG_NWORKERS "NWORKERS"
 #define CONFIG_CAPACITY "CAPACITY"
-#define SOCKET_NAME	"SOCKET_NAME"
+#define CONFIG_SOCKET_NAME	"SOCKET_NAME"
 
 #define SERVER_CONFIGFILE_PATH "config.txt"
 
 typedef struct _server_settings
 {
-	const char *logfile_path;
-	const unsigned short nworkers;
-	const unsigned int MB_dim;
-	const char* socket_name;
+	//char *logfile_path;
+	unsigned short nworkers;
+	unsigned int MB_dim;
+	char socket_name[64];
 } server_settings;
 
 typedef struct _server_stats
@@ -34,5 +35,6 @@ typedef struct _server_stats
 server_settings parse_settings();
 int write_settings(server_settings* settings);
 int write_log(const char* op, server_settings* settings);
+void get_setting(char** str, FILE *fstream, server_settings *settings);
 
 #endif

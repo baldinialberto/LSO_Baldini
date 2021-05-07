@@ -8,8 +8,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define CHECK_NULL_RETURN(X, RET) if (!(X)) { return(RET); }
 #define ASSERT_VALUE(X, VALUE) assert(X == VALUE);
+#define CHECK_NULL_RETURN(X, RET) \
+if (!(X))           \
+{                   \
+    return(RET);    \
+}
 #define CHECK_BADVAL_PERROR_RETURN(X, BADVAL, MSG, RET) \
 if (X == BADVAL)    \
 {                   \
@@ -35,11 +39,30 @@ if (X == BADVAL)    \
 {                   \
    FUN;             \
 }
+#define CHECK_ERRNO_CALL(FUN, MSG) \
+if (errno)          \
+{                   \
+    perror(MSG);    \
+    errno = 0;      \
+    FUN;            \
+}
 #define CHECK_ERRNO_RETURN(RET, MSG) \
 if (errno)          \
 {                   \
     perror(MSG);    \
     errno = 0;      \
+    return RET;     \
+}
+#define CHECK_ERRNO_EXIT(XCODE, MSG) \
+if (errno)          \
+{                   \
+    perror(MSG);    \
+    errno = 0;      \
+    exit(XCODE);     \
+}
+#define CHECK_COND_RETURN(COND, RET, MSG) \
+if (COND) {         \
+    perror(MSG);    \
     return RET;     \
 }
 

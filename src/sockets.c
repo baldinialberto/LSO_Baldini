@@ -80,13 +80,13 @@ int create_client_socket()
 }
 int connect_to_server_socket(const char* socketName)
 {
-
+    return 0;
 }
 int socket_write(int sock_fd, void* buff, size_t len)
 {
-
+    return 0;
 }
 int socket_read(int sock_fd, void* buff, size_t size)
 {
-
+    return 0;
 }
