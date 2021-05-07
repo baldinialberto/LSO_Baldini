@@ -1,5 +1,18 @@
 #include <server_utils.h>
 
+void print_server_settings(server_settings *setts)
+{
+	fprintf(
+		stdout,
+		"NWORKERS = %d\n\
+CAPACITY = %dMB\n\
+SOCKET_NAME = %s\n", 
+		setts->nworkers, 
+		setts->MB_dim, 
+		setts->socket_name
+	);
+	fflush(stdout);
+}
 
 server_settings parse_settings()
 {
@@ -71,9 +84,10 @@ int write_log(const char* op, server_settings *settings)
 
 void get_setting(char** str, FILE *fstream, server_settings *settings)
 {
-	int int_sett;
+	int int_sett = 0;
 
-	fscanf(fstream, "%*[ ]");
+	fscanf(fstream, "%*[ \n\r]");
+	if (feof(fstream)) return;
 
 	if (!strcmp(*str, CONFIG_NWORKERS)) 
 	{
@@ -87,12 +101,20 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 	} 
 	else if (!strcmp(*str, CONFIG_SOCKET_NAME))
 	{
-		int_sett = fscanf(fstream, "%*[^ \n\r,;]");
-		fread(&(settings->socket_name),
+		if (fscanf(fstream, "%*[^ \n\r,;]%n", &int_sett) != 1) return;
+
+		fseek(fstream, -int_sett, SEEK_CUR);
+		CHECK_ERRNO_EXIT(-1, "fseek : get_settings");
+
+		if (feof(fstream)) return;
+		CHECK_BADVAL_PERROR_EXIT(
+			fread(&(settings->socket_name),
 			sizeof(char), 
 			int_sett < 64 ? int_sett : 63, 
-			fstream
+			fstream), 0, 
+			"fread : get_settings"
 		);
+		
 	} else {
 		puts("SettingFormat not recongnized");
 	}

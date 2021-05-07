@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "error_utils.h"
+#include "common.h"
 #include "commonio.h"
 
 #define CONFIG_NWORKERS "NWORKERS"
@@ -32,6 +33,8 @@ typedef struct _server_stats
 	unsigned int ncache_replace;
 } server_stats;
 
+
+void print_server_settings(server_settings *setts);
 server_settings parse_settings();
 int write_settings(server_settings* settings);
 int write_log(const char* op, server_settings* settings);

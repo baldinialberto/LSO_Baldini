@@ -3,7 +3,6 @@
 
 #pragma once
 
-#include <stdlib.h>
-
+typedef char bool;
 
 #endif

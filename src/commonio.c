@@ -2,18 +2,11 @@
 
 int f_skipline(FILE *fstream)
 {
-    int res = 0, res2 = 0;
+    fscanf(fstream, "%*[^\n]");
+    fscanf(fstream, "%*c");
+    CHECK_ERRNO_RETURN(-1, "f_skipline");
 
-    CHECK_BADVAL_PERROR_RETURN(
-        (res = fscanf(fstream, "%*[^\n]")), 
-        -1, "fscanf", -1
-    );
-    CHECK_BADVAL_PERROR_RETURN(
-        (res2 = fscanf(fstream, "%*c")), 
-        -1, "fscanf", -1
-    );
-
-    return res + res2;
+    return 0;
 }
 
 int f_readline(FILE *fstream, char **str)
@@ -44,9 +37,10 @@ int f_readword(FILE *fstream, char **str)
     int wordLen = 0;
     
     CHECK_BADVAL_PERROR_RETURN(
-        (wordLen = fscanf(fstream, "%*[^ ,=\r\n]")), 
+        fscanf(fstream, "%*[^ ,=\r\n]%n", &wordLen), 
         -1, "fscanf", -1
     );
+
     CHECK_BADVAL_PERROR_RETURN(
         (0 != fseek(fstream, -wordLen, SEEK_CUR)), 
         1, "fseek", -1

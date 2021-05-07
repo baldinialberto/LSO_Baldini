@@ -14,6 +14,8 @@ typedef struct _string
 
 string create_string(size_t len);
 string create_string_from_literal(const char* str);
+string string_cat(string head, string tail);
+string string_append(string oldString, const char *append);
 void free_string(string* str);
 string* realloc_string(string* str, size_t newSize);
 

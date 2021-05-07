@@ -20,6 +20,16 @@ string create_string_from_literal(const char* str)
 	return res;
 }
 
+string string_cat(string head, string tail)
+{
+
+}
+
+string string_append(string oldString, const char *append)
+{
+
+}
+
 void free_string(string* str)
 {
 	free(str->data);
