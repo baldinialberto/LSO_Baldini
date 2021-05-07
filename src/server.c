@@ -1,4 +1,7 @@
-int lol(void)
+#include "../include/server_utils.h"
+
+int main(int argc, char** argv)
 {
-    return 101;
+	server_settings settings = parse_settings();
 }
+

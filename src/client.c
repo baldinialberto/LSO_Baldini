@@ -1,6 +1,6 @@
-#include <stdio.h>
+#include "../include/client.h"
 
-int testPrint()
+int main(int argc, char** argv)
 {
-    puts("LOLLO");
+	return 0;
 }
