@@ -9,10 +9,12 @@
 #include "error_utils.h"
 #include "common.h"
 #include "commonio.h"
+#include "string_utils.h"
 
 #define CONFIG_NWORKERS "NWORKERS"
 #define CONFIG_CAPACITY "CAPACITY"
 #define CONFIG_SOCKET_NAME	"SOCKET_NAME"
+#define CONFIG_LOGFILE_NAME "LOGFILE_NAME"
 
 #define SERVER_CONFIGFILE_PATH "config.txt"
 
@@ -22,6 +24,7 @@ typedef struct _server_settings
 	unsigned short nworkers;
 	unsigned int MB_dim;
 	char socket_name[64];
+	char logfile_name[64];
 } server_settings;
 
 typedef struct _server_stats

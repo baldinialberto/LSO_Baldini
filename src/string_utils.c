@@ -27,6 +27,17 @@ int string_cat(string* head, const string* tail)
 
 int string_append(string *oldString, const char *append)
 {
+	if (oldString == NULL || append == NULL)
+	{
+		fprintf(stderr, "string_append : arg is NULL\n");
+		return -1;
+	}
+	size_t appendLen = strlen(append), oldStringLen = oldString->len;
+	CHECK_BADVAL_PERROR_RETURN(
+		realloc_string(oldString, oldString->len + appendLen),
+		NULL, "realloc_string", -1
+	);
+	memcpy(oldString + oldStringLen, append, appendLen);
 	return 0;
 }
 

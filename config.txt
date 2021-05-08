@@ -4,12 +4,16 @@
 #   NWORKERS = [Number og Thread Workers]
 #   CAPACITY = [Server's Store Capacity (MB)]
 #   SOCKET_NAME = "Server Socket Name"
+#   LOGFILE_NAME = "Logfile Name"
 #   ...
 
 #   NWORKERS = 4
 #   CAPACITY = 32
 #   SOCKET_NAME = MyServerSocket
+#   LOGFILE_NAME = MyServerLog.txt
 
 NWORKERS = 4
 CAPACITY = 32
 SOCKET_NAME = MyServerSocket
+LOGFILE_NAME MyServerLog2.txt
+

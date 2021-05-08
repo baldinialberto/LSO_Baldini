@@ -6,10 +6,12 @@ void print_server_settings(server_settings *setts)
 		stdout,
 		"NWORKERS = %d\n\
 CAPACITY = %dMB\n\
-SOCKET_NAME = %s\n", 
+SOCKET_NAME = %s\n\
+LOGFILE_NAME = %s\n", 
 		setts->nworkers, 
 		setts->MB_dim, 
-		setts->socket_name
+		setts->socket_name,
+		setts->logfile_name
 	);
 	fflush(stdout);
 }
@@ -69,16 +71,32 @@ int write_settings(server_settings* settings)
 
 int write_log(const char* op, server_settings *settings)
 {
-	FILE* fOut = fopen(SERVER_CONFIGFILE_PATH, "a");
-	if (fOut == NULL) {
-		perror("write_log");
-		errno = 0;
-		return -1;
-	}
+	FILE* fOut;
+	CHECK_BADVAL_PERROR_RETURN(
+		fOut = fopen(settings->logfile_name, "a"), 
+		NULL, "write_log : fopen", -1
+	);
+
 	time_t currTime;
 	time(&currTime);
-	const char* currTimeString = ctime(&currTime);
-	// use String module
+	char* currTimeString = ctime(&currTime); //The return value points to a statically allocated string
+	if (errno) {
+		perror("write_log : ctime");
+		errno = 0;
+		fclose(fOut);
+		return -1;
+	}
+	currTimeString[strlen(currTimeString) - 1] = '\0';
+	if (fprintf(fOut, "%s : %s\n", currTimeString, op) <= 0)
+	{
+		perror("write_log : fprintf");
+		errno = 0;
+		fclose(fOut);
+		return -1;
+	}
+
+	fclose(fOut);
+
 	return 0;
 }
 
@@ -101,7 +119,6 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 	} 
 	else if (!strcmp(*str, CONFIG_SOCKET_NAME))
 	{
-		//if (fscanf(fstream, "%*[^ ,;=\n\r]%n", &int_sett) != 1) return;
 		fscanf(fstream, "%*[^ ,;=\n\r]%n", &int_sett);
 		fseek(fstream, -int_sett, SEEK_CUR);
 		CHECK_ERRNO_EXIT(-1, "fseek : get_settings");
@@ -115,7 +132,24 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 			"fread : get_settings"
 		);
 		
-	} else {
+	}
+	else if (!strcmp(*str, CONFIG_LOGFILE_NAME))
+	{
+		fscanf(fstream, "%*[^ ,;=\n\r]%n", &int_sett);
+		fseek(fstream, -int_sett, SEEK_CUR);
+		CHECK_ERRNO_EXIT(-1, "fseek : get_settings");
+
+		if (feof(fstream)) return;
+		CHECK_BADVAL_PERROR_EXIT(
+			fread(&(settings->logfile_name),
+			sizeof(char), 
+			int_sett < 64 ? int_sett : 63, 
+			fstream), 0, 
+			"fread : get_settings"
+		);
+		
+	}
+	else {
 		puts("SettingFormat not recongnized");
 	}
 }
