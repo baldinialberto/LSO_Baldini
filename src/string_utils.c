@@ -20,14 +20,14 @@ string create_string_from_literal(const char* str)
 	return res;
 }
 
-string string_cat(string head, string tail)
+int string_cat(string* head, const string* tail)
 {
-
+	return 0;
 }
 
-string string_append(string oldString, const char *append)
+int string_append(string *oldString, const char *append)
 {
-
+	return 0;
 }
 
 void free_string(string* str)

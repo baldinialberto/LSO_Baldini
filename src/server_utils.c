@@ -86,7 +86,7 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 {
 	int int_sett = 0;
 
-	fscanf(fstream, "%*[ \n\r]");
+	fscanf(fstream, "%*[ ,;=\n\r]");
 	if (feof(fstream)) return;
 
 	if (!strcmp(*str, CONFIG_NWORKERS)) 
@@ -101,8 +101,8 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 	} 
 	else if (!strcmp(*str, CONFIG_SOCKET_NAME))
 	{
-		if (fscanf(fstream, "%*[^ \n\r,;]%n", &int_sett) != 1) return;
-
+		//if (fscanf(fstream, "%*[^ ,;=\n\r]%n", &int_sett) != 1) return;
+		fscanf(fstream, "%*[^ ,;=\n\r]%n", &int_sett);
 		fseek(fstream, -int_sett, SEEK_CUR);
 		CHECK_ERRNO_EXIT(-1, "fseek : get_settings");
 

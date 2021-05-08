@@ -37,10 +37,9 @@ int f_readword(FILE *fstream, char **str)
     int wordLen = 0;
     
     CHECK_BADVAL_PERROR_RETURN(
-        fscanf(fstream, "%*[^ ,=\r\n]%n", &wordLen), 
+        fscanf(fstream, "%*[^ ,;=\r\n]%n", &wordLen), 
         -1, "fscanf", -1
     );
-
     CHECK_BADVAL_PERROR_RETURN(
         (0 != fseek(fstream, -wordLen, SEEK_CUR)), 
         1, "fseek", -1
