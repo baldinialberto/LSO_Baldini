@@ -15,5 +15,5 @@
 NWORKERS = 4
 CAPACITY = 32
 SOCKET_NAME = MyServerSocket
-LOGFILE_NAME MyServerLog2.txt
+LOGFILE_NAME = TigreLog.txt 
 
