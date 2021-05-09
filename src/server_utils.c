@@ -39,20 +39,15 @@ server_settings parse_settings()
 		case '\n': // emptyline
 			break;
 		default:
-			//fstream_pos = ftell(configFile);
-			CHECK_ERRNO_CALL(
-				fclose(configFile),
-				"ftell"
-			);
-			CHECK_BADVAL_PERROR(
+			CHECK_BADVAL_PERROR_EXIT(
 				fseek(configFile, -1, SEEK_CUR),
-				-1, "fseek"
+				-1, "parse_settings : fseek"
 			)
 			if (f_readword(configFile, &tempRead) != 0)
 			{
 				if (tempRead != NULL) free(tempRead);
 				fclose(configFile);
-				CHECK_ERRNO_EXIT(-1, "fclose");
+				CHECK_ERRNO_EXIT(-1, "parse_settings : fclose");
 				return (server_settings) {0};
 			}
 			get_setting(&tempRead, configFile, &settings);
@@ -61,19 +56,19 @@ server_settings parse_settings()
 		}
 	}
 	fclose(configFile);
-	CHECK_ERRNO_RETURN((server_settings) {0}, "fclose");
+	CHECK_ERRNO_EXIT(-1, "parse_settings : fclose");
 	return settings;
 }
-int write_settings(server_settings* settings)
+int write_settings(server_settings* setts)
 {
 	return 0;
 }
 
-int write_log(const char* op, server_settings *settings)
+int write_log(const char* op, server_settings *setts)
 {
 	FILE* fOut;
 	CHECK_BADVAL_PERROR_RETURN(
-		fOut = fopen(settings->logfile_name, "a"), 
+		fOut = fopen(setts->logfile_name, "a"), 
 		NULL, "write_log : fopen", -1
 	);
 
@@ -100,7 +95,7 @@ int write_log(const char* op, server_settings *settings)
 	return 0;
 }
 
-void get_setting(char** str, FILE *fstream, server_settings *settings)
+void get_setting(char** str, FILE *fstream, server_settings *setts)
 {
 	int int_sett = 0;
 
@@ -110,12 +105,12 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 	if (!strcmp(*str, CONFIG_NWORKERS)) 
 	{
 		if (fscanf(fstream, "%d", &int_sett) != 1) return;
-		settings->nworkers = int_sett;
+		setts->nworkers = int_sett;
 	} 
 	else if (!strcmp(*str, CONFIG_CAPACITY))
 	{
 		if (fscanf(fstream, "%d", &int_sett) != 1) return;
-		settings->MB_dim = int_sett;
+		setts->MB_dim = int_sett;
 	} 
 	else if (!strcmp(*str, CONFIG_SOCKET_NAME))
 	{
@@ -125,7 +120,7 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 
 		if (feof(fstream)) return;
 		CHECK_BADVAL_PERROR_EXIT(
-			fread(&(settings->socket_name),
+			fread(&(setts->socket_name),
 			sizeof(char), 
 			int_sett < 64 ? int_sett : 63, 
 			fstream), 0, 
@@ -141,7 +136,7 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 
 		if (feof(fstream)) return;
 		CHECK_BADVAL_PERROR_EXIT(
-			fread(&(settings->logfile_name),
+			fread(&(setts->logfile_name),
 			sizeof(char), 
 			int_sett < 64 ? int_sett : 63, 
 			fstream), 0, 
@@ -152,4 +147,31 @@ void get_setting(char** str, FILE *fstream, server_settings *settings)
 	else {
 		puts("SettingFormat not recongnized");
 	}
+}
+
+int create_server_socket(server_settings *setts)
+{
+	int socket_res;
+
+	struct sockaddr_un sa;
+	memset(&sa, 0, sizeof(struct sockaddr_un));
+
+	strncpy(sa.sun_path, setts->socket_name, sizeof(sa.sun_path) - 1);
+
+	sa.sun_family = AF_UNIX;
+	CHECK_BADVAL_PERROR_EXIT(
+		socket_res = socket(AF_UNIX, SOCK_STREAM, 0),
+		-1, "create_server_socket : listen"
+	);
+
+	CHECK_BADVAL_PERROR_EXIT(
+		bind(socket_res, (struct sockaddr *)&sa, sizeof(sa)),
+		-1, "create_server_socket : bind"
+	);
+	CHECK_BADVAL_PERROR_EXIT(
+		listen(socket_res, 10),
+		-1, "create_server_socket : listen"
+	);
+
+	return socket_res;
 }

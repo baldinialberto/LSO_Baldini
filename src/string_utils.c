@@ -63,3 +63,4 @@ string* realloc_string(string* str, size_t newSize)
 
 	return str;
 }
+
