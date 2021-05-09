@@ -9,11 +9,11 @@
 
 #   NWORKERS = 4
 #   CAPACITY = 32
-#   SOCKET_NAME = MyServerSocket
-#   LOGFILE_NAME = MyServerLog.txt
+#   SOCKET_NAME = MyServerSocket.socket
+#   LOGFILE_NAME = MyServerLog.log
 
 NWORKERS = 4
 CAPACITY = 32
-SOCKET_NAME = MyServerSocket
-LOGFILE_NAME = TigreLog.txt 
+SOCKET_NAME = MyServerSocket.socket
+LOGFILE_NAME = MyServerLog.log 
 

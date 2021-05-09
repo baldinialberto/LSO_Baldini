@@ -151,6 +151,8 @@ void get_setting(char** str, FILE *fstream, server_settings *setts)
 
 int create_server_socket(server_settings *setts)
 {
+	DEBUG(unlink(setts->socket_name));
+
 	int socket_res;
 
 	struct sockaddr_un sa;

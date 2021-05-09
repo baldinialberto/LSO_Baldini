@@ -1,11 +1,12 @@
 CC:=gcc
-CFLAGS:= -Wall -pedantic -I ./include
+CFLAGS:= -Wall -pedantic -D DEBUG -I ./include
+LIBS:= -lpthread
 
 .PHONY: all clean no_obj
 
 TARGETS:= client.exe server.exe
 LIB:= libsol.so
-LIB_OBJS:= server_utils.o string_utils.o commonio.o sockets.o
+LIB_OBJS:= server_utils.o string_utils.o commonio.o
 
 no_obj : all
 	-rm *.o
@@ -13,16 +14,16 @@ no_obj : all
 all: $(TARGETS)
 
 server.exe : server.o $(LIB_OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 
 client.exe : client.o $(LIB_OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 
 %.o : src/%.c
 	$(CC) $(CFLAGS) $< -c 
 
 clean : 
-	-rm *.o *.exe
+	-rm *.o *.exe *.socket *.log
 
