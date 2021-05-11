@@ -10,6 +10,7 @@
 #include <sys/un.h>
 #include <pthread.h>
 
+#include "server_common.h"
 #include "error_utils.h"
 #include "common.h"
 #include "commonio.h"

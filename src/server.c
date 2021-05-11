@@ -3,6 +3,8 @@
 
 int main(int argc, char** argv)
 {
+	assert(sizeof(server_command_t) == 4);
+
 	server_settings settings = parse_settings();
 	server_stats stats;
 	server_infos infos;
