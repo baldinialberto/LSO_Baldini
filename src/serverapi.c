@@ -30,13 +30,13 @@ int openFile(const char* pathname, int flags)
         write(socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
@@ -58,13 +58,13 @@ int readFile(const char* pathname, void** buf, size_t* size)
         write(socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
@@ -75,7 +75,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
     *buf = calloc(res, sizeof(char*));
     *size = (size_t)res;
 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, *buf, res), 
         -1, -1
     )
@@ -101,14 +101,14 @@ int writeFile(const char* pathname, const char* dirname)
         -1, -1
     )
     // write pathname
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
@@ -117,7 +117,7 @@ int writeFile(const char* pathname, const char* dirname)
         // write back file to dir..
     
         // read result of writeFile
-        CHECK_BADVAL_PERROR(
+        CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
         )
@@ -143,14 +143,14 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
         -1, -1
     )
     // write pathname
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
@@ -159,7 +159,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
         // write back file to dir..
     
         // read result of appendFile
-        CHECK_BADVAL_PERROR(
+        CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
         )
@@ -184,14 +184,14 @@ int lockFile(const char* pathname)
         -1, -1
     )
     // write pathname
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
@@ -214,14 +214,14 @@ int unlockFile(const char* pathname)
         -1, -1
     )
     // write pathname
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
@@ -244,14 +244,14 @@ int closeFile(const char* pathname)
         -1, -1
     )
     // write pathname
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     );
@@ -274,14 +274,14 @@ int removeFile(const char* pathname)
         -1, -1
     )
     // write pathname
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
-    CHECK_BADVAL_PERROR(
+    CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     );

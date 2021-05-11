@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:= -Wall -pedantic -D DEBUG -I ./include
+CFLAGS:= -Wall -pedantic -I ./include
 LIBS:= -lpthread
 
 .PHONY: all clean no_obj

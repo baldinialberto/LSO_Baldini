@@ -5,11 +5,11 @@
 
 typedef char bool;
 
-#ifdef DEBUG
+#ifndef DEBUG
+#define DEBUG(X) 
+#else 
 #define DEBUG(X) X
 #endif
-#ifndef DEBUG
-#define DEBUG(X)
-#endif
+
 
 #endif
