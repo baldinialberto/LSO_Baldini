@@ -1,9 +1,17 @@
 #ifndef _SERVERAPI_H
 #define _SERVERAPI_H
 
+#pragma once
+
 #include <stdlib.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
 
 #include "server_common.h"
+#include "error_utils.h"
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime);
 int closeConnection(const char* sockname);

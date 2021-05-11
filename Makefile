@@ -6,7 +6,7 @@ LIBS:= -lpthread
 
 TARGETS:= client.exe server.exe
 LIB:= libsol.so
-LIB_OBJS:= server_utils.o string_utils.o commonio.o
+LIB_OBJS:= server_utils.o string_utils.o commonio.o serverapi.o
 
 no_obj : all
 	-rm *.o
