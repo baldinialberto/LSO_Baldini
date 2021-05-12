@@ -6,20 +6,22 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "locks"
-#include "condvars"
+#include "locks.h"
+#include "condvars.h"
 #include "common.h"
 #include "error_utils.h"
 
+typedef int sfs_fileinode;
 typedef struct _sfs_file
 {
     char *filename;
     void *data;
-    size_t size;
-    size_t pos;
-    lock_t lock;
-}
+    int size;
+    int pos;
+    sfs_fileinode *flags;
+} sfs_file;
 
-int sfs_write(sfs_fd file_descriptor, void *buff, size_t )
+int sfs_write(sfs_file file_descriptor, void *buff, int len);
+int sfs_read(sfs_file file_descriptor, void *buff, int len);
 
 #endif
