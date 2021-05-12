@@ -4,19 +4,52 @@ static int socket_fd;
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
-    return 0;
+    struct sockaddr_un sa;
+	strncpy(sa.sun_path, sockname, sizeof(sa.sun_path)-1);
+	sa.sun_family = AF_UNIX;
+
+    CHECK_BADVAL_PERROR_RETURN(
+        socket_fd = socket(AF_UNIX, SOCK_STREAM, 0), 
+        -1, "openConnection : socket", NOTCONN_FLAG
+    )
+
+    const struct timespec inter_requests_time = {0, (long)msec * 1000};
+    assert(inter_requests_time.tv_nsec == (long)msec * 1000);
+    struct timespec tmp = {0};
+    struct timespec remaining_time = abstime;
+    
+    while (connect(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
+    remaining_time.tv_nsec > 0)
+	{
+		if (errno == ENOENT)
+        {
+			nanosleep(&inter_requests_time, &tmp);
+            remaining_time.tv_nsec -= (inter_requests_time.tv_nsec - tmp.tv_sec);
+            memset(&tmp, 0, sizeof(struct timespec));
+        }
+		else
+			exit(EXIT_FAILURE);
+        errno = 0;
+	}
+
+    return NOTCONN_FLAG | FNF_FLAG;
 }
 int closeConnection(const char* sockname)
 {
+    if (!socket_fd) return NOTCONN_FLAG | ALREADY_FLAG;
+
     server_command_t command = CLSCONN_OP;
     CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
+
     return close(socket_fd);
 }
 int openFile(const char* pathname, int flags)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = OPEN_OP;
     command |= O_LOCK_FLAG;
 
@@ -45,6 +78,8 @@ int openFile(const char* pathname, int flags)
 }
 int readFile(const char* pathname, void** buf, size_t* size)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = READ_OP;
     command |= O_LOCK_FLAG;
 
@@ -84,6 +119,8 @@ int readFile(const char* pathname, void** buf, size_t* size)
 }
 int writeFile(const char* pathname, const char* dirname)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = WRITE_OP;
     command |= O_CREATE_FLAG;
     command |= O_LOCK_FLAG;
@@ -112,7 +149,7 @@ int writeFile(const char* pathname, const char* dirname)
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
-    if (res & WRBACK_OP) // server evicted a file
+    if (res & WRBACK_FLAG) // server evicted a file
     {
         // write back file to dir..
     
@@ -127,6 +164,8 @@ int writeFile(const char* pathname, const char* dirname)
 }
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = APPEND_OP;
     command |= O_LOCK_FLAG;
     if (dirname != NULL) command |= O_DIR_FLAG;
@@ -154,7 +193,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
-    if (res & WRBACK_OP) // server evicted a file
+    if (res & WRBACK_FLAG) // server evicted a file
     {
         // write back file to dir..
     
@@ -169,6 +208,8 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 }
 int lockFile(const char* pathname)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = LOCK_OP;
     command |= O_LOCK_FLAG;
 
@@ -200,6 +241,8 @@ int lockFile(const char* pathname)
 }
 int unlockFile(const char* pathname)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = UNLOCK_OP;
 
     unsigned int pathname_len = strlen(pathname);
@@ -230,6 +273,8 @@ int unlockFile(const char* pathname)
 }
 int closeFile(const char* pathname)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = CLOSE_OP;
 
     unsigned int pathname_len = strlen(pathname);
@@ -260,6 +305,8 @@ int closeFile(const char* pathname)
 }
 int removeFile(const char* pathname)
 {
+    if (!socket_fd) return NOTCONN_FLAG;
+
     server_command_t command = REMOVE_OP;
 
     unsigned int pathname_len = strlen(pathname);

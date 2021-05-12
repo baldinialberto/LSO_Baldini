@@ -9,6 +9,7 @@
 #include <sys/types.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <time.h>
 
 #include "server_common.h"
 #include "error_utils.h"
