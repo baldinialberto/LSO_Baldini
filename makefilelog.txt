@@ -1,0 +1,2 @@
+gcc -Wall -pedantic -I ./include -D DEBUG src/server.c -c 
+gcc -Wall -pedantic -I ./include -D DEBUG src/server.c -c 

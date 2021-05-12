@@ -4,7 +4,9 @@
 #pragma once
 
 #include "server_utils.h"
+#include "server_common.h"
+#include "client_queue.h"
 
-void *server_dispatcher(void *infos);
+
 
 #endif

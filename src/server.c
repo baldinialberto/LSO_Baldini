@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 	pthread_t dispatcher_thread;
 	pthread_create(&dispatcher_thread, NULL, &server_dispatcher, (void *)&infos);
 
-	
+	pthread_join(dispatcher_thread, NULL);
 
 	return EXIT_SUCCESS;
 }
@@ -34,20 +34,20 @@ void *server_dispatcher(void *infos)
 {
 	server_infos* s_infos = (server_infos*) infos;
 
-	int *client_socket;
-	pthread_attr_t tattr;
-	pthread_t tid;
+	DEBUG(puts("Dispatcher"));
 
-	pthread_attr_init(&tattr);
-	pthread_attr_setdetachstate(&tattr, PTHREAD_CREATE_DETACHED);
+	pthread_t *threads = malloc(s_infos->nworkers * sizeof(pthread_t));
+	client_queue* client_queues = calloc(s_infos->nworkers, sizeof(client_queue));
 
-	while (1)
-	{
-		client_socket = malloc(sizeof(int));
-		*client_socket = accept(s_infos->server_socket_fd, NULL, 0);
-		//pthread_create(&tid, &tattr, to_upper, (void *)client_socket);
-		DEBUG(puts("SERVER ACCEPTED");)
-	}
+	for (int i = 0; i < s_infos->nworkers; i++)
+		pthread_create(threads + i, NULL,
+			&server_worker, client_queues + i);
+	
 
+	pthread_exit((void *)0);
+}
+
+void *server_worker(void *clients)
+{
 	pthread_exit((void *)0);
 }

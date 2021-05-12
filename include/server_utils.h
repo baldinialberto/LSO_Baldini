@@ -50,11 +50,16 @@ typedef struct _server_infos
 	int *workers_clients;		// number of clients served by each worker
 } server_infos;
 
+
+
 void print_server_settings(server_settings *setts);
 server_settings parse_settings();
 int write_settings(server_settings* setts);
 int write_log(const char* op, server_settings* setts);
 void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
+
+void *server_dispatcher(void *infos);
+void *server_worker(void *clients);
 
 #endif
