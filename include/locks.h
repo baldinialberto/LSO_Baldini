@@ -3,5 +3,6 @@
 
 #include <pthread.h>
 
+typedef pthread_mutex_t lock_t;
 
 #endif
