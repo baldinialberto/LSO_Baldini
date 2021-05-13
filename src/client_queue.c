@@ -18,6 +18,7 @@ int cq_push(client_queue *queue, int client_socket)
     queue->tail->next = newclient;
     newclient->next = NULL;
     queue->tail = newclient;
+    queue->nclients++;
 
     return 0;
 }

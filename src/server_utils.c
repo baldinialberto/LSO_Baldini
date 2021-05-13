@@ -171,7 +171,7 @@ int create_server_socket(server_settings *setts)
 		-1, "create_server_socket : bind"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
-		listen(socket_res, 10),
+		listen(socket_res, 256),
 		-1, "create_server_socket : listen"
 	);
 

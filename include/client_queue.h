@@ -65,13 +65,8 @@ int cq_push(client_queue *queue, int client_socket);
 int cq_remove(client_queue *queue, int client_socket);
 
 /**
- * @brief Remove a client_socket from queue
- * @param queue pointer to queue
- * @param client_socket client_socket to remove
- * @return the socket to serve if res >= 0, 
- * if the queue is empty, return -1 * CQ_EMPTY_FLAG
- * if queue == NULL, return -1 * CQ_NULL_FLAG 
+ * @brief Deprecated
  */
-int cq_serve(client_queue *queue);
+__attribute_deprecated__ int cq_serve(client_queue *queue);
 
 #endif

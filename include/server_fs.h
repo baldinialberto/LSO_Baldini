@@ -6,8 +6,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "locks.h"
-#include "condvars.h"
+#include "lock_utils.h"
+#include "cond_utils.h"
 #include "common.h"
 #include "error_utils.h"
 

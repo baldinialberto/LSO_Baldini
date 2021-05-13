@@ -48,6 +48,8 @@ typedef struct _server_infos
 	unsigned short nworkers;	// number of workers of the server
 	pthread_t *workers;			// array of workers
 	int *workers_clients;		// number of clients served by each worker
+	int server_quit;
+	int server_hu;
 } server_infos;
 
 
@@ -59,7 +61,6 @@ int write_log(const char* op, server_settings* setts);
 void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
 
-void *server_dispatcher(void *infos);
-void *server_worker(void *clients);
+
 
 #endif
