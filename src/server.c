@@ -30,6 +30,7 @@ int main(int argc, char** argv)
 
 	pthread_join(dispatcher_thread, NULL);
 
+
 	return EXIT_SUCCESS;
 }
 
@@ -40,29 +41,25 @@ void *server_dispatcher(void *infos)
 	DEBUG(puts("Dispatcher"));
 
 	pthread_t *threads = malloc(s_infos->nworkers * sizeof(pthread_t));
-	client_queue* client_queues = calloc(s_infos->nworkers, sizeof(client_queue));
+	client_queue* cq = malloc(sizeof(client_queue));
 	
 	for (int i = 0; i < s_infos->nworkers; i++)
+		pthread_create(threads + i, NULL, &server_worker, cq);
+	
+	while (1)
 	{
-		pthread_mutex_init(&(client_queues[i].mutex), NULL);
-		pthread_cond_init(&(client_queues[i].empty), NULL);
+
 	}
-
-	for (int i = 0; i < s_infos->nworkers; i++)
-		pthread_create(threads + i, NULL,
-			&server_worker, client_queues + i);
 	
-
-	
-
-
 	for (int i = 0; i < s_infos->nworkers; i++)
 		pthread_join(threads[i], NULL);
+
+	cq_free(cq);
 
 	pthread_exit((void *)0);
 }
 
-void *server_worker(void *clients)
+void *server_worker(void *client)
 {
 	DEBUG(puts("Worker"));
 	pthread_exit((void *)0);
@@ -92,3 +89,5 @@ void *server_signalhandler(void *infos)
 
 	pthread_exit(NULL);
 }
+
+

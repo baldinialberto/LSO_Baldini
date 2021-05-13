@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <sys/poll.h>
+
 #include "error_utils.h"
 #include "lock_utils.h"
 #include "cond_utils.h"
@@ -24,6 +26,7 @@ typedef struct _client_queue_node
 {
     int client_socket;
     int status;
+    mutex_t mutex;
     struct _client_queue_node *next;
 } client_queue_node;
 typedef struct _client_queue
@@ -32,7 +35,9 @@ typedef struct _client_queue
     client_queue_node *tail;
     size_t nclients;
     mutex_t mutex;
-    cond_t empty;
+    cond_t full;
+    struct pollfd *pollarr;
+    int pollarr_valid;
 } client_queue;
 
 /**
@@ -65,8 +70,20 @@ int cq_push(client_queue *queue, int client_socket);
 int cq_remove(client_queue *queue, int client_socket);
 
 /**
- * @brief Deprecated
+ * @brief update arr of clients
+ * @param  queue pointer to queue
+ * @return 0 if successfull, > 0 otherwise  \
+ * if queue->sockarr_valid = 1 return CQ_INVALID_FLAG
+ * if queue == NULL return CQ_NULL_FLAG
  */
-__attribute_deprecated__ int cq_serve(client_queue *queue);
+int cq_update_arr(client_queue *queue);
+
+/**
+ * @brief free queue of clients
+ * @param queue pointer to queue
+ * @return 0 if sucessfull, > 0 otherwise
+ * if queue == NULL return CQ_NULL_FLAG
+ */
+int cq_free(client_queue *queue);
 
 #endif

@@ -4,7 +4,7 @@ int cq_is_empty(client_queue *queue)
 {
     if (queue == NULL) return CQ_NULL_FLAG;
     
-    return queue->head == NULL && queue->tail == NULL;
+    return queue->nclients == 0;
 }
 int cq_push(client_queue *queue, int client_socket)
 {
@@ -18,7 +18,10 @@ int cq_push(client_queue *queue, int client_socket)
     queue->tail->next = newclient;
     newclient->next = NULL;
     queue->tail = newclient;
+
     queue->nclients++;
+
+    queue->pollarr_valid = 0;
 
     return 0;
 }
@@ -55,26 +58,56 @@ int cq_remove(client_queue *queue, int client_socket)
             free(curr);
         }
 
+        queue->nclients--;
+        queue->pollarr_valid = 0;
+
         return 0;
     }
 
     return CQ_NOTFOUND_FLAG;
 }
-int cq_serve(client_queue *queue)
-{
-    if (queue == NULL) return -CQ_NULL_FLAG;
-    if (cq_is_empty(queue)) return -CQ_EMPTY_FLAG;
 
-    int res = queue->head->client_socket;
-    queue->head->status |= CQ_SERVING_FLAG;
-    
-    if (queue->head->next != NULL)  // move head to tail and shift 
+int cq_update_arr(client_queue *queue)
+{
+    if (queue == NULL) return CQ_NULL_FLAG;
+    if (queue->pollarr_valid) return CQ_INVALID_FLAG;
+
+    CHECK_BADVAL_PERROR_EXIT(
+        queue->pollarr = realloc(queue->pollarr, 
+            queue->nclients * sizeof(struct pollfd)), 
+        NULL, "cq_update_arr : realloc"
+    )
+    int i = 0;
+    for (client_queue_node* node = queue->head; node != NULL; node = node->next)
     {
-        queue->tail->next = queue->head;
-        queue->head = queue->head->next;
-        queue->tail = queue->tail->next;
-        queue->tail->next = NULL;
+       (queue->pollarr)[i].fd = node->client_socket;
+       (queue->pollarr)[i++].events = POLLIN | POLLHUP;
+    }
+    queue->pollarr_valid = 1;
+    
+    if (i != queue->nclients)
+    {
+        puts("cq_update_arr : invalid queue->nclients");
+        exit(-1);
     }
 
-    return res;
+    return 0;
+}
+
+int cq_free(client_queue *queue)
+{
+	if (queue == NULL) return CQ_NULL_FLAG;
+	client_queue_node *temp;
+	for (client_queue_node *curr = queue->head; curr != NULL;)
+	{
+		temp = curr;
+		curr = curr->next;
+		free(temp);
+	}
+	free(queue->pollarr);
+	pthread_mutex_destroy(&(queue->mutex));
+	pthread_cond_destroy(&(queue->full));
+	free(queue);
+
+	return 0;
 }

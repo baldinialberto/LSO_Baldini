@@ -11,6 +11,6 @@
 
 void *server_signalhandler(void *infos);
 void *server_dispatcher(void *infos);
-void *server_worker(void *clients);
+void *server_worker(void *client);
 
 #endif
