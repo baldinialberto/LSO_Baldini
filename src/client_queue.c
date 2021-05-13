@@ -1,19 +1,19 @@
 #include <client_queue.h>
 
-int cq_is_empty(client_queue *queue)
+int sq_is_empty(socket_queue *queue)
 {
-    if (queue == NULL) return CQ_NULL_FLAG;
+    if (queue == NULL) return SQ_NULL_FLAG;
     
     return queue->nclients == 0;
 }
-int cq_push(client_queue *queue, int client_socket)
+int sq_push(socket_queue *queue, int client_socket, int flag)
 {
-    if (queue == NULL) return CQ_NULL_FLAG;
-    if (client_socket < 0) return CQ_INVALID_FLAG;
+    if (queue == NULL) return SQ_NULL_FLAG;
+    if (client_socket < 0) return SQ_INVALID_FLAG;
 
-    client_queue_node* newclient = malloc(sizeof(client_queue_node));
+    socket_queue_node* newclient = malloc(sizeof(socket_queue_node));
     newclient->client_socket = client_socket;
-    newclient->status = CQ_LIVE_FLAG;
+    newclient->status = SQ_LIVE_FLAG;
 
     queue->tail->next = newclient;
     newclient->next = NULL;
@@ -25,13 +25,13 @@ int cq_push(client_queue *queue, int client_socket)
 
     return 0;
 }
-int cq_remove(client_queue *queue, int client_socket)
+int sq_remove(socket_queue *queue, int client_socket)
 {
-    if (queue == NULL) return CQ_NULL_FLAG;
-    if (client_socket < 0) return CQ_INVALID_FLAG;
-    if (cq_is_empty(queue)) return CQ_EMPTY_FLAG;
+    if (queue == NULL) return SQ_NULL_FLAG;
+    if (client_socket < 0) return SQ_INVALID_FLAG;
+    if (sq_is_empty(queue)) return SQ_EMPTY_FLAG;
 
-    client_queue_node *curr = queue->head, *prev = NULL;
+    socket_queue_node *curr = queue->head, *prev = NULL;
     
     while (curr->client_socket != client_socket 
         && queue->tail != curr) // linear scan
@@ -64,21 +64,21 @@ int cq_remove(client_queue *queue, int client_socket)
         return 0;
     }
 
-    return CQ_NOTFOUND_FLAG;
+    return SQ_NOTFOUND_FLAG;
 }
 
-int cq_update_arr(client_queue *queue)
+int sq_update_arr(socket_queue *queue)
 {
-    if (queue == NULL) return CQ_NULL_FLAG;
-    if (queue->pollarr_valid) return CQ_INVALID_FLAG;
+    if (queue == NULL) return SQ_NULL_FLAG;
+    if (queue->pollarr_valid) return SQ_INVALID_FLAG;
 
     CHECK_BADVAL_PERROR_EXIT(
         queue->pollarr = realloc(queue->pollarr, 
             queue->nclients * sizeof(struct pollfd)), 
-        NULL, "cq_update_arr : realloc"
+        NULL, "sq_update_arr : realloc"
     )
     int i = 0;
-    for (client_queue_node* node = queue->head; node != NULL; node = node->next)
+    for (socket_queue_node* node = queue->head; node != NULL; node = node->next)
     {
        (queue->pollarr)[i].fd = node->client_socket;
        (queue->pollarr)[i++].events = POLLIN | POLLHUP;
@@ -87,18 +87,18 @@ int cq_update_arr(client_queue *queue)
     
     if (i != queue->nclients)
     {
-        puts("cq_update_arr : invalid queue->nclients");
+        puts("sq_update_arr : invalid queue->nclients");
         exit(-1);
     }
 
     return 0;
 }
 
-int cq_free(client_queue *queue)
+int sq_free(socket_queue *queue)
 {
-	if (queue == NULL) return CQ_NULL_FLAG;
-	client_queue_node *temp;
-	for (client_queue_node *curr = queue->head; curr != NULL;)
+	if (queue == NULL) return SQ_NULL_FLAG;
+	socket_queue_node *temp;
+	for (socket_queue_node *curr = queue->head; curr != NULL;)
 	{
 		temp = curr;
 		curr = curr->next;

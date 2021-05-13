@@ -1,5 +1,44 @@
 #include <server_utils.h>
 
+server_settings init_server_settings()
+{
+	return parse_settings();
+}
+
+server_stats init_server_stats(server_settings *setts)
+{
+	server_stats stats = {0};
+	return stats;
+}
+
+server_infos init_server_infos(server_settings *setts)
+{
+	server_infos infos;
+
+	infos.server_socket_fd = create_server_socket(setts);
+	infos.nworkers = setts->nworkers;
+	CHECK_BADVAL_PERROR_EXIT(
+		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)), 
+		NULL, "main : calloc"
+	);
+	CHECK_BADVAL_PERROR_EXIT(
+		infos.workers_clients = calloc(infos.nworkers, sizeof(int)), 
+		NULL, "main : calloc"
+	);
+	infos.server_quit = (infos.server_hu = 0);
+
+	return infos;
+}
+
+int free_server_infos(server_infos *infos)
+{
+	if (infos->workers == NULL && infos->workers_clients == NULL)
+		return -1;
+	if (infos->workers != NULL) free(infos->workers);
+	if (infos->workers_clients != NULL) free(infos->workers_clients);
+	return 0;
+}
+
 void print_server_settings(server_settings *setts)
 {
 	fprintf(
@@ -196,10 +235,7 @@ int thread_spawn_detached(void *(*fun)(void*), void *arg)
 pthread_t thread_spawn(void *(*fun)(void*), void *arg)
 {
 	pthread_t thread;
-	pthread_attr_t thread_attr;
-	pthread_attr_init(&thread_attr);
-	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&thread, &thread_attr, fun, arg);
+	pthread_create(&thread, NULL, fun, arg);
 
 	return thread;
 }

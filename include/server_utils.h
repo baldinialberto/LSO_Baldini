@@ -52,7 +52,10 @@ typedef struct _server_infos
 	int server_hu;
 } server_infos;
 
-
+server_settings init_server_settings();
+server_stats init_server_stats();
+server_infos init_server_infos(server_settings *setts);
+int free_server_infos(server_infos *infos);
 void print_server_settings(server_settings *setts);
 server_settings parse_settings();
 int write_settings(server_settings* setts);

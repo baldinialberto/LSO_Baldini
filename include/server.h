@@ -10,8 +10,9 @@
 #include "client_queue.h"
 
 int spawn_workers(server_infos* infos);
+int join_workers(server_infos* infos);
 void *server_signalhandler(void *infos);
-void *server_dispatcher(void *infos);
+void server_dispatcher(server_infos *infos);
 void *server_worker(void *client);
 
 #endif

@@ -5,54 +5,54 @@ int main(int argc, char** argv)
 {
 	assert(sizeof(server_command_t) == 4);
 
-	server_settings settings = parse_settings();
-	server_stats stats = {0};
-	server_infos infos = {0};
+	server_settings settings = init_server_settings();
+	server_stats stats = init_server_stats();
+	server_infos infos = init_server_infos(&settings);
 	
 	DEBUG(print_server_settings(&settings));
 	
-	infos.nworkers = settings.nworkers;
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)), 
-		NULL, "main : calloc"
-	);
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.workers_clients = calloc(infos.nworkers, sizeof(int)), 
-		NULL, "main : calloc"
-	);
-	infos.server_socket_fd = create_server_socket(&settings);
-
 	thread_spawn_detached(&server_signalhandler, (void *) &infos);
-	thread_spawn_detached(&server_dispatcher, (void *) &infos);
 
-	while (!infos.server_quit && !infos.server_hu);
+	server_dispatcher(&infos);
 
-	free(infos.workers);
-	free(infos.workers_clients);
+	close(infos.server_socket_fd);
+	unlink(settings.socket_name);
+	free_server_infos(&infos);
 
 	return EXIT_SUCCESS;
 }
 
-void *server_dispatcher(void *infos)
+void server_dispatcher(server_infos *infos)
 {
-	server_infos* s_infos = (server_infos*) infos;
-
 	DEBUG(puts("Dispatcher"));
+	socket_queue* cq = calloc(1, sizeof(socket_queue));
+	
+	spawn_workers(infos);
+	
+	sq_push(cq, infos->server_socket_fd, SQ_SSOCKET_FLAG);
+	sq_update_arr(cq);
 
-	s_infos->workers = calloc(s_infos->nworkers, sizeof(pthread_t));
-	client_queue* cq = calloc(1, sizeof(client_queue));
-	
-	
-	
-	while (!s_infos->server_hu && !s_infos->server_quit)
+	int poll_ready = 0;
+
+	while (!infos->server_hu && !infos->server_quit)
 	{
+		DEBUG(puts("ServerWaiting"));
+		poll_ready = poll(cq->pollarr, cq->nclients, -1);
+		if (poll_ready)
+		{
+			if (poll_ready == infos->server_socket_fd)
+			{
+				sq_push(cq, accept(infos->server_socket_fd, NULL, 0), SQ_SSOCKET_FLAG);
+			} else 
+			{
 
+			}
+		}
 	}
-	
-	DEBUG(puts("Cleanup"));
-	cq_free(cq);
 
-	pthread_exit(NULL);
+	DEBUG(puts("Cleanup"));
+	join_workers(infos);
+	sq_free(cq);
 }
 
 void *server_worker(void *client)
@@ -80,12 +80,13 @@ void *server_signalhandler(void *infos)
 		perror("server_signalhandler : sigwait");
 
 	DEBUG(
-		printf("server_signalhandler received signal %d\n", sig);
+		printf("\nserver_signalhandler received signal %d\n", sig);
 	);
 
-	s_infos->server_quit = 1;
-	s_infos->server_hu = 1;
-
+	if (sig == SIGINT || sig == SIGQUIT) 
+		s_infos->server_quit = 1;
+	else 
+		s_infos->server_hu = 1;
 
 	pthread_exit(NULL);
 }
@@ -97,7 +98,16 @@ int spawn_workers(server_infos* infos)
 		(infos->workers)[i] = thread_spawn(
 			&server_worker, 
 			(void *)(infos->workers_clients + i)
-		);
+			);
+	}
+	return 0;
+}
+
+int join_workers(server_infos* infos)
+{
+	for (int i = 0; i < infos->nworkers; i++)
+	{
+		pthread_join((infos->workers)[i], NULL);
 	}
 	return 0;
 }
