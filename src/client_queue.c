@@ -11,16 +11,20 @@ int sq_push(socket_queue *queue, int client_socket, int flag)
     if (queue == NULL) return SQ_NULL_FLAG;
     if (client_socket < 0) return SQ_INVALID_FLAG;
 
-    socket_queue_node* newclient = malloc(sizeof(socket_queue_node));
+    socket_queue_node* newclient = calloc(1, sizeof(socket_queue_node));
     newclient->client_socket = client_socket;
-    newclient->status = SQ_LIVE_FLAG;
+    newclient->status = SQ_LIVE_FLAG | flag;
 
-    queue->tail->next = newclient;
-    newclient->next = NULL;
-    queue->tail = newclient;
+    if (sq_is_empty(queue))
+    {
+        queue->head = (queue->tail) = newclient;
+    } else {
+        queue->tail->next = newclient;
+        newclient->next = NULL;
+        queue->tail = newclient;
+    }
 
     queue->nclients++;
-
     queue->pollarr_valid = 0;
 
     return 0;

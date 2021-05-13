@@ -50,8 +50,6 @@ typedef struct _client_queue
  */
 int sq_is_empty(socket_queue *queue);
 
-int sq_in_queue();
-
 /**
  * @brief Push a new client_socket in queue
  * @param queue pointer to queue

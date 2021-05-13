@@ -232,10 +232,16 @@ int thread_spawn_detached(void *(*fun)(void*), void *arg)
 
 	return 0;
 }
+
 pthread_t thread_spawn(void *(*fun)(void*), void *arg)
 {
 	pthread_t thread;
 	pthread_create(&thread, NULL, fun, arg);
 
 	return thread;
+}
+
+int freeworker(server_infos *infos)
+{
+	
 }

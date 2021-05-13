@@ -9,10 +9,12 @@
 #include "server_common.h"
 #include "client_queue.h"
 
+int ignore_signals();
 int spawn_workers(server_infos* infos);
 int join_workers(server_infos* infos);
 void *server_signalhandler(void *infos);
 void server_dispatcher(server_infos *infos);
 void *server_worker(void *client);
+int assign_client(server_infos *infos, int client);
 
 #endif

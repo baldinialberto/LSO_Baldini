@@ -15,6 +15,8 @@
 #include "common.h"
 #include "commonio.h"
 #include "string_utils.h"
+#include "lock_utils.h"
+#include "cond_utils.h"
 
 #define UNIX_PATH_MAX 108
 
@@ -50,6 +52,8 @@ typedef struct _server_infos
 	int *workers_clients;		// number of clients served by each worker
 	int server_quit;
 	int server_hu;
+	cond_t *worker_conds;
+	mutex_t *worker_locks;
 } server_infos;
 
 server_settings init_server_settings();
@@ -64,5 +68,6 @@ void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
 int thread_spawn_detached(void *(*fun)(void*), void *arg);
 pthread_t thread_spawn(void *(*fun)(void*), void *arg);
+
 
 #endif
