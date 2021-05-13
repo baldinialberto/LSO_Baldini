@@ -53,14 +53,13 @@ typedef struct _server_infos
 } server_infos;
 
 
-
 void print_server_settings(server_settings *setts);
 server_settings parse_settings();
 int write_settings(server_settings* setts);
 int write_log(const char* op, server_settings* setts);
 void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
-
-
+int thread_spawn_detached(void *(*fun)(void*), void *arg);
+pthread_t thread_spawn(void *(*fun)(void*), void *arg);
 
 #endif

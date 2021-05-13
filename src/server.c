@@ -22,14 +22,13 @@ int main(int argc, char** argv)
 	);
 	infos.server_socket_fd = create_server_socket(&settings);
 
-	pthread_t signalhandler_thread;
-	pthread_create(&signalhandler_thread, NULL, &server_signalhandler, (void *)&infos);
+	thread_spawn_detached(&server_signalhandler, (void *) &infos);
+	thread_spawn_detached(&server_dispatcher, (void *) &infos);
 
-	pthread_t dispatcher_thread;
-	pthread_create(&dispatcher_thread, NULL, &server_dispatcher, (void *)&infos);
+	while (!infos.server_quit && !infos.server_hu);
 
-	pthread_join(dispatcher_thread, NULL);
-
+	free(infos.workers);
+	free(infos.workers_clients);
 
 	return EXIT_SUCCESS;
 }
@@ -40,54 +39,65 @@ void *server_dispatcher(void *infos)
 
 	DEBUG(puts("Dispatcher"));
 
-	pthread_t *threads = malloc(s_infos->nworkers * sizeof(pthread_t));
-	client_queue* cq = malloc(sizeof(client_queue));
+	s_infos->workers = calloc(s_infos->nworkers, sizeof(pthread_t));
+	client_queue* cq = calloc(1, sizeof(client_queue));
 	
-	for (int i = 0; i < s_infos->nworkers; i++)
-		pthread_create(threads + i, NULL, &server_worker, cq);
 	
-	while (1)
+	
+	while (!s_infos->server_hu && !s_infos->server_quit)
 	{
 
 	}
 	
-	for (int i = 0; i < s_infos->nworkers; i++)
-		pthread_join(threads[i], NULL);
-
+	DEBUG(puts("Cleanup"));
 	cq_free(cq);
 
-	pthread_exit((void *)0);
+	pthread_exit(NULL);
 }
 
 void *server_worker(void *client)
 {
 	DEBUG(puts("Worker"));
-	pthread_exit((void *)0);
+	pthread_exit(NULL);
 }
 
 void *server_signalhandler(void *infos)
 {
+	DEBUG(puts("Signal_handler"));
+
 	server_infos* s_infos = (server_infos*) infos;
 
-	int sig;
+	int sig = 0;
 	sigset_t set;
 	sigemptyset(&set);
 
-	sigaddset(&set, SIGINT);
-	sigaddset(&set, SIGQUIT);
-	sigaddset(&set, SIGHUP);
+	if ( sigaddset(&set, SIGINT) 
+		|| sigaddset(&set, SIGQUIT) 
+		|| sigaddset(&set, SIGHUP) )
+		perror("server_signalhandler : sigaddset");
 
-	sigwait(&set, &sig);
+	if (sigwait(&set, &sig))
+		perror("server_signalhandler : sigwait");
 
-	if (sig == SIGINT || sig == SIGQUIT)
-	{
-		s_infos->server_quit = 1;
-	} else 
-	{
-		s_infos->server_hu = 1;
-	}
+	DEBUG(
+		printf("server_signalhandler received signal %d\n", sig);
+	);
+
+	s_infos->server_quit = 1;
+	s_infos->server_hu = 1;
+
 
 	pthread_exit(NULL);
 }
 
-
+int spawn_workers(server_infos* infos)
+{
+	for (int i = 0; i < infos->nworkers; i++)
+	{
+		(infos->workers)[i] = thread_spawn(
+			&server_worker, 
+			(void *)(infos->workers_clients + i)
+		);
+	}
+	return 0;
+}

@@ -54,6 +54,11 @@ server_settings parse_settings()
 			f_skipline(configFile);
 			break;
 		}
+		if (tempRead != NULL)
+		{
+			free(tempRead);
+			tempRead = NULL;
+		}
 	}
 	fclose(configFile);
 	CHECK_ERRNO_EXIT(-1, "parse_settings : fclose");
@@ -176,4 +181,25 @@ int create_server_socket(server_settings *setts)
 	);
 
 	return socket_res;
+}
+
+int thread_spawn_detached(void *(*fun)(void*), void *arg)
+{
+	pthread_t thread;
+	pthread_attr_t thread_attr;
+	pthread_attr_init(&thread_attr);
+	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+	pthread_create(&thread, &thread_attr, fun, arg);
+
+	return 0;
+}
+pthread_t thread_spawn(void *(*fun)(void*), void *arg)
+{
+	pthread_t thread;
+	pthread_attr_t thread_attr;
+	pthread_attr_init(&thread_attr);
+	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
+	pthread_create(&thread, &thread_attr, fun, arg);
+
+	return thread;
 }
