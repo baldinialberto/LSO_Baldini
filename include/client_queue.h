@@ -4,6 +4,8 @@
 #pragma once
 
 #include "error_utils.h"
+#include "lock_utils.h"
+#include "cond_utils.h"
 #include "common.h"
 
 #define CQ_NULL_FLAG        0x2
@@ -28,6 +30,9 @@ typedef struct _client_queue
 {
     client_queue_node *head;
     client_queue_node *tail;
+    size_t nclients;
+    mutex_t mutex;
+    cond_t empty;
 } client_queue;
 
 /**

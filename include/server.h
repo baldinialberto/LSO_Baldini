@@ -7,6 +7,7 @@
 #include "server_common.h"
 #include "client_queue.h"
 
-
+void *server_dispatcher(void *infos);
+void *server_worker(void *clients);
 
 #endif
