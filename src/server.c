@@ -35,13 +35,17 @@ void server_dispatcher(server_infos *infos)
 
 	int poll_ready = 0;
 
-	while (pthread_mutex_lock(&(sq->mutex)), (!infos->server_hu && sq_has_clients(sq)) || !infos->server_quit)
+	while (pthread_mutex_lock(&(sq->mutex)), 
+		!(infos->server_hu && !sq_has_clients(sq)) && !infos->server_quit)
 	{
+		if (infos->server_hu) sq_remove(sq, infos->server_socket_fd);
 		DEBUG(puts("ServerWaiting"));
+		sq_update_arr(sq);
 		poll_ready = poll(sq->pollarr, sq->nsockets, 1000);
+
 		if (poll_ready)
 		{
-			if (poll_ready == infos->server_socket_fd)
+			if ((poll_ready == infos->server_socket_fd))
 			{
 				sq_push(sq, 
 					accept(infos->server_socket_fd, NULL, 0), 
@@ -147,5 +151,6 @@ int ignore_signals()
 	sigaddset(&set, SIGQUIT);
     sigaddset(&set, SIGHUP);
 	sigaddset(&set, SIGINT);
+
     return pthread_sigmask(SIG_BLOCK, &set, NULL);
 }
