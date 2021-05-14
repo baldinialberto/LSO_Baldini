@@ -3,9 +3,17 @@
 int sq_is_empty(socket_queue *queue)
 {
     if (queue == NULL) return SQ_NULL_FLAG;
-    
-    return queue->nclients == 0;
+
+    return queue->nsockets == 0;
 }
+
+int sq_has_clients(socket_queue *queue)
+{
+    if (queue == NULL) return SQ_NULL_FLAG;
+    
+    return queue->nclients != 0;
+}
+
 int sq_push(socket_queue *queue, int client_socket, int flag)
 {
     if (queue == NULL) return SQ_NULL_FLAG;
@@ -24,7 +32,8 @@ int sq_push(socket_queue *queue, int client_socket, int flag)
         queue->tail = newclient;
     }
 
-    queue->nclients++;
+    queue->nsockets++;
+    if (newclient->status & SQ_CSOCKET_FLAG) queue->nclients++;
     queue->pollarr_valid = 0;
 
     return 0;
@@ -45,6 +54,10 @@ int sq_remove(socket_queue *queue, int client_socket)
     }
     if (curr->client_socket == client_socket) // found
     {
+        if (curr->status & SQ_CSOCKET_FLAG) queue->nclients--;
+        queue->nsockets--;
+        queue->pollarr_valid = 0;
+
         if (curr == queue->head && curr == queue->tail) // remove last client
         {
             queue->head = (queue->tail = NULL);
@@ -62,9 +75,6 @@ int sq_remove(socket_queue *queue, int client_socket)
             free(curr);
         }
 
-        queue->nclients--;
-        queue->pollarr_valid = 0;
-
         return 0;
     }
 
@@ -78,7 +88,7 @@ int sq_update_arr(socket_queue *queue)
 
     CHECK_BADVAL_PERROR_EXIT(
         queue->pollarr = realloc(queue->pollarr, 
-            queue->nclients * sizeof(struct pollfd)), 
+            queue->nsockets * sizeof(struct pollfd)), 
         NULL, "sq_update_arr : realloc"
     )
     int i = 0;
@@ -89,9 +99,9 @@ int sq_update_arr(socket_queue *queue)
     }
     queue->pollarr_valid = 1;
     
-    if (i != queue->nclients)
+    if (i != queue->nsockets)
     {
-        puts("sq_update_arr : invalid queue->nclients");
+        puts("sq_update_arr : invalid queue->nsockets");
         exit(-1);
     }
 

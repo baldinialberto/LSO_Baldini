@@ -26,24 +26,24 @@ int main(int argc, char** argv)
 void server_dispatcher(server_infos *infos)
 {
 	DEBUG(puts("Dispatcher"));
-	socket_queue* cq = calloc(1, sizeof(socket_queue));
+	socket_queue* sq = calloc(1, sizeof(socket_queue));
 	
 	spawn_workers(infos);
 	
-	sq_push(cq, infos->server_socket_fd, SQ_SSOCKET_FLAG);
-	sq_update_arr(cq);
+	sq_push(sq, infos->server_socket_fd, SQ_SSOCKET_FLAG);
+	sq_update_arr(sq);
 
 	int poll_ready = 0;
 
-	while (!infos->server_hu && !infos->server_quit)
+	while (pthread_mutex_lock(&(sq->mutex)), (!infos->server_hu && sq_has_clients(sq)) || !infos->server_quit)
 	{
 		DEBUG(puts("ServerWaiting"));
-		poll_ready = poll(cq->pollarr, cq->nclients, 1000);
+		poll_ready = poll(sq->pollarr, sq->nsockets, 1000);
 		if (poll_ready)
 		{
 			if (poll_ready == infos->server_socket_fd)
 			{
-				sq_push(cq, 
+				sq_push(sq, 
 					accept(infos->server_socket_fd, NULL, 0), 
 					SQ_SSOCKET_FLAG
 				);
@@ -52,11 +52,13 @@ void server_dispatcher(server_infos *infos)
 				assign_client(infos, poll_ready);
 			}
 		}
+		pthread_mutex_unlock(&(sq->mutex));
 	}
+	pthread_mutex_unlock(&(sq->mutex)); // unlock mutex at server_hu
 
 	DEBUG(puts("Cleanup"));
 	join_workers(infos);
-	sq_free(cq);
+	sq_free(sq);
 }
 
 void *server_worker(void *client)

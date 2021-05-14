@@ -35,6 +35,7 @@ typedef struct _client_queue
 {
     socket_queue_node *head;
     socket_queue_node *tail;
+    size_t nsockets;
     size_t nclients;
     mutex_t mutex;
     cond_t full;
@@ -49,6 +50,14 @@ typedef struct _client_queue
  * if queue == NULL, SQ_NULL_FLAG is set
  */
 int sq_is_empty(socket_queue *queue);
+
+/**
+ * @brief Check if queue has clients
+ * @param queue pointer to queue
+ * @return 0 if has not, > 0 otherwise.\
+ * if queue == NULL, SQ_NULL_FLAG is set
+ */
+int sq_has_clients(socket_queue *queue);
 
 /**
  * @brief Push a new client_socket in queue
