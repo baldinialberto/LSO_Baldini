@@ -50,7 +50,7 @@ int free_server_infos(server_infos *infos)
 	if (infos->workers != NULL) free(infos->workers);
 	if (infos->workers_clients != NULL) free(infos->workers_clients);
 	for (int i = 0; i < infos->nworkers; i++)
-	{
+	{ 
 		pthread_cond_destroy(infos->worker_conds + i);
 		pthread_mutex_destroy(infos->worker_locks + i);
 	}
