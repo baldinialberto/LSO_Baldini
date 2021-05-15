@@ -11,6 +11,7 @@
 #include <pthread.h>
 
 #include "server_common.h"
+#include "server_fs.h"
 #include "error_utils.h"
 #include "common.h"
 #include "commonio.h"
@@ -22,6 +23,7 @@
 
 #define CONFIG_NWORKERS "NWORKERS"
 #define CONFIG_CAPACITY "CAPACITY"
+#define CONFIG_FILECAPACITY "FILECAPACITY"
 #define CONFIG_SOCKET_NAME	"SOCKET_NAME"
 #define CONFIG_LOGFILE_NAME "LOGFILE_NAME"
 
@@ -30,7 +32,8 @@
 typedef struct _server_settings
 {
 	unsigned short nworkers;		// 
-	unsigned int MB_dim;
+	unsigned int avaiableMemory;
+	unsigned int maxFileCount;
 	char socket_name[64];
 	char logfile_name[64];
 } server_settings;
@@ -46,6 +49,7 @@ typedef struct _server_stats
 
 typedef struct _server_infos
 {
+	server_fs *memory;
 	int server_socket_fd;		// file descriptor of sever_socket
 	unsigned short nworkers;	// number of workers of the server
 	pthread_t *workers;			// array of workers

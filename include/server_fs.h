@@ -32,6 +32,13 @@ typedef struct _sfs_file
     sfs_fileinode *flags;
 } sfs_file;
 
+typedef struct _server_memory
+{
+    int currentFileCapacity;
+    int currentMemoryCapacity;
+} server_fs;
+
+server_fs init_server_fs(int maxCapacity, int maxFileCount);
 sfs_file* sfs_create(char *path, int size, void *buff);
 int sfs_delete(char *path);
 int sfs_write(sfs_file *file_descriptor, void *buff, int len);

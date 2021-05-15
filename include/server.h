@@ -6,25 +6,31 @@
 #include <sys/signal.h>
 
 #include "server_utils.h"
-#include "server_common.h"
 #include "client_queue.h"
+
+struct _worker_arg
+{
+    int worker_id;
+    server_infos *infos;
+};
 
 int ignore_signals();
 int spawn_workers(server_infos* infos);
 int join_workers(server_infos* infos);
 void *server_signalhandler(void *infos);
 void server_dispatcher(server_infos *infos);
-void *server_worker(void *client);
+void *server_worker(void *worker_args);
 int assign_client(server_infos *infos, int client);
+int serve(int request, int client_socket, server_fs* memory);
 
-int server_closeConnection(int cliend_socket);
-int server_openFile(int cliend_socket);
-int server_readFile(int cliend_socket);
-int server_writeFile(int cliend_socket);
-int server_appendToFile(int cliend_socket);
-int server_lockFile(int cliend_socket);
-int server_unlockFile(int cliend_socket);
-int server_closeFile(int cliend_socket);
-int server_removeFile(int cliend_socket);
+//int server_closeConnection(int request);
+int server_openFile(int request, int client_socket, server_fs* memory);
+int server_readFile(int request, int client_socket, server_fs* memory);
+int server_writeFile(int request, int client_socket, server_fs* memory);
+int server_appendToFile(int request, int client_socket, server_fs* memory);
+int server_lockFile(int request, int client_socket, server_fs* memory);
+int server_unlockFile(int request, int client_socket, server_fs* memory);
+int server_closeFile(int request, int client_socket, server_fs* memory);
+int server_removeFile(int request, int client_socket, server_fs* memory);
 
 #endif

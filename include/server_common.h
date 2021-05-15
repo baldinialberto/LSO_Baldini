@@ -27,8 +27,8 @@
 #define CLSCONN_OP  0x00000008
 
 #define MESSG_MASK  0xFFFFFF00
-#define FLAG_MASK   0x000000F0 // redundant
-#define OP_MASK     0x0000000F // reduntant
+#define FLAG_MASK   0x000000F0
+#define OP_MASK     0x0000000F
 
 #define MESSAGE_MAX_LEN 0xFFFFFF
 #define MESSG_SHIFT 8

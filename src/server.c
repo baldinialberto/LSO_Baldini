@@ -4,10 +4,16 @@ int main(int argc, char** argv)
 {
 	assert(sizeof(server_command_t) == 4);
 
-	server_settings settings = init_server_settings();
-	server_stats stats = init_server_stats();
-	server_infos infos = init_server_infos(&settings);
-	
+	static server_settings settings;
+	static server_stats stats;
+	static server_infos infos;
+	static server_fs memory;
+	settings = init_server_settings();
+	stats = init_server_stats();
+	infos = init_server_infos(&settings);
+	memory = init_server_fs(settings.avaiableMemory, settings.maxFileCount);
+	infos.memory = &memory;
+
 	DEBUG(print_server_settings(&settings));
 	
 	thread_spawn_detached(&server_signalhandler, (void *) &infos);
@@ -58,18 +64,54 @@ void server_dispatcher(server_infos *infos)
 		}
 		pthread_mutex_unlock(&(sq->mutex));
 	}
+
 	pthread_mutex_unlock(&(sq->mutex)); // unlock mutex at server_hu
+	if (!infos->server_quit) infos->server_quit = 1;
 
 	DEBUG(puts("Cleanup"));
 	join_workers(infos);
 	sq_free(sq);
 }
 
-void *server_worker(void *client)
+void *server_worker(void *worker_arg)
 {
 	DEBUG(puts("Worker"));
-
 	ignore_signals();
+
+	struct _worker_arg *wa = (struct _worker_arg*) worker_arg;
+	int request;
+	struct timespec condtime;
+	condtime.tv_sec = 0;
+	condtime.tv_nsec = 0xFFFF;
+
+	while (!wa->infos->server_quit)
+	{
+		pthread_mutex_lock(wa->infos->worker_locks + wa->worker_id);
+		while ((wa->infos->workers_clients)[wa->worker_id] == NULL)
+		{
+			if (wa->infos->server_quit) 
+			{
+				free(worker_arg);
+				pthread_exit(NULL);
+			}
+			pthread_cond_timedwait(
+				wa->infos->worker_conds + wa->worker_id, 
+				wa->infos->worker_locks + wa->worker_id, 
+				&condtime
+			);
+		}
+		read((wa->infos->workers_clients)[wa->worker_id], 
+			&request, sizeof(int)
+		);
+		serve(request, 
+			(wa->infos->workers_clients)[wa->worker_id], 
+			wa->infos->memory
+		);
+
+		(wa->infos->workers_clients)[wa->worker_id] = NULL;
+	}
+
+	free(worker_arg);
 
 	pthread_exit(NULL);
 }
@@ -106,11 +148,15 @@ void *server_signalhandler(void *infos)
 
 int spawn_workers(server_infos* infos)
 {
+	struct _worker_arg *arg;
 	for (int i = 0; i < infos->nworkers; i++)
 	{
+		arg = (struct _worker_arg *)malloc(sizeof(struct _worker_arg));
+		arg->worker_id = i;
+		arg->infos = infos;
 		(infos->workers)[i] = thread_spawn(
 			&server_worker, 
-			(void *)(infos->workers_clients + i)
+			(void *)(arg)
 			);
 	}
 	return 0;
@@ -153,4 +199,70 @@ int ignore_signals()
 	sigaddset(&set, SIGINT);
 
     return pthread_sigmask(SIG_BLOCK, &set, NULL);
+}
+
+int serve(int request, int client_socket, server_fs* memory)
+{
+	int (*server_ops[9])(int, int, server_fs*) = {
+		server_openFile, 
+		server_closeFile, 
+		server_readFile, 
+		server_writeFile,
+		server_appendToFile,
+		server_removeFile,
+		server_lockFile,
+		server_unlockFile/*,
+		server_closeConnection*/
+	};
+
+	if (request & OP_MASK > 8/*9*/) return -1;
+
+	return server_ops[request & OP_MASK](request, client_socket, memory);
+}
+/*
+int server_closeConnection(int client_socket)
+{
+	DEBUG(puts("server_closeConnection"));
+	return 0;
+}
+*/
+int server_openFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_openFile"));
+	return 0;
+}
+int server_readFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_readFile"));
+	return 0;
+}
+int server_writeFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_writeFile"));
+	return 0;
+}
+int server_appendToFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_appendToFile"));
+	return 0;
+}
+int server_lockFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_lockFile"));
+	return 0;
+}
+int server_unlockFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_unlockFile"));
+	return 0;
+}
+int server_closeFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_closeFile"));
+	return 0;
+}
+int server_removeFile(int request, int client_socket, server_fs* memory)
+{
+	DEBUG(puts("server_removeFile"));
+	return 0;
 }

@@ -19,12 +19,25 @@ server_infos init_server_infos(server_settings *setts)
 	infos.nworkers = setts->nworkers;
 	CHECK_BADVAL_PERROR_EXIT(
 		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)), 
-		NULL, "main : calloc"
+		NULL, "init_server_infos : calloc"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
 		infos.workers_clients = calloc(infos.nworkers, sizeof(int)), 
-		NULL, "main : calloc"
+		NULL, "init_server_infos : calloc"
 	);
+	CHECK_BADVAL_PERROR_EXIT(
+		infos.worker_locks = calloc(infos.nworkers, sizeof(mutex_t)), 
+		NULL, "init_server_infos : calloc"
+	);
+	CHECK_BADVAL_PERROR_EXIT(
+		infos.worker_conds = calloc(infos.nworkers, sizeof(cond_t)), 
+		NULL, "init_server_infos : calloc"
+	);
+	for (int i = 0; i < infos.nworkers; i++)
+	{
+		pthread_mutex_init(infos.worker_locks + i, NULL);
+		pthread_cond_init(infos.worker_conds + i, NULL);
+	}
 	infos.server_quit = (infos.server_hu = 0);
 
 	return infos;
@@ -32,10 +45,18 @@ server_infos init_server_infos(server_settings *setts)
 
 int free_server_infos(server_infos *infos)
 {
-	if (infos->workers == NULL && infos->workers_clients == NULL)
+	if (infos == NULL)
 		return -1;
 	if (infos->workers != NULL) free(infos->workers);
 	if (infos->workers_clients != NULL) free(infos->workers_clients);
+	for (int i = 0; i < infos->nworkers; i++)
+	{
+		pthread_cond_destroy(infos->worker_conds + i);
+		pthread_mutex_destroy(infos->worker_locks + i);
+	}
+	if (infos->worker_conds != NULL) free(infos->worker_conds);
+	if (infos->worker_locks != NULL) free(infos->worker_locks);
+
 	return 0;
 }
 
@@ -45,10 +66,12 @@ void print_server_settings(server_settings *setts)
 		stdout,
 		"NWORKERS = %d\n\
 CAPACITY = %dMB\n\
+FILECAPACITY = %d files\n\
 SOCKET_NAME = %s\n\
 LOGFILE_NAME = %s\n", 
 		setts->nworkers, 
-		setts->MB_dim, 
+		setts->avaiableMemory, 
+		setts->maxFileCount, 
 		setts->socket_name,
 		setts->logfile_name
 	);
@@ -154,8 +177,13 @@ void get_setting(char** str, FILE *fstream, server_settings *setts)
 	else if (!strcmp(*str, CONFIG_CAPACITY))
 	{
 		if (fscanf(fstream, "%d", &int_sett) != 1) return;
-		setts->MB_dim = int_sett;
-	} 
+		setts->avaiableMemory = int_sett;
+	}
+	else if (!strcmp(*str, CONFIG_FILECAPACITY))
+	{
+		if (fscanf(fstream, "%d", &int_sett) != 1) return;
+		setts->maxFileCount = int_sett;
+	}
 	else if (!strcmp(*str, CONFIG_SOCKET_NAME))
 	{
 		fscanf(fstream, "%*[^ ,;=\n\r]%n", &int_sett);
