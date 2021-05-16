@@ -7,11 +7,11 @@ int main(int argc, char** argv)
 	static server_settings settings;
 	static server_stats stats;
 	static server_infos infos;
-	static server_fs memory;
+	static SFS_FS memory;
 	settings = init_server_settings();
 	stats = init_server_stats();
 	infos = init_server_infos(&settings);
-	memory = init_server_fs(settings.avaiableMemory, settings.maxFileCount);
+	init_server_fs(&memory, settings.avaiableMemory, settings.maxFileCount);
 	infos.memory = &memory;
 
 	DEBUG(print_server_settings(&settings));
@@ -201,9 +201,9 @@ int ignore_signals()
     return pthread_sigmask(SIG_BLOCK, &set, NULL);
 }
 
-int serve(int request, int client_socket, server_fs* memory)
+int serve(int request, int client_socket, SFS_FS* memory)
 {
-	int (*server_ops[9])(int, int, server_fs*) = {
+	int (*server_ops[9])(int, int, SFS_FS*) = {
 		server_openFile, 
 		server_closeFile, 
 		server_readFile, 
@@ -226,42 +226,42 @@ int server_closeConnection(int client_socket)
 	return 0;
 }
 */
-int server_openFile(int request, int client_socket, server_fs* memory)
+int server_openFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_openFile"));
 	return 0;
 }
-int server_readFile(int request, int client_socket, server_fs* memory)
+int server_readFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_readFile"));
 	return 0;
 }
-int server_writeFile(int request, int client_socket, server_fs* memory)
+int server_writeFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_writeFile"));
 	return 0;
 }
-int server_appendToFile(int request, int client_socket, server_fs* memory)
+int server_appendToFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_appendToFile"));
 	return 0;
 }
-int server_lockFile(int request, int client_socket, server_fs* memory)
+int server_lockFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_lockFile"));
 	return 0;
 }
-int server_unlockFile(int request, int client_socket, server_fs* memory)
+int server_unlockFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_unlockFile"));
 	return 0;
 }
-int server_closeFile(int request, int client_socket, server_fs* memory)
+int server_closeFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_closeFile"));
 	return 0;
 }
-int server_removeFile(int request, int client_socket, server_fs* memory)
+int server_removeFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_removeFile"));
 	return 0;

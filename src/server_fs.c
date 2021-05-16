@@ -1,37 +1,18 @@
 #include <server_fs.h>
 
-server_fs init_server_fs(int maxCapacity, int maxFileCount)
+int init_server_fs(SFS_FS *fs, int avaiableMemory, int maxFileCount)
 {
-    server_fs fs = {
-        maxFileCount, maxCapacity, 
-        NULL, 0, NULL, NULL
-    };
+    // each file needs 1/3 page for name, pos and size
+    // and at least 1 page for storage 
+    int minKB = (maxFileCount / 3) + 1 + maxFileCount;
+    if (minKB > avaiableMemory * 1024) return 1;
 
+    fs->max_filecount = maxFileCount;
+    fs->pagecount = avaiableMemory * 1024;
     CHECK_BADVAL_PERROR_EXIT(
-        fs.root = calloc(1, sizeof(server_fs_node)), 
-        NULL, "init_server_fs"
+        fs->memory = calloc(fs->pagecount, sizeof(SFS_PAGE)), 
+        NULL, "init_server_fs : calloc"
     );
-    fs.root->inode |= SFS_DIR;
-
-
-    return fs;
-}
-
-int sfs_create(server_fs *fs, char *path, int size, void *buff)
-{
-    if (fs == NULL || path == NULL || buff == NULL || size <= 0)
-        return -1;
-    
-    const int pathlen = strlen(path);
-    char pathtok[pathlen + 1];    
-    char *saveptr, *token;
-    
-    strcpy(pathtok, path); // don't corrupt arg path
-
-    while (token = strtok_r(pathtok, "/", &saveptr), token != NULL)
-    {
-        
-    }
 
     return 0;
 }

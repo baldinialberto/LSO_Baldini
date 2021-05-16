@@ -49,7 +49,7 @@ typedef struct _server_stats
 
 typedef struct _server_infos
 {
-	server_fs *memory;
+	SFS_FS *memory;
 	int server_socket_fd;		// file descriptor of sever_socket
 	unsigned short nworkers;	// number of workers of the server
 	pthread_t *workers;			// array of workers
