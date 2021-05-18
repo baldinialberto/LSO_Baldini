@@ -27,10 +27,11 @@
 #define SFS_FNODE_USR3_BIT      0b00000010
 #define SFS_FNODE_USR4_BIT      0b00000001
 
-#define SFS_FNODE_
+#define SFS_PAGESPACE_CONT      0x03FB
+#define SFS_PAGESPACE           0x03FF
 
 #define SFS_PAGE    struct _page   
-#define SFS_FILE    struct _file
+//#define SFS_FILE    struct _file
 #define SFS_FS      struct _fs
 
 #define SFS_WRITE           0x01
@@ -43,6 +44,7 @@
 #define SFS_FNF             0x01
 #define SFS_MEM_FULL        0x02
 
+/*
 struct _file
 {
     int namelen;
@@ -50,6 +52,7 @@ struct _file
     char *filename;
     char fnode;
 };
+*/
 struct _page
 {
     char pnode;
@@ -62,6 +65,12 @@ struct _fs
     int pagecount;
     int max_filecount;
 };
+typedef struct _sfs_fd
+{
+    int file;
+    int fptr;
+    int size;
+} sfs_fd;
 
 /**
  * @brief initiate the server filesystem according to thespecifications
@@ -71,6 +80,16 @@ struct _fs
  */
 int init_server_fs(SFS_FS *fs, int avaiableMemory, int maxFileCount);
 
+sfs_fd* sfs_create(SFS_FS *fs, char *path, void *buff, size_t size);
 
+sfs_fd* sfs_open(SFS_FS *fs, char *path);
+
+int sfs_close(SFS_FS *fs, sfs_fd *file);
+
+int sfs_read(SFS_FS *fs, sfs_fd *file, void *buff, size_t size);
+
+int sfs_write(SFS_FS *fs, sfs_fd *file, void *buff, size_t size);
+
+int sfs_evictpages(SFS_FS *fs, int npages);
 
 #endif
