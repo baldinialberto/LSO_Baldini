@@ -55,7 +55,7 @@ struct _file
 */
 struct _page
 {
-    char pnode;
+    unsigned char pnode;
     char *data;
 };
 struct _fs
@@ -91,5 +91,7 @@ int sfs_read(SFS_FS *fs, sfs_fd *file, void *buff, size_t size);
 int sfs_write(SFS_FS *fs, sfs_fd *file, void *buff, size_t size);
 
 int sfs_evictpages(SFS_FS *fs, int npages);
+
+int sfs_pages_required_byfile(char *path, size_t size);
 
 #endif
