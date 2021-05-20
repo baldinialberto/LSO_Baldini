@@ -11,8 +11,10 @@ int main(int argc, char** argv)
 	settings = init_server_settings();
 	stats = init_server_stats();
 	infos = init_server_infos(&settings);
-	init_server_fs(&memory, settings.avaiableMemory, settings.maxFileCount);
+	sfs_init(&memory, settings.avaiableMemory, settings.maxFileCount);
 	infos.memory = &memory;
+
+	DEBUG(sfs_find(&memory, "/home/alberto/LSO_Baldini/src/lol.txt"));
 
 	DEBUG(print_server_settings(&settings));
 	
