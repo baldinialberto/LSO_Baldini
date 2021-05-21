@@ -65,6 +65,11 @@ if (errno)          \
     errno = 0;      \
     exit(XCODE);     \
 }
+#define CHECK_COND_EXIT(COND, MSG) \
+if (COND) {         \
+    perror(MSG);    \
+    exit(-1);     \
+}
 #define CHECK_COND_RETURN(COND, RET, MSG) \
 if (COND) {         \
     perror(MSG);    \
