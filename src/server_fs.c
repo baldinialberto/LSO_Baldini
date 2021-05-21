@@ -75,23 +75,70 @@ retptr sfs_open(sfs_fs *server_fs, const char *name, const char mode)
     return (retptr){0, fd};
 }
 
-int sfs_close(sfs_fs *server_fs, const char *name)
+int sfs_close(sfs_fs *server_fs, sfs_fd *file)
 {
+    pthread_mutex_lock(&(file->file->lock));
+    file->file->finfo--;
+    pthread_mutex_unlock(&(file->file->lock));
+    free(file);
+
     return 0;
 }
 
 int sfs_write(sfs_fs *server_fs, sfs_fd *file, const void *data, const size_t size)
 {
+    size_t sizeneeded = file->i + size - file->file->datalen;
+    if (sizeneeded > server_fs->maxSize - server_fs->currentSize)
+    {
+        CHECK_BADVAL_RETURN(
+            sfs_evict(server_fs, size), 
+            SFS_MEMORYFULL, SFS_MEMORYFULL
+        );
+    }
+    
+    if (file->i + size > file->file->datalen)
+    {
+        CHECK_BADVAL_PERROR_EXIT(
+            file->file->data = realloc(file->file->data, file->i + size), 
+            NULL, "sfs_write : realloc"
+        );
+    }
+
+    memcpy(file->file->data + file->i, data, size);
+
     return 0;
 }
 
 int sfs_read(sfs_fd *file, void *data, const size_t size)
 {
-    return 0;
+    size_t readsize = size;
+    if (file->file->datalen - file->i < size)
+        readsize = file->file->datalen - file->i;
+    
+    memcpy(data, file->file->data + file->i, readsize);
+
+    return readsize;
 }
 
 int sfs_append(sfs_fs *server_fs, sfs_fd *file, const void *data, const size_t size)
 {
+    file->i = file->file->datalen;
+    return sfs_write(server_fs, file, data, size);
+}
+
+int sfs_lock(sfs_fd *file)
+{
+    pthread_mutex_lock(&(file->file->lock));
+    file->file->finfo |= SFS_FD_LOCK;
+    pthread_mutex_unlock(&(file->file->lock));
+    return 0;
+}
+
+int sfs_unlock(sfs_fd *file)
+{
+    pthread_mutex_lock(&(file->file->lock));
+    file->file->finfo &= ~SFS_FD_LOCK;
+    pthread_mutex_unlock(&(file->file->lock));
     return 0;
 }
 
@@ -145,7 +192,23 @@ int sfs_evict(sfs_fs *server_fs, size_t size)
     if (sizetofree <= 0)
         return SFS_WRONGCALL;
 
-    // continue
+    list_node *list = NULL;
+
+     for (size_t i = 0; i < server_fs->maxFiles>>2; i++)
+    {
+        for (sfs_file *curr = server_fs->filetable[i]; 
+            curr != NULL; curr = curr->next)
+        {
+            if (!(curr->finfo & SFS_FD_LOCK 
+                || curr->finfo & SFS_FD_CLIENTS))
+            {
+                list_insert(&list, (void *)curr, sfs_evictcompare);
+            } else 
+            {
+                curr->finfo &= ~SFS_FD_REQSTS;
+            }
+        }
+    }
 
     return 0;
 }
@@ -215,6 +278,7 @@ int sfs_insert(sfs_fs *server_fs, sfs_file *file)
 
 int sfs_filetable_hash(const char *name, int nslots)
 {
+    if (name == NULL || !nslots) return SFS_WRONGCALL;
     int res = 0;
     char *temp = name;
 
@@ -224,4 +288,43 @@ int sfs_filetable_hash(const char *name, int nslots)
     }
 
     return res % nslots;
+}
+
+int sfs_foreach(sfs_fs *server_fs, void *(proc)(void *))
+{
+    if (server_fs == NULL) return SFS_WRONGCALL;
+    for (size_t i = 0; i < server_fs->maxFiles>>2; i++)
+    {
+        for (sfs_file *curr = server_fs->filetable[i]; 
+            curr != NULL; curr = curr->next)
+        {
+            proc((void*) curr);
+        }
+    }
+    return 0;
+}
+
+int sfs_evictcompare(void *a, void *b)
+{
+    sfs_file *fileA = (sfs_file *)a, *fileB = (sfs_file *)b;
+    if (fileA->finfo & SFS_FD_REQSTS == fileB->finfo & SFS_FD_REQSTS)
+    {
+        if (fileA->datalen == fileB->datalen) return 0;
+        return fileA->datalen > fileB->datalen ? 1 : -1;
+    }
+    return (fileA->finfo & SFS_FD_REQSTS > fileB->finfo & SFS_FD_REQSTS) ? 1 : -1;
+}
+
+int sfs_printfiletable(sfs_fs *server_fs)
+{
+    sfs_foreach(server_fs, sfs_printfile);
+}
+
+void sfs_printfile(void *f)
+{
+    sfs_file *file = (sfs_file *)f;
+    printf("%s, size = %dKB, finfo = %X",
+        file->name, file->datalen/1024, (int)file->finfo
+    );
+    fflush(stdout);
 }

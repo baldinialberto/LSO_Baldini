@@ -52,13 +52,17 @@ retptr sfs_find(sfs_fs *server_fs, const char *name);
 
 retptr sfs_open(sfs_fs *server_fs, const char *name, const char mode);
 
-int sfs_close(sfs_fs *server_fs, const char *name);
+int sfs_close(sfs_fs *server_fs, sfs_fd *file);
 
 int sfs_write(sfs_fs *server_fs, sfs_fd *file, const void *data, const size_t size);
 
 int sfs_read(sfs_fd *file, void *data, const size_t size);
 
 int sfs_append(sfs_fs *server_fs, sfs_fd *file, const void *data, const size_t size);
+
+int sfs_lock(sfs_fd *file);
+
+int sfs_unlock(sfs_fd *file);
 
 retptr sfs_create(sfs_fs *server_fs, const char *name, const void *data, const size_t size);
 
@@ -73,5 +77,13 @@ sfs_file *sfs_alloc_file(const char name, const void *data, const size_t size);
 int sfs_insert(sfs_fs *server_fs, sfs_file *file);
 
 int sfs_filetable_hash(const char *name, int nslots);
+
+int sfs_foreach(sfs_fs *server_fs, void *(proc)(void *));
+
+int sfs_evictcompare(void *a, void *b);
+
+int sfs_printfiletable(sfs_fs *server_fs);
+
+void sfs_printfile(void *f);
 
 #endif
