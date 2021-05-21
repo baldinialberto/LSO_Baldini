@@ -194,7 +194,7 @@ int sfs_evict(sfs_fs *server_fs, size_t size)
 
     list_node *list = NULL;
 
-     for (size_t i = 0; i < server_fs->maxFiles>>2; i++)
+    for (size_t i = 0; i < server_fs->maxFiles>>2; i++)
     {
         for (sfs_file *curr = server_fs->filetable[i]; 
             curr != NULL; curr = curr->next)
@@ -209,6 +209,8 @@ int sfs_evict(sfs_fs *server_fs, size_t size)
             }
         }
     }
+
+    //continue
 
     return 0;
 }
