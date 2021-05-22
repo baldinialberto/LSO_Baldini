@@ -30,11 +30,11 @@ int list_insert(ln_ptr *list, list_node *node, int *(comp)(void*, void *))
     return 0;
 }
 
-int list_foreach(ln_ptr list, void *(proc)(void *))
+int list_foreach(ln_ptr list, void (*proc)(void *))
 {
     while (list != NULL)
     {
-        fun((void *)list);
+        proc((void *)list);
         list = list->next;
     }
     return 0;

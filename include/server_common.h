@@ -7,6 +7,7 @@
 #define O_CREATE_FLAG   0x00000010
 #define O_LOCK_FLAG     0x00000020
 #define O_DIR_FLAG      0x00000040
+#define O_RNDM_FLAG     0x00000060
 #define O_USR_FLAG      0x00000080
 
 // error / return flags

@@ -105,12 +105,18 @@ void *server_worker(void *worker_arg)
 		read((wa->infos->workers_clients)[wa->worker_id], 
 			&request, sizeof(int)
 		);
-		serve(request, 
-			(wa->infos->workers_clients)[wa->worker_id], 
-			wa->infos->memory
-		);
+		if (request & OP_MASK <= 8)
+			serve(request, 
+				(wa->infos->workers_clients)[wa->worker_id], 
+				wa->infos->memory
+			);
+		if (request & CLSCONN_OP)
+		{
+			// keep here
+		}
 
 		(wa->infos->workers_clients)[wa->worker_id] = NULL;
+		pthread_mutex_unlock(wa->infos->worker_locks + wa->worker_id);
 	}
 
 	free(worker_arg);
@@ -221,13 +227,13 @@ int serve(int request, int client_socket, SFS_FS* memory)
 
 	return server_ops[request & OP_MASK](request, client_socket, memory);
 }
-/*
+
 int server_closeConnection(int client_socket)
 {
 	DEBUG(puts("server_closeConnection"));
 	return 0;
 }
-*/
+
 int server_openFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_openFile"));

@@ -9,10 +9,11 @@ int main(int argc, char** argv)
 		printf("Unable to connect to server");
 		return 1;
 	}
+	printf("Connected");
 
-	openFile("Pippo.txt", O_CREATE_FLAG | O_LOCK_FLAG);
-	unlockFile("Pippo.txt");
-	closeFile("Pippo.txt");
+	//openFile("Pippo.txt", O_CREATE_FLAG | O_LOCK_FLAG);
+	//unlockFile("Pippo.txt");
+	//closeFile("Pippo.txt");
 
 	closeConnection("MyServerSocket.socket");
 

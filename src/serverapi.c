@@ -16,13 +16,14 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
     const struct timespec inter_requests_time = {0, (long)msec * 1000};
     assert(inter_requests_time.tv_nsec == (long)msec * 1000);
     struct timespec tmp = {0};
-    struct timespec remaining_time = abstime;
+    struct timespec remaining_time = {abstime.tv_nsec, abstime.tv_sec};
     
     while (connect(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
     remaining_time.tv_nsec > 0)
 	{
 		if (errno == ENOENT)
         {
+            printf("Not connected");
 			nanosleep(&inter_requests_time, &tmp);
             remaining_time.tv_nsec -= (inter_requests_time.tv_nsec - tmp.tv_sec);
             memset(&tmp, 0, sizeof(struct timespec));
@@ -31,6 +32,9 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 			exit(EXIT_FAILURE);
         errno = 0;
 	}
+
+    if (remaining_time.tv_nsec > 0)
+        return 0;
 
     return NOTCONN_FLAG | FNF_FLAG;
 }
@@ -117,6 +121,12 @@ int readFile(const char* pathname, void** buf, size_t* size)
 
     return res;
 }
+
+int readNFiles(int N, const char *dirname)
+{
+    return 0;
+}
+
 int writeFile(const char* pathname, const char* dirname)
 {
     if (!socket_fd) return NOTCONN_FLAG;
