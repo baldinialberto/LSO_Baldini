@@ -55,8 +55,8 @@ retptr sfs_open(sfs_fs *server_fs, const char *name, const char mode)
     if (file->finfo & SFS_FD_CLIENTS && mode == 'w')
         // file opened in readmode
         return (retptr){1, NULL};
-    if ((file->finfo & SFS_FD_CLIENTS)==0b1111  
-        && mode == 'r' || mode == 'R')
+    if (((file->finfo & SFS_FD_CLIENTS)==15 && mode == 'r') 
+        || mode == 'R')
         // file opened in readmode by too many clients
         return (retptr){1, NULL};
 
@@ -65,7 +65,7 @@ retptr sfs_open(sfs_fs *server_fs, const char *name, const char mode)
         file->finfo |= SFS_FD_LOCK; // lockfile
     }
     file->finfo++; // add client
-    file->finfo += 0b00010000; // add usage
+    file->finfo += 16;//0b00010000
     
     pthread_mutex_unlock(&(file->lock));
     sfs_fd *fd = (sfs_fd *)malloc(sizeof(sfs_fd));
@@ -253,7 +253,7 @@ int sfs_free_file(sfs_file **file)
     return 0;
 }
 
-sfs_file *sfs_alloc_file(const char name, const void *data, const size_t size)
+sfs_file *sfs_alloc_file(const char *name, const void *data, const size_t size)
 {
     sfs_file *newFile;
     CHECK_BADVAL_PERROR_EXIT(
@@ -307,17 +307,17 @@ int sfs_filetable_hash(const char *name, int nslots)
 {
     if (name == NULL || !nslots) return SFS_WRONGCALL;
     int res = 0;
-    char *temp = name;
+    int i = 0;
 
-    while(*temp)
+    while(name[i])
     {
-        res += (int) *(temp++);
+        res += (int) name[i++];
     }
 
     return res % nslots;
 }
 
-int sfs_foreach(sfs_fs *server_fs, void *(proc)(void *))
+int sfs_foreach(sfs_fs *server_fs, void (*proc)(void *))
 {
     if (server_fs == NULL) return SFS_WRONGCALL;
     for (size_t i = 0; i < server_fs->maxFiles>>2; i++)
@@ -334,23 +334,24 @@ int sfs_foreach(sfs_fs *server_fs, void *(proc)(void *))
 int sfs_evictcompare(void *a, void *b)
 {
     sfs_file *fileA = (sfs_file *)a, *fileB = (sfs_file *)b;
-    if (fileA->finfo & SFS_FD_REQSTS == fileB->finfo & SFS_FD_REQSTS)
+    if ((fileA->finfo & SFS_FD_REQSTS) == (fileB->finfo & SFS_FD_REQSTS))
     {
         if (fileA->datalen == fileB->datalen) return 0;
         return fileA->datalen > fileB->datalen ? 1 : -1;
     }
-    return (fileA->finfo & SFS_FD_REQSTS > fileB->finfo & SFS_FD_REQSTS) ? 1 : -1;
+    return ((fileA->finfo & SFS_FD_REQSTS) > (fileB->finfo & SFS_FD_REQSTS)) ? 1 : -1;
 }
 
 int sfs_printfiletable(sfs_fs *server_fs)
 {
     sfs_foreach(server_fs, sfs_printfile);
+    return 0;
 }
 
 void sfs_printfile(void *f)
 {
     sfs_file *file = (sfs_file *)f;
-    printf("%s, size = %dKB, finfo = %X",
+    printf("%s, size = %ldKB, finfo = %X",
         file->name, file->datalen/1024, (int)file->finfo
     );
     fflush(stdout);

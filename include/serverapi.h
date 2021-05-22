@@ -3,6 +3,8 @@
 
 #pragma once
 
+extern int socket_fd;
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <sys/socket.h>

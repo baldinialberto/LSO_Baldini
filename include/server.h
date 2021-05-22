@@ -6,7 +6,7 @@
 #include <sys/signal.h>
 
 #include "server_utils.h"
-#include "client_queue.h"
+#include "socket_queue.h"
 
 #define S_NOREAD        0x4
 #define S_NOWRITE       0x5
@@ -26,7 +26,7 @@ void *server_worker(void *worker_args);
 int assign_client(server_infos *infos, int client);
 int serve(int request, int client_socket, SFS_FS* memory);
 
-//int server_closeConnection(int request);
+int server_closeConnection(int request, server_infos* infos);
 int server_openFile(int request, int client_socket, SFS_FS* memory);
 int server_readFile(int request, int client_socket, SFS_FS* memory);
 int server_writeFile(int request, int client_socket, SFS_FS* memory);

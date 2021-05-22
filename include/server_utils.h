@@ -18,6 +18,7 @@
 #include "string_utils.h"
 #include "lock_utils.h"
 #include "cond_utils.h"
+#include "socket_queue.h"
 
 #define UNIX_PATH_MAX 108
 
@@ -56,6 +57,7 @@ typedef struct _server_infos
 	int *workers_clients;		// number of clients served by each worker
 	int server_quit;
 	int server_hu;
+	socket_queue *sq;
 	cond_t *worker_conds;
 	mutex_t *worker_locks;
 } server_infos;

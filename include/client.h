@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "serverapi.h"
 #include "common.h"
+#include "serverapi.h"
 
 #define STRING_STDLEN 256
 

@@ -1,5 +1,5 @@
-#ifndef _CLIENT_QUEUE_H
-#define _CLIENT_QUEUE_H
+#ifndef _SOCKET_QUEUE_H
+#define _SOCKET_QUEUE_H
 
 #pragma once
 
@@ -24,14 +24,14 @@
 #define SQ_SERVING_FLAG     0x0008
 
 
-typedef struct _client_queue_node
+typedef struct _socket_queue_node
 {
-    int client_socket;
+    int socket_fd;
     int status;
-    mutex_t mutex;
-    struct _client_queue_node *next;
+    //mutex_t mutex;
+    struct _socket_queue_node *next;
 } socket_queue_node;
-typedef struct _client_queue
+typedef struct _socket_queue
 {
     socket_queue_node *head;
     socket_queue_node *tail;

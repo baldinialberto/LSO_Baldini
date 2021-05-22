@@ -1,9 +1,10 @@
 #include <serverapi.h>
 
-static int socket_fd;
+int socket_fd;
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
+    puts("OpenConnection");
     struct sockaddr_un sa;
 	strncpy(sa.sun_path, sockname, sizeof(sa.sun_path)-1);
 	sa.sun_family = AF_UNIX;
@@ -13,23 +14,27 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
         -1, "openConnection : socket", NOTCONN_FLAG
     )
 
-    const struct timespec inter_requests_time = {0, (long)msec * 1000};
-    assert(inter_requests_time.tv_nsec == (long)msec * 1000);
-    struct timespec tmp = {0};
-    struct timespec remaining_time = {abstime.tv_nsec, abstime.tv_sec};
-    
+    struct timespec inter_requests_time, remaining_time;
+    inter_requests_time.tv_nsec = msec * 1000;
+    if (inter_requests_time.tv_nsec > 999999999 || inter_requests_time.tv_nsec <= 0)
+        inter_requests_time.tv_nsec = 1000000;
+    remaining_time.tv_nsec = abstime.tv_nsec;
+
     while (connect(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
     remaining_time.tv_nsec > 0)
 	{
-		if (errno == ENOENT)
+		if (errno == ENOENT || errno == 111) 
         {
             printf("Not connected");
-			nanosleep(&inter_requests_time, &tmp);
-            remaining_time.tv_nsec -= (inter_requests_time.tv_nsec - tmp.tv_sec);
-            memset(&tmp, 0, sizeof(struct timespec));
+			nanosleep(&inter_requests_time, NULL);
+            remaining_time.tv_nsec -= inter_requests_time.tv_nsec;
         }
 		else
+        {
+            printf("errno = %d\n", errno);
+            perror("openConnection : connect");
 			exit(EXIT_FAILURE);
+        }
         errno = 0;
 	}
 
@@ -40,15 +45,20 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 }
 int closeConnection(const char* sockname)
 {
+    puts("CloseConnection");
     if (!socket_fd) return NOTCONN_FLAG | ALREADY_FLAG;
-
+/*
     server_command_t command = CLSCONN_OP;
     CHECK_BADVAL_RETURN(
         write(socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
-
-    return close(socket_fd);
+    CHECK_BADVAL_RETURN(
+        read(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        -1, -1
+    )
+*/
+    return close(socket_fd);// || command;
 }
 int openFile(const char* pathname, int flags)
 {

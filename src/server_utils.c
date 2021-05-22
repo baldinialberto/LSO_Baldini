@@ -47,6 +47,7 @@ int free_server_infos(server_infos *infos)
 {
 	if (infos == NULL)
 		return -1;
+
 	if (infos->workers != NULL) free(infos->workers);
 	if (infos->workers_clients != NULL) free(infos->workers_clients);
 	for (int i = 0; i < infos->nworkers; i++)
@@ -56,6 +57,7 @@ int free_server_infos(server_infos *infos)
 	}
 	if (infos->worker_conds != NULL) free(infos->worker_conds);
 	if (infos->worker_locks != NULL) free(infos->worker_locks);
+	if (infos->memory->filetable != NULL) free(infos->memory->filetable);
 
 	return 0;
 }
@@ -271,5 +273,5 @@ pthread_t thread_spawn(void *(*fun)(void*), void *arg)
 
 int freeworker(server_infos *infos)
 {
-	
+	return 0;
 }

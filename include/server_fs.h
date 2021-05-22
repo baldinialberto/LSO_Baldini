@@ -3,9 +3,9 @@
 
 #define SFS_FS sfs_fs
 
-#define SFS_FD_LOCK     0b10000000
-#define SFS_FD_REQSTS   0b01110000
-#define SFS_FD_CLIENTS  0b00001111
+#define SFS_FD_LOCK     128 //0b10000000
+#define SFS_FD_REQSTS   112 //0b01110000
+#define SFS_FD_CLIENTS  15  //0b00001111
 
 #define SFS_FILENOTFOUND    1
 #define SFS_FILEINSTORAGE   2
@@ -28,7 +28,7 @@ typedef struct _sfs_file
 {
     struct _sfs_file *next;
     char *name;
-    void *data;
+    char *data;
     size_t datalen;
     unsigned char finfo;
     int clientlock;
@@ -77,13 +77,13 @@ int sfs_evict(sfs_fs *server_fs, size_t size);
 
 int sfs_free_file(sfs_file **file);
 
-sfs_file *sfs_alloc_file(const char name, const void *data, const size_t size);
+sfs_file *sfs_alloc_file(const char *name, const void *data, const size_t size);
 
 int sfs_insert(sfs_fs *server_fs, sfs_file *file);
 
 int sfs_filetable_hash(const char *name, int nslots);
 
-int sfs_foreach(sfs_fs *server_fs, void *(proc)(void *));
+int sfs_foreach(sfs_fs *server_fs, void (*proc)(void *));
 
 int sfs_evictcompare(void *a, void *b);
 

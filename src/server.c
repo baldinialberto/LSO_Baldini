@@ -5,11 +5,11 @@ int main(int argc, char** argv)
 	assert(sizeof(server_command_t) == 4);
 
 	static server_settings settings;
-	static server_stats stats;
+	//static server_stats stats;
 	static server_infos infos;
 	static SFS_FS memory;
 	settings = init_server_settings();
-	stats = init_server_stats();
+	//stats = init_server_stats();
 	infos = init_server_infos(&settings);
 	sfs_init(&memory, settings.avaiableMemory, settings.maxFileCount);
 	infos.memory = &memory;
@@ -34,45 +34,57 @@ int main(int argc, char** argv)
 void server_dispatcher(server_infos *infos)
 {
 	DEBUG(puts("Dispatcher"));
-	socket_queue* sq = calloc(1, sizeof(socket_queue));
+	infos->sq = calloc(1, sizeof(socket_queue));
 	
 	spawn_workers(infos);
 	
-	sq_push(sq, infos->server_socket_fd, SQ_SSOCKET_FLAG);
-	sq_update_arr(sq);
+	sq_push(infos->sq, infos->server_socket_fd, SQ_SSOCKET_FLAG);
+	sq_update_arr(infos->sq);
 
 	int poll_ready = 0;
 
-	while (pthread_mutex_lock(&(sq->mutex)), 
-		!(infos->server_hu && !sq_has_clients(sq)) && !infos->server_quit)
+	while (pthread_mutex_lock(&(infos->sq->mutex)), 
+		!(infos->server_hu && !sq_has_clients(infos->sq)) && !infos->server_quit)
 	{
-		if (infos->server_hu) sq_remove(sq, infos->server_socket_fd);
+		if (infos->server_hu) sq_remove(infos->sq, infos->server_socket_fd);
 		DEBUG(puts("ServerWaiting"));
-		sq_update_arr(sq);
-		poll_ready = poll(sq->pollarr, sq->nsockets, 1000);
+		sq_update_arr(infos->sq);
+		poll_ready = poll(infos->sq->pollarr, infos->sq->nsockets, 1000);
 
-		if (poll_ready)
+		for (int i = 0; poll_ready && i < infos->sq->nsockets; i++)
 		{
-			if ((poll_ready == infos->server_socket_fd))
+			if (infos->sq->pollarr[i].revents & POLLIN)
 			{
-				sq_push(sq, 
+				if (infos->sq->pollarr[i].fd == infos->server_socket_fd)
+				{
+					sq_push(infos->sq, 
 					accept(infos->server_socket_fd, NULL, 0), 
-					SQ_SSOCKET_FLAG
-				);
-			} else 
-			{
-				assign_client(infos, poll_ready);
+					SQ_CSOCKET_FLAG
+					);
+				} 
+				else 
+				{
+					assign_client(infos, infos->sq->pollarr[i].fd);
+				}
+
 			}
+			if (infos->sq->pollarr[i].revents & POLLHUP)
+			{
+				close(infos->sq->pollarr[i].fd);
+				sq_remove(infos->sq, infos->sq->pollarr[i].fd);
+			}
+			infos->sq->pollarr[i].revents &= 0;
 		}
-		pthread_mutex_unlock(&(sq->mutex));
+
+		pthread_mutex_unlock(&(infos->sq->mutex));
 	}
 
-	pthread_mutex_unlock(&(sq->mutex)); // unlock mutex at server_hu
+	pthread_mutex_unlock(&(infos->sq->mutex)); // unlock mutex at server_hu
 	if (!infos->server_quit) infos->server_quit = 1;
 
 	DEBUG(puts("Cleanup"));
 	join_workers(infos);
-	sq_free(sq);
+	sq_free(infos->sq);
 }
 
 void *server_worker(void *worker_arg)
@@ -81,7 +93,7 @@ void *server_worker(void *worker_arg)
 	ignore_signals();
 
 	struct _worker_arg *wa = (struct _worker_arg*) worker_arg;
-	int request;
+	int request = -1;
 	struct timespec condtime;
 	condtime.tv_sec = 0;
 	condtime.tv_nsec = 0xFFFF;
@@ -89,7 +101,7 @@ void *server_worker(void *worker_arg)
 	while (!wa->infos->server_quit)
 	{
 		pthread_mutex_lock(wa->infos->worker_locks + wa->worker_id);
-		while ((wa->infos->workers_clients)[wa->worker_id] == NULL)
+		while ((wa->infos->workers_clients)[wa->worker_id] == 0)
 		{
 			if (wa->infos->server_quit) 
 			{
@@ -102,20 +114,18 @@ void *server_worker(void *worker_arg)
 				&condtime
 			);
 		}
+		request = 0;
 		read((wa->infos->workers_clients)[wa->worker_id], 
 			&request, sizeof(int)
 		);
-		if (request & OP_MASK <= 8)
+		printf("received request %X from %d\n", request, (wa->infos->workers_clients)[wa->worker_id]);
+		if (request & OP_MASK)
 			serve(request, 
 				(wa->infos->workers_clients)[wa->worker_id], 
 				wa->infos->memory
 			);
-		if (request & CLSCONN_OP)
-		{
-			// keep here
-		}
 
-		(wa->infos->workers_clients)[wa->worker_id] = NULL;
+		(wa->infos->workers_clients)[wa->worker_id] = 0;
 		pthread_mutex_unlock(wa->infos->worker_locks + wa->worker_id);
 	}
 
@@ -211,7 +221,7 @@ int ignore_signals()
 
 int serve(int request, int client_socket, SFS_FS* memory)
 {
-	int (*server_ops[9])(int, int, SFS_FS*) = {
+	int (*server_ops[8])(int, int, SFS_FS*) = {
 		server_openFile, 
 		server_closeFile, 
 		server_readFile, 
@@ -219,18 +229,20 @@ int serve(int request, int client_socket, SFS_FS* memory)
 		server_appendToFile,
 		server_removeFile,
 		server_lockFile,
-		server_unlockFile/*,
-		server_closeConnection*/
+		server_unlockFile
 	};
 
-	if (request & OP_MASK > 8/*9*/) return -1;
+	if ((request & OP_MASK) > 8) return -1;
 
-	return server_ops[request & OP_MASK](request, client_socket, memory);
+	return server_ops[(request & OP_MASK) - 1](request, client_socket, memory);
 }
 
-int server_closeConnection(int client_socket)
+int server_closeConnection(int client_socket, server_infos *infos)
 {
 	DEBUG(puts("server_closeConnection"));
+	int response = 0;
+	write(client_socket, &response, sizeof(int));
+	sq_remove(infos->sq, client_socket);
 	return 0;
 }
 

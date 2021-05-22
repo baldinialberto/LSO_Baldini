@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:= -Wall -pedantic -I ./include -D DEBUG
+CFLAGS:= -Wall -pedantic -I ./include 
 LIBS:= -lpthread
 
 .PHONY: all clean no_obj
@@ -7,7 +7,7 @@ LIBS:= -lpthread
 TARGETS:= client.exe server.exe
 LIB:= libsol.so
 LIB_OBJS:= server_utils.o string_utils.o commonio.o \
-serverapi.o client_queue.o server_fs.o common.o client_queue.o
+serverapi.o socket_queue.o server_fs.o common.o
 
 no_obj : all
 	-rm *.o
@@ -22,7 +22,7 @@ client.exe : client.o $(LIB_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 
-%.o : src/%.c
+%.o : src/%.c include/%.h
 	$(CC) $(CFLAGS) $< -c 
 
 clean : 

@@ -18,15 +18,15 @@
 #define LOCKED_FLAG     0x0000000A
 
 // command op codes
-#define OPEN_OP     0x00000000
-#define CLOSE_OP    0x00000001
-#define READ_OP     0x00000002
-#define WRITE_OP    0x00000003
-#define APPEND_OP   0x00000004
-#define REMOVE_OP   0x00000005
-#define LOCK_OP     0x00000006
-#define UNLOCK_OP   0x00000007
-#define CLSCONN_OP  0x00000008
+#define OPEN_OP     0x00000001
+#define CLOSE_OP    0x00000002
+#define READ_OP     0x00000003
+#define WRITE_OP    0x00000004
+#define APPEND_OP   0x00000005
+#define REMOVE_OP   0x00000006
+#define LOCK_OP     0x00000007
+#define UNLOCK_OP   0x00000008
+#define CLSCONN_OP  0x00000009
 
 #define MESSG_MASK  0xFFFFFF00
 #define FLAG_MASK   0x000000F0

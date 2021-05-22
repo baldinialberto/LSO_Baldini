@@ -10,7 +10,7 @@ list_node *list_allocnode(void *data)
     newNode->data = data;
     return newNode;
 }
-int list_insert(ln_ptr *list, list_node *node, int *(comp)(void*, void *))
+int list_insert(ln_ptr *list, list_node *node, int (*comp)(void*, void *))
 {
     list_node *curr = *list, *prev = NULL;
     while (curr != NULL && comp((void *)node, (void*)curr) > 0)
