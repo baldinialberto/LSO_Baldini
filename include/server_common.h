@@ -10,10 +10,11 @@
 #define O_USR_FLAG      0x00000080
 
 // error / return flags
-#define WRBACK_FLAG     0x00000001
-#define ALREADY_FLAG    0x00000002
-#define NOTCONN_FLAG    0x00000004
+#define WRBACK_FLAG     0x00000002
+#define ALREADY_FLAG    0x00000004
+#define NOTCONN_FLAG    0x00000006
 #define FNF_FLAG        0x00000008
+#define LOCKED_FLAG     0x0000000A
 
 // command op codes
 #define OPEN_OP     0x00000000

@@ -231,11 +231,124 @@ int server_closeConnection(int client_socket)
 int server_openFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_openFile"));
+	unsigned int namelen = request >> MESSG_SHIFT;
+	char *filename;
+	int response = 0;
+
+	CHECK_BADVAL_PERROR_EXIT(
+		filename = calloc(namelen + 1, sizeof(char)), 
+		NULL, "server_openFile : calloc" 
+	);
+	CHECK_BADVAL_CALL_RETURN(
+		read(client_socket, filename, namelen * sizeof(char)), 
+		-1, free(filename), S_NOREAD
+	);
+
+	retptr file = sfs_find(memory, filename);
+	if (request & O_CREATE_FLAG && file.errorcodes == 0)
+	{
+		// create an already existent file
+		response = ALREADY_FLAG;
+		CHECK_BADVAL_CALL_RETURN(
+			write(client_socket, &response, sizeof(int)), 
+			-1, free(filename), S_NOWRITE
+		);
+		free(filename);
+		return 0;
+	}
+	if (!(request & O_CREATE_FLAG) && file.errorcodes == SFS_FILENOTFOUND)
+	{
+		// not create and not existent file
+		response = FNF_FLAG;
+		CHECK_BADVAL_CALL_RETURN(
+			write(client_socket, &response, sizeof(int)), 
+			-1, free(filename), S_NOWRITE
+		);
+		free(filename);
+		return 0;
+	}
+	if (request & O_CREATE_FLAG)
+	{
+		file = sfs_create(memory, filename, NULL, 0);
+		if (!file.errorcodes)
+			sfs_open(memory, filename, 'w');
+		if (file.errorcodes & SFS_FILELOCKED)
+		{
+			response = O_LOCK_FLAG;
+			if (write(client_socket, &response, sizeof(int)) != 0)
+			{
+				sfs_unlock((sfs_fd *)file.ptr, client_socket);
+				sfs_close(memory, (sfs_fd *)file.ptr);
+				sfs_remove(memory, filename);
+				return S_NOWRITE;
+			}
+			return 0;
+		}
+	}
+	else 
+	{
+		file = sfs_open(memory, filename, 'w');
+		if (file.errorcodes & SFS_FILELOCKED)
+		{
+			response = O_LOCK_FLAG;
+			if (write(client_socket, &response, sizeof(int)) != 0)
+			{
+				free(filename);
+				return S_NOWRITE;
+			}
+			return 0;
+		}
+	}
+	if (request & O_LOCK_FLAG)
+	{
+		sfs_lock((sfs_fd *)file.ptr, client_socket);
+	}
+
 	return 0;
 }
 int server_readFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_readFile"));
+	unsigned int namelen = request >> MESSG_SHIFT;
+	char filename[namelen + 1];
+	server_command_t response = 0;
+
+	CHECK_BADVAL_RETURN(
+		read(client_socket, filename, namelen * sizeof(char)), 
+		-1, S_NOREAD
+	);
+
+	retptr file = sfs_find(memory, filename);
+
+	if (file.errorcodes == SFS_FILENOTFOUND)
+	{
+		response = FNF_FLAG;
+		CHECK_BADVAL_RETURN(
+			write(client_socket, &response, sizeof(int)), 
+			-1, S_NOWRITE
+		);
+	}
+	if (sfs_islocked((sfs_fd *)file.ptr, client_socket) == SFS_FILELOCKED)
+	{
+		response = LOCKED_FLAG;
+		CHECK_BADVAL_RETURN(
+			write(client_socket, &response, sizeof(int)), 
+			-1, S_NOWRITE
+		);
+	}
+
+	response = ((sfs_fd *)file.ptr)->file->datalen << MESSG_SHIFT;
+
+	CHECK_BADVAL_RETURN(
+		write(client_socket, &response, sizeof(int)), 
+		-1, S_NOWRITE
+	);
+
+	CHECK_BADVAL_RETURN(
+		write(client_socket, ((sfs_fd *)file.ptr)->file->data, ((sfs_fd *)file.ptr)->file->datalen), 
+		-1, S_NOWRITE
+	);
+
 	return 0;
 }
 int server_writeFile(int request, int client_socket, SFS_FS* memory)

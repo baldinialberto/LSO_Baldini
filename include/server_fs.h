@@ -9,8 +9,10 @@
 
 #define SFS_FILENOTFOUND    1
 #define SFS_FILEINSTORAGE   2
-#define SFS_MEMORYFULL      3
-#define SFS_WRONGCALL       4
+#define SFS_FILELOCKED      3
+#define SFS_MEMORYFULL      4
+#define SFS_WRONGCALL       5
+
 
 #pragma once
 #include <stdlib.h>
@@ -29,6 +31,7 @@ typedef struct _sfs_file
     void *data;
     size_t datalen;
     unsigned char finfo;
+    int clientlock;
     mutex_t lock;
 } sfs_file;
 typedef struct _sfs_fd
@@ -60,9 +63,11 @@ int sfs_read(sfs_fd *file, void *data, const size_t size);
 
 int sfs_append(sfs_fs *server_fs, sfs_fd *file, const void *data, const size_t size);
 
-int sfs_lock(sfs_fd *file);
+int sfs_lock(sfs_fd *file, int client);
 
-int sfs_unlock(sfs_fd *file);
+int sfs_unlock(sfs_fd *file, int client);
+
+int sfs_islocked(sfs_fd *file, int client);
 
 retptr sfs_create(sfs_fs *server_fs, const char *name, const void *data, const size_t size);
 

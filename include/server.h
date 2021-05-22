@@ -8,6 +8,9 @@
 #include "server_utils.h"
 #include "client_queue.h"
 
+#define S_NOREAD        0x4
+#define S_NOWRITE       0x5
+
 struct _worker_arg
 {
     int worker_id;

@@ -103,7 +103,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
-    if (res != (server_command_t)0) return res;
+    if (res & OP_MASK) return res;
 
     res >>= MESSG_SHIFT; // len of chars readen
 

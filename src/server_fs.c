@@ -126,19 +126,39 @@ int sfs_append(sfs_fs *server_fs, sfs_fd *file, const void *data, const size_t s
     return sfs_write(server_fs, file, data, size);
 }
 
-int sfs_lock(sfs_fd *file)
+int sfs_lock(sfs_fd *file, int client)
 {
-    pthread_mutex_lock(&(file->file->lock));
-    file->file->finfo |= SFS_FD_LOCK;
-    pthread_mutex_unlock(&(file->file->lock));
+    if (file->file->finfo & SFS_FD_LOCK &&  file->file->clientlock != client)
+    {
+        return SFS_FILELOCKED;
+    }
+    else if (!(file->file->finfo & SFS_FD_LOCK))
+    {
+        file->file->finfo |= SFS_FD_LOCK;
+        file->file->clientlock = client;
+    }
+    
     return 0;
 }
 
-int sfs_unlock(sfs_fd *file)
+int sfs_unlock(sfs_fd *file, int client)
 {
-    pthread_mutex_lock(&(file->file->lock));
-    file->file->finfo &= ~SFS_FD_LOCK;
-    pthread_mutex_unlock(&(file->file->lock));
+    if (!(file->file->finfo & SFS_FD_LOCK))
+        return 0;
+    if (file->file->clientlock == client)
+    {
+        file->file->finfo &= ~SFS_FD_LOCK;
+        return 0;
+    }
+    return SFS_FILELOCKED;
+}
+
+int sfs_islocked(sfs_fd *file, int client)
+{
+    if (file->file->finfo & SFS_FD_LOCK &&  file->file->clientlock != client)
+    {
+        return SFS_FILELOCKED;
+    }
     return 0;
 }
 
@@ -192,7 +212,7 @@ int sfs_evict(sfs_fs *server_fs, size_t size)
     if (sizetofree <= 0)
         return SFS_WRONGCALL;
 
-    list_node *list = NULL;
+    list_node *list = NULL, *curr;
 
     for (size_t i = 0; i < server_fs->maxFiles>>2; i++)
     {
@@ -209,8 +229,13 @@ int sfs_evict(sfs_fs *server_fs, size_t size)
             }
         }
     }
-
-    //continue
+    curr = list;
+    while (curr != NULL && sizetofree > 0)
+    {
+        sizetofree -= ((sfs_file *)curr->data)->datalen;
+        sfs_remove(server_fs, ((sfs_file *)curr->data)->name);
+    }
+    if (sizetofree > 0) return SFS_MEMORYFULL;
 
     return 0;
 }
