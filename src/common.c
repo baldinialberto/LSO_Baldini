@@ -18,20 +18,18 @@ list_node *list_allocnode(void *data)
 int list_insert(ln_ptr *list, list_node *node, int (*comp)(void*, void *))
 {
     list_node *curr = *list, *prev = NULL;
-    while (curr != NULL && comp((void *)node, (void*)curr) > 0)
+    while (curr != NULL && comp((void *)node->data, (void*)curr->data) > 0)
     {
         prev = curr;
         curr = curr->next;
     }
     if (prev == NULL)
     {
-        puts("head");
         node->next = curr;
         *list = node;
     }
     else
     {
-        printf("%s\n", curr == NULL ? "tail" : "between");
         prev->next = node;
         node->next = curr;
     }

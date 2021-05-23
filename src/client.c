@@ -37,7 +37,7 @@ int main(int argc, char** argv)
 	
 	client_conf conf = {0};
 	parseargs(argc, argv, &conf);
-	//printargs(&conf);
+	printargs(&conf);
 
 	//test();
 
@@ -53,9 +53,6 @@ int parseargs(int argc, char ** argv, client_conf *conf)
 
 	while ((opt = getopt(argc, argv, flags)) != -1)
 	{
-		printf("optind = %d, opt = %c, optarg = %s, opterr = %d, optopt = %d\n", 
-			optind, opt, optarg, opterr, optopt
-		);
 		switch (opt)
 		{
 			case 'h':
@@ -191,14 +188,11 @@ int client_conf_cleanup(client_conf *conf)
 
 int conf_add_list(const char *optarg, ln_ptr* list)
 {
-	printf("conf_add_list [%s]\n", optarg);
 	char opt[strlen(optarg) + 1], *temp, *temp2 = NULL;
-
 	strcpy(opt, optarg);
 	temp = strtok(opt, ",");
 	while(temp != NULL)
 	{
-		printf("temp = [%s]\n", temp);
 		CHECK_BADVAL_PERROR_EXIT(
 			temp2 = malloc((strlen(temp) + 1) * sizeof(char)), 
 			NULL, "parseArgs : malloc"

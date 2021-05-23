@@ -14,7 +14,7 @@ TEMP = LIST;                    \
 while (TEMP != NULL)            \
     {                           \
         DO;                     \
-        TEMP = (LIST)->next;    \
+        TEMP = TEMP->next;      \
     }                           \
 
 typedef char bool;
