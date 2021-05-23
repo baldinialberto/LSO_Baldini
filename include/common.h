@@ -8,11 +8,12 @@
 #define DEBUG(X) X
 
 
-#define LIST_FOREACH(LIST, DO)  \
-while (LIST != NULL)            \
+#define LIST_FOREACH(LIST, TEMP, DO)  \
+TEMP = LIST;                    \
+while (TEMP != NULL)            \
     {                           \
         DO;                     \
-        LIST = (LIST)->next;    \
+        TEMP = (LIST)->next;    \
     }                           \
 
 typedef char bool;

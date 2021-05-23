@@ -65,8 +65,6 @@ void server_dispatcher(server_infos *infos)
 					SQ_CSOCKET_FLAG
 					);
 				} 
-				
-
 			}
 			if (infos->sq->pollarr[i].revents & POLLHUP)
 			{

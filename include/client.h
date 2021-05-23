@@ -3,33 +3,35 @@
 
 #pragma once
 
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
 #include "common.h"
+#include "error_utils.h"
 #include "serverapi.h"
 
 #define STRING_STDLEN 256
 
-typedef struct _strnode
-{
-    char *data;
-    struct _sttnode *next;
-} strnode;
-typedef strnode *strnode_ptr;
-
 typedef struct _client_conf
 {
-    char server_socket_filename[STRING_STDLEN];
-    char writeback_foldername[STRING_STDLEN];
-    char folder_to_write[STRING_STDLEN];
-    char folder_destination[STRING_STDLEN];
-    strnode_ptr files_to_write;
-    strnode_ptr files_to_read;
-    strnode_ptr files_to_lock;
-    strnode_ptr files_to_unlock;
-    strnode_ptr files_to_delete;
+    char *server_socket_filename;
+    char *writeback_foldername;
+    char *folder_to_write;
+    char *folder_destination;
+    ln_ptr files_to_write;
+    ln_ptr files_to_read;
+    ln_ptr files_to_lock;
+    ln_ptr files_to_unlock;
+    ln_ptr files_to_delete;
     unsigned int folder_filecount;
     unsigned int read_filecount;
     unsigned int connection_timer;
     bool verbose;
 } client_conf;
+
+int parseargs(int argc, char ** argv, client_conf *conf);
+int printargs(client_conf *conf);
 
 #endif
