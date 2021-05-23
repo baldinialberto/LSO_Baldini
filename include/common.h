@@ -3,6 +3,7 @@
 
 #pragma once
 #include <stdlib.h>
+#include <string.h>
 #include "error_utils.h"
 
 #define DEBUG(X) X
@@ -29,6 +30,7 @@ typedef struct _list_node
 } list_node;
 typedef list_node *ln_ptr;
 
+int string_compare(void *a, void *b);
 list_node *list_allocnode(void *data);
 int list_insert(ln_ptr *list, list_node *node, int (*comp)(void*, void *));
 int list_foreach(ln_ptr list, void (*proc)(void *));

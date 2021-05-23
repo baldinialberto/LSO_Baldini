@@ -33,5 +33,7 @@ typedef struct _client_conf
 
 int parseargs(int argc, char ** argv, client_conf *conf);
 int printargs(client_conf *conf);
+int client_conf_cleanup(client_conf *conf);
+int conf_add_list(const char *optarg, ln_ptr* list);
 
 #endif

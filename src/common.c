@@ -1,13 +1,18 @@
 #include <common.h>
 
+int string_compare(void *a, void *b)
+{
+    return strcmp((char *)a, (char *)b);
+}
 list_node *list_allocnode(void *data)
 {
     list_node *newNode = NULL;
     CHECK_BADVAL_PERROR_EXIT(
-        newNode = (list_node *)calloc(1, sizeof(list_node)), 
+        newNode = (list_node *)malloc(sizeof(list_node)), 
         NULL, "list_allocnode : calloc"
     );
     newNode->data = data;
+    newNode->next = NULL;
     return newNode;
 }
 int list_insert(ln_ptr *list, list_node *node, int (*comp)(void*, void *))
@@ -18,13 +23,16 @@ int list_insert(ln_ptr *list, list_node *node, int (*comp)(void*, void *))
         prev = curr;
         curr = curr->next;
     }
-    if (prev == curr)
+    if (prev == NULL)
     {
+        puts("head");
+        node->next = curr;
         *list = node;
     }
     else
     {
-        if (prev != NULL) prev->next = node;
+        printf("%s\n", curr == NULL ? "tail" : "between");
+        prev->next = node;
         node->next = curr;
     }
     return 0;
@@ -42,7 +50,13 @@ int list_foreach(ln_ptr list, void (*proc)(void *))
 
 int list_free(ln_ptr *list)
 {
-    list_foreach(*list, free);
-    *list = NULL;
+    ln_ptr temp = *list, next;
+    while (temp != NULL)
+    {   
+        next = temp->next;
+        free(temp->data);
+        free(temp);
+        temp = next;
+    }
     return 0;
 }

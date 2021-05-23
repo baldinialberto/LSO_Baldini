@@ -37,11 +37,11 @@ int main(int argc, char** argv)
 	
 	client_conf conf = {0};
 	parseargs(argc, argv, &conf);
-	printargs(&conf);
+	//printargs(&conf);
 
 	//test();
 
-	free(conf.folder_to_write);
+	client_conf_cleanup(&conf);	
 
 	return 0;
 }
@@ -50,7 +50,6 @@ int parseargs(int argc, char ** argv, client_conf *conf)
 {
 	int opt;
 	const char *flags = "hf:w:W:D:r:R:d:t:l:u:c:p";
-	char *temp;
 
 	while ((opt = getopt(argc, argv, flags)) != -1)
 	{
@@ -95,17 +94,13 @@ int parseargs(int argc, char ** argv, client_conf *conf)
 				);
 				break;
 			case 'W':
-				CHECK_BADVAL_PERROR_EXIT(
-					temp = malloc(strlen(optarg) + 1), 
-					NULL, "parseargs : malloc"
-				);
-				strcpy(temp, optarg);
-				//continue
+				conf_add_list(optarg, &(conf->files_to_write));
 				break;
 			case 'D':
 				conf->writeback_foldername = optarg;
 				break;
 			case 'r':
+				conf_add_list(optarg, &(conf->files_to_read));
 				break;
 			case 'R':
 				conf->read_filecount = strtol(optarg, NULL, 10);
@@ -117,10 +112,13 @@ int parseargs(int argc, char ** argv, client_conf *conf)
 				conf->connection_timer = strtol(optarg, NULL, 10);
 				break;
 			case 'l':
+				conf_add_list(optarg, &(conf->files_to_lock));
 				break;
 			case 'u':
+				conf_add_list(optarg, &(conf->files_to_unlock));
 				break;
 			case 'c':
+				conf_add_list(optarg, &(conf->files_to_delete));
 				break;
 			case 'p':
 				conf->verbose = 1;
@@ -178,4 +176,37 @@ bool verbose = %d\n",
 	printf("\n");
 
 	return fflush(stdout);
+}
+
+int client_conf_cleanup(client_conf *conf)
+{
+	free(conf->folder_to_write);
+	list_free(&(conf->files_to_write));
+	list_free(&(conf->files_to_read));
+	list_free(&(conf->files_to_lock));
+	list_free(&(conf->files_to_unlock));
+	list_free(&(conf->files_to_delete));
+	return 0;
+}
+
+int conf_add_list(const char *optarg, ln_ptr* list)
+{
+	printf("conf_add_list [%s]\n", optarg);
+	char opt[strlen(optarg) + 1], *temp, *temp2 = NULL;
+
+	strcpy(opt, optarg);
+	temp = strtok(opt, ",");
+	while(temp != NULL)
+	{
+		printf("temp = [%s]\n", temp);
+		CHECK_BADVAL_PERROR_EXIT(
+			temp2 = malloc((strlen(temp) + 1) * sizeof(char)), 
+			NULL, "parseArgs : malloc"
+		);
+		strcpy(temp2, temp);
+		list_insert(list, list_allocnode((void *)temp2), string_compare);
+		temp = strtok(NULL, ",");
+	}
+
+	return 0;
 }
