@@ -24,7 +24,7 @@ int main(int argc, char** argv)
 	//unlockFile("Pippo.txt");
 	//closeFile("Pippo.txt");
 
-	sleep(5);
+	sleep(20);
 
 	if (closeConnection("MyServerSocket.socket"))
 		printf("Unable to disconnect\n");

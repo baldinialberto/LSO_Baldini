@@ -37,9 +37,10 @@ DEBUG(puts("----sq_push----"));
 
     (queue->nsockets)++;
     if (newclient->status & SQ_CSOCKET_FLAG) (queue->nclients)++;
-    queue->pollarr_valid = 0;
     
 DEBUG(printf("nsockets = %ld, nclients = %ld\n", queue->nsockets, queue->nclients));
+
+    sq_update_arr(queue);
 
     return 0;
 }
@@ -63,7 +64,6 @@ DEBUG(puts("----sq_remove----"));
     {
         if (curr->status & SQ_CSOCKET_FLAG) queue->nclients--;
         queue->nsockets--;
-        queue->pollarr_valid = 0;
 
         if (prev == NULL) // remove head
         {
@@ -82,6 +82,8 @@ DEBUG(puts("----sq_remove----"));
             free(curr);
         }
 
+        sq_update_arr(queue);
+
         return 0;
     }
 
@@ -90,21 +92,32 @@ DEBUG(puts("----sq_remove----"));
 
 int sq_update_arr(socket_queue *queue)
 {
+DEBUG(puts("----sq_update_arr----"));
     if (queue == NULL) return SQ_NULL_FLAG;
-    if (queue->pollarr_valid) return SQ_INVALID_FLAG;
 
-    CHECK_BADVAL_PERROR_EXIT(
-        queue->pollarr = realloc(queue->pollarr, 
-            queue->nsockets * sizeof(struct pollfd)), 
-        NULL, "sq_update_arr : realloc"
-    )
+    if (queue->pollarr == NULL)
+    {
+        CHECK_BADVAL_PERROR_EXIT(
+            queue->pollarr = (struct pollfd *)calloc( 
+                queue->nsockets,  sizeof(struct pollfd)), 
+            NULL, "sq_update_arr : calloc"
+        )
+    }
+    else
+    {
+        CHECK_BADVAL_PERROR_EXIT(
+            queue->pollarr = (struct pollfd *)reallocarray(queue->pollarr, 
+                queue->nsockets,  sizeof(struct pollfd)), 
+            NULL, "sq_update_arr : realloc"
+        )
+    }
     int i = 0;
     for (socket_queue_node* node = queue->head; node != NULL; node = node->next)
     {
        (queue->pollarr)[i].fd = node->socket_fd;
-       (queue->pollarr)[i++].events = POLLIN | POLLHUP;
+       (queue->pollarr)[i].revents = (short) 0;
+       (queue->pollarr)[i++].events = (short) (POLLIN | POLLHUP);
     }
-    queue->pollarr_valid = 1;
     
     if (i != queue->nsockets)
     {
@@ -112,6 +125,8 @@ int sq_update_arr(socket_queue *queue)
         puts("sq_update_arr : invalid queue->nsockets");
         exit(-1);
     }
+
+    sq_print(queue);
 
     return 0;
 }
@@ -132,4 +147,26 @@ int sq_free(socket_queue *queue)
 	free(queue);
 
 	return 0;
+}
+
+int sq_print(socket_queue *queue)
+{
+    printf("---LIST--- ");
+    fflush(stdout);
+    for (socket_queue_node* node = queue->head; node != NULL; node = node->next)
+    {
+        printf("%d -> ", node->socket_fd);
+        fflush(stdout);
+    }
+    printf("---LISTEND---\n");
+    fflush(stdout);
+    printf("---ARR--- ");
+    fflush(stdout);
+    for (int i = 0; i < queue->nsockets;)
+    {
+        printf("%d -> ", (queue->pollarr)[i++].fd);
+        fflush(stdout);
+    }printf("---ARREND---\n");
+    fflush(stdout);
+    return 0;
 }

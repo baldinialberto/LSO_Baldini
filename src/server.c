@@ -48,24 +48,24 @@ void server_dispatcher(server_infos *infos)
 	{
 		if (infos->server_hu) sq_remove(infos->sq, infos->server_socket_fd);
 		DEBUG(puts("ServerWaiting"));
-		sq_update_arr(infos->sq);
 		poll_ready = poll(infos->sq->pollarr, infos->sq->nsockets, 1000);
 
 		for (int i = 0; poll_ready && i < infos->sq->nsockets; i++)
 		{
 			if (infos->sq->pollarr[i].revents & POLLIN)
-			{
-				if (infos->sq->pollarr[i].fd == infos->server_socket_fd)
+			{	
+				if (infos->sq->pollarr[i].fd != infos->server_socket_fd) 
+				{
+					assign_client(infos, infos->sq->pollarr[i].fd);
+				}
+				else
 				{
 					sq_push(infos->sq, 
 					accept(infos->server_socket_fd, NULL, 0), 
 					SQ_CSOCKET_FLAG
 					);
 				} 
-				else 
-				{
-					assign_client(infos, infos->sq->pollarr[i].fd);
-				}
+				
 
 			}
 			if (infos->sq->pollarr[i].revents & POLLHUP)

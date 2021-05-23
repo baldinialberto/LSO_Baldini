@@ -40,7 +40,6 @@ typedef struct _socket_queue
     mutex_t mutex;
     cond_t full;
     struct pollfd *pollarr;
-    int pollarr_valid;
 } socket_queue;
 
 /**
@@ -97,5 +96,7 @@ int sq_update_arr(socket_queue *queue);
  * if queue == NULL return SQ_NULL_FLAG
  */
 int sq_free(socket_queue *queue);
+
+int sq_print(socket_queue *queue);
 
 #endif
