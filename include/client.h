@@ -35,5 +35,13 @@ int parseargs(int argc, char ** argv, client_conf *conf);
 int printargs(client_conf *conf);
 int client_conf_cleanup(client_conf *conf);
 int conf_add_list(const char *optarg, ln_ptr* list);
+int write_files(ln_ptr list, const char *writeback_folder);
+int write_folder(char *folderpath, int count);
+int read_files(ln_ptr list, const char *folder_dest);
+int read_rndm_nfiles(int count);
+int remove_files(ln_ptr list);
+int write_file(ln_ptr list_node, const char *writeback_folder);
+int read_file(ln_ptr list_node, const char *folder_dest);
+
 
 #endif

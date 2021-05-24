@@ -327,6 +327,7 @@ int server_readFile(int request, int client_socket, SFS_FS* memory)
 	DEBUG(puts("server_readFile"));
 	unsigned int namelen = request >> MESSG_SHIFT;
 	char filename[namelen + 1];
+	filename[namelen] = (char) 0;
 	server_command_t response = 0;
 
 	CHECK_BADVAL_RETURN(
@@ -370,6 +371,37 @@ int server_readFile(int request, int client_socket, SFS_FS* memory)
 int server_writeFile(int request, int client_socket, SFS_FS* memory)
 {
 	DEBUG(puts("server_writeFile"));
+	unsigned int namelen = request >> MESSG_SHIFT;
+	char filename[namelen + 1];
+	filename[namelen] = (char) 0;
+	CHECK_BADVAL_RETURN(
+		read(client_socket, &filename, namelen), 
+		-1, -1
+	);
+	char *data;
+	unsigned int datalen;
+	CHECK_BADVAL_RETURN(
+		read(client_socket, &datalen, sizeof(server_command_t)), 
+		-1, -1
+	);
+	CHECK_BADVAL_PERROR_EXIT
+	(
+		data = (char *)calloc(datalen, sizeof(char)), 
+		NULL, "server_writeFile : calloc"
+	);
+
+	retptr res;
+	if (memory->maxSize - memory->currentSize < datalen)
+	{
+		res = sfs_evict(memory, datalen);
+		if (res.errorcodes) return -1;
+	}
+	CHECK_BADVAL_RETURN(
+		read(client_socket, data, datalen), 
+		-1, -1
+	);
+
+
 	return 0;
 }
 int server_appendToFile(int request, int client_socket, SFS_FS* memory)

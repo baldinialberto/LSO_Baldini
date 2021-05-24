@@ -206,11 +206,11 @@ int sfs_remove(sfs_fs *server_fs, const char *name)
     return 0;
 }
 
-int sfs_evict(sfs_fs *server_fs, size_t size)
+retptr sfs_evict(sfs_fs *server_fs, size_t size)
 {
     size_t sizetofree = size + server_fs->currentSize - server_fs->maxSize;
     if (sizetofree <= 0)
-        return SFS_WRONGCALL;
+        return (retptr){SFS_WRONGCALL, NULL};
 
     list_node *list = NULL, *curr;
 
@@ -235,9 +235,9 @@ int sfs_evict(sfs_fs *server_fs, size_t size)
         sizetofree -= ((sfs_file *)curr->data)->datalen;
         sfs_remove(server_fs, ((sfs_file *)curr->data)->name);
     }
-    if (sizetofree > 0) return SFS_MEMORYFULL;
+    if (sizetofree > 0) return (retptr){SFS_MEMORYFULL, NULL};
 
-    return 0;
+    return (retptr){0, list};
 }
 
 int sfs_free_file(sfs_file **file)

@@ -137,8 +137,8 @@ int writeFile(const char* pathname, const char* dirname)
 
     unsigned int pathname_len = strlen(pathname);
     if (pathname_len > MESSAGE_MAX_LEN) return -1;
+    
     pathname_len <<= MESSG_SHIFT;
-
     command |= pathname_len;
 
     // write command
@@ -151,9 +151,33 @@ int writeFile(const char* pathname, const char* dirname)
         write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
+    
+    FILE *file = fopen(pathname, "r");
+    if (file == NULL) return -1;
+
+    size_t bytesreadend = 0, datalen = 1025, i = 0;
+    char *data = malloc(datalen);
+    while (!feof(file))
+    {
+        bytesreadend = fread(data + i, 
+            sizeof(char), 1024, file
+        );
+        i += bytesreadend;
+        datalen += bytesreadend;
+        data = realloc(data, datalen);
+    }
+    data[i] = (char) 0;
+
+    fclose(file);
+
+    // write datalen
+    command = datalen;
+    CHECK_BADVAL_RETURN(
+        write(socket_fd, &command, sizeof(server_command_t)), 
+        -1, -1
+    )
 
     server_command_t res;
-    // read result of appendFile 
     CHECK_BADVAL_RETURN(
         read(socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
@@ -161,13 +185,21 @@ int writeFile(const char* pathname, const char* dirname)
     if (res & WRBACK_FLAG) // server evicted a file
     {
         // write back file to dir..
-    
-        // read result of writeFile
-        CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-        )
+        
+        
     }
+    // write data
+    CHECK_BADVAL_RETURN(
+        write(socket_fd, data, datalen), 
+        -1, -1
+    )
+    free(data);
+
+    // read result of writeFile
+    CHECK_BADVAL_RETURN(
+    read(socket_fd, &res, sizeof(server_command_t)), 
+    -1, -1
+    )
 
     return res;
 }

@@ -73,7 +73,7 @@ retptr sfs_create(sfs_fs *server_fs, const char *name, const void *data, const s
 
 int sfs_remove(sfs_fs *server_fs, const char *name);
 
-int sfs_evict(sfs_fs *server_fs, size_t size);
+retptr sfs_evict(sfs_fs *server_fs, size_t size);
 
 int sfs_free_file(sfs_file **file);
 

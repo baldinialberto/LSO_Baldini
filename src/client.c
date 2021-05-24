@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 	
-	
+	read_files(conf.files_to_read, conf.folder_destination);
 
 	if (closeConnection(conf.server_socket_filename))
 	{
@@ -187,5 +187,105 @@ int conf_add_list(const char *optarg, ln_ptr* list)
 		temp = strtok(NULL, ",");
 	}
 
+	return 0;
+}
+
+int write_files(ln_ptr list, const char* writeback_folder)
+{
+	DEBUG(puts("write_files"));
+	ln_ptr list_node;
+	int res;
+	LIST_FOREACH(list, list_node, 
+		if (write_file(list_node, writeback_folder))
+		{
+			res = -1;
+		}
+	);
+	return res;
+}
+int read_files(ln_ptr list, const char *folder_dest)
+{
+	DEBUG(puts("read_files"));
+	ln_ptr list_node;
+	int res = 0;
+	LIST_FOREACH(list, list_node, 
+		if (read_file(list_node, folder_dest))
+		{
+			res = -1;
+		}
+	);
+
+	return res ? -1 : 0;
+}
+int write_file(ln_ptr list_node, const char *writeback_folder)
+{
+	if (openFile(list_node->data, O_CREATE_FLAG | O_LOCK_FLAG))
+	{
+		return -1;
+	}
+	if (writeFile(list_node->data, writeback_folder))
+	{
+		return -1;
+	}
+	if (unlockFile(list_node->data))
+	{
+		return -1;
+	}
+}
+int read_file(ln_ptr list_node, const char *folder_dest)
+{
+	FILE *file = NULL;
+	int res = 0;
+	void *data;
+	size_t datalen;
+	char *path, *filename, *tempstring, *tempBackup;
+
+	CHECK_BADVAL_PERROR_EXIT(
+		tempstring = (char *)malloc(strlen(list_node->data) + 1), 
+		NULL, "read_files : malloc" 
+	);
+	strcpy(tempstring, (char *)list_node->data);
+	tempBackup = tempstring;
+	filename = strtok(tempstring, "/");
+	if (filename == NULL) filename = (char *)list_node->data;
+	do
+	{
+		filename = tempstring;
+		tempstring = strtok(NULL, "/");
+	} while (tempstring != NULL);
+
+	printf("filename = %s\n", filename);
+
+	CHECK_BADVAL_PERROR_EXIT(
+		path = (char *)calloc(
+			strlen(folder_dest) + strlen(filename) + 2, sizeof(char)
+		), 
+		NULL, "read_files : malloc" 
+	);
+	strcpy(path, folder_dest);
+	strcat(path, "/");
+	strcat(path, filename);
+
+	printf("readen path = %s\n", path);
+
+	file = fopen(path, "w");
+
+	res = readFile((char *)list_node->data, &data, &datalen);
+
+	if (!res)
+	{
+		fwrite(data, sizeof(char), datalen, file);
+	}
+
+	fclose(file);
+
+	free(tempBackup);
+	free(path);
+
+	return res ? -1 : 0;
+}
+int remove_files(ln_ptr list)
+{
+	DEBUG(puts("remove_files"));
 	return 0;
 }
