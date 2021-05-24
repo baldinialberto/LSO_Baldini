@@ -1,17 +1,18 @@
 #include <serverapi.h>
+#define DEBUG(X) X
 
 int socket_fd;
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
-    puts("OpenConnection");
+    DEBUG(puts("OpenConnection"));
     struct sockaddr_un sa;
 	strncpy(sa.sun_path, sockname, sizeof(sa.sun_path)-1);
 	sa.sun_family = AF_UNIX;
 
     CHECK_BADVAL_PERROR_RETURN(
         socket_fd = socket(AF_UNIX, SOCK_STREAM, 0), 
-        -1, "openConnection : socket", NOTCONN_FLAG
+        -1, "openConnection : socket", -1
     )
 
     struct timespec inter_requests_time, remaining_time;
@@ -23,7 +24,7 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
     while (connect(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
     remaining_time.tv_nsec > 0)
 	{
-		if (errno == ENOENT || errno == 111) 
+		if (errno == ENOENT || errno == ECONNREFUSED) 
         {
             printf("Not connected");
 			nanosleep(&inter_requests_time, NULL);
@@ -33,32 +34,20 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
         {
             printf("errno = %d\n", errno);
             perror("openConnection : connect");
-			exit(EXIT_FAILURE);
+			return(-1);
         }
-        errno = 0;
 	}
 
     if (remaining_time.tv_nsec > 0)
         return 0;
 
-    return NOTCONN_FLAG | FNF_FLAG;
+    return -1;;
 }
 int closeConnection(const char* sockname)
 {
-    puts("CloseConnection");
-    if (!socket_fd) return NOTCONN_FLAG | ALREADY_FLAG;
-/*
-    server_command_t command = CLSCONN_OP;
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-*/
-    return close(socket_fd);// || command;
+    DEBUG(puts("CloseConnection"));
+    if (!socket_fd) return -1;
+    return close(socket_fd);
 }
 int openFile(const char* pathname, int flags)
 {

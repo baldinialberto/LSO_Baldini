@@ -4,4 +4,8 @@
 *.exe
 *.log
 *.socket
-*temp.sh
+*.sh
+*temp*
+towrite/
+evicted/
+readen/

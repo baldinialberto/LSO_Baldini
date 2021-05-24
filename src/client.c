@@ -2,34 +2,6 @@
 
 //static int socket_fd;
 
-void test()
-{
-	socket_fd = 0;
-	struct timespec connectionTime;
-	connectionTime.tv_sec = 0;
-	connectionTime.tv_nsec = 999999999;
-
-	if (openConnection("MyServerSocket.socket", 200, connectionTime))
-	{
-		printf("Unable to connect to server\n");
-		exit(1);
-	}
-	else 
-		printf("Connected\n");
-
-
-	printf("Connected to %d\n", socket_fd);
-	//openFile("Pippo.txt", O_CREATE_FLAG | O_LOCK_FLAG);
-	//unlockFile("Pippo.txt");
-	//closeFile("Pippo.txt");
-
-	sleep(20);
-
-	if (closeConnection("MyServerSocket.socket"))
-		printf("Unable to disconnect\n");
-	else
-		printf("disconnected\n");
-}
 
 int main(int argc, char** argv)
 {
@@ -37,9 +9,22 @@ int main(int argc, char** argv)
 	
 	client_conf conf = {0};
 	parseargs(argc, argv, &conf);
-	printargs(&conf);
+	DEBUG(printargs(&conf));
 
-	//test();
+	if (openConnection(conf.server_socket_filename, 500, 
+		(struct timespec){0, 999999999}))
+	{
+		perror("openConnection");
+		return -1;
+	}
+	
+	
+
+	if (closeConnection(conf.server_socket_filename))
+	{
+		perror("closeConnection");
+		return -1;
+	}
 
 	client_conf_cleanup(&conf);	
 
