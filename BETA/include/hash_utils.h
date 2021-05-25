@@ -17,15 +17,18 @@ typedef struct _utils_hash_table
     size_t (*hashfunc)(void *key);
     int (*datacompare)(void *a, void *b);
     void *(*extractkey)(void *data);
+    void *(*extractdata)(void *data);
     void (*dataprint)(void *data);
     void (*datafree)(void *data);
 } u_hash_table;
 
+size_t hu_hashstring(const char *str);
 u_hash_table hu_init(size_t nentries, size_t datasize, 
     size_t (*hashfunc)(void *key), int (*datacompare)(void *a, void *b), 
-    void *(*extractkey)(void *data), 
+    void *(*extractkey)(void *data), void *(*extractdata)(void *data), 
     void (*dataprint)(void *data), void (*datafree)(void *data));
-int hu_ishere(u_hash_table *table, void *key);
+
+int hu_ishere(u_hash_table *table, void *data);
 int hu_insert(u_hash_table *table, void *data);
 int hu_insert_oncopy(u_hash_table *table, void *data);
 int hu_remove(u_hash_table *table, void *key);
