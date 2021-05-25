@@ -4,8 +4,8 @@ u_string su_string_from_literal(const char *literal)
 {
     if (literal == NULL)
     {
-        fprintf(stdout, "su_string_from_literal : param literal == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_string_from_literal : param literal == NULL\n");
+        fflush(stderr);
         return (u_string){NULL, 0};
     }
     size_t literal_len = strlen(literal);
@@ -18,8 +18,8 @@ int su_free_string(u_string *string)
 {
     if (string == NULL)
     {
-        fprintf(stdout, "su_free_string : param string == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_free_string : param string == NULL\n");
+        fflush(stderr);
         return -1;
     }
     mu_free(string->data);
@@ -29,14 +29,14 @@ int su_append_literal(u_string *string, const char *literal)
 {
     if (string == NULL)
     {
-        fprintf(stdout, "su_append_literal : param string == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_append_literal : param string == NULL\n");
+        fflush(stderr);
         return -1;
     }
     if (literal == NULL)
     {
-        fprintf(stdout, "su_append_literal : param literal == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_append_literal : param literal == NULL\n");
+        fflush(stderr);
         return -1;
     }
     size_t literal_len = strlen(literal), i = string->len;
@@ -49,8 +49,8 @@ int su_string_extend(u_string *string, size_t delta)
 {
     if (string == NULL)
     {
-        fprintf(stdout, "su_string_extend : param string == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_string_extend : param string == NULL\n");
+        fflush(stderr);
         return -1;
     }
     if (delta == 0) return 0;
@@ -61,8 +61,8 @@ int su_string_shrinktofit(u_string *string)
 {
     if (string == NULL)
     {
-        fprintf(stdout, "su_string_shrinktofit : param string == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_string_shrinktofit : param string == NULL\n");
+        fflush(stderr);
         return -1;
     }
     return su_realloc(string, su_strlen(string));
@@ -71,8 +71,8 @@ int su_realloc(u_string *string, size_t newsize)
 {
     if (string == NULL)
     {
-        fprintf(stdout, "su_realloc : param string == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_realloc : param string == NULL\n");
+        fflush(stderr);
         return -1;
     }
     string->len = newsize;
@@ -85,8 +85,8 @@ int su_strlen(u_string *string)
 {
     if (string == NULL)
     {
-        fprintf(stdout, "su_strlen : param string == NULL\n");
-        fflush(stdout);
+        fprintf(stderr, "su_strlen : param string == NULL\n");
+        fflush(stderr);
         return -1;
     }
     return strlen(string->data);

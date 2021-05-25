@@ -3,6 +3,7 @@
 
 #pragma once
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 
 void *mu_malloc(size_t size);
