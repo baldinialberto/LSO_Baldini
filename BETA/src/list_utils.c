@@ -265,6 +265,38 @@ int lu_search(u_list *list, void *data, int (*datacompare)(void *, void *))
     }
     return 0;
 }
+void *lu_get(u_list *list, void *data, int (*datacompare)(void *, void *))
+{
+    if (list == NULL)
+    {
+        fprintf(stderr, "lu_get : param list == NULL\n");
+        fflush(stderr);
+        return NULL;
+    }
+    if (data == NULL)
+    {
+        fprintf(stderr, "lu_get : param data == NULL\n");
+        fflush(stderr);
+        return NULL;
+    }
+    if (*list == NULL)
+    {
+        fprintf(stderr, "lu_get : param *list == NULL -> list empty\n");
+        fflush(stderr);
+        return NULL;
+    }
+    u_list_node *curr, *prev;
+    _lu_navigate(*list, &curr, &prev, data, datacompare);
+    if (curr == NULL || datacompare(data, curr->data))
+    {
+        fprintf(stderr, "lu_get : data not in list\n");
+        fflush(stderr);
+        fprintf(stdout, "lu_get : data not in list\n");
+        fflush(stdout);
+        return NULL;
+    }
+    return curr->data;
+}
 int lu_length(u_list list)
 {
     if (list == NULL)

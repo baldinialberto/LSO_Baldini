@@ -36,6 +36,7 @@ int lu_remove(u_list *list, void *data, int (*datacompare)(void *, void *), void
 int lu_remove_node(u_list *list, u_list_node *node, int (*datacompare)(void *, void *), void (*datafree)(void *));
 void _lu_navigate(u_list list, u_list_node **curr, u_list_node **prev, void *data, int (*datacompare)(void *, void *));
 int lu_search(u_list *list, void *data, int (*datacompare)(void *, void *));
+void *lu_get(u_list *list, void *data, int (*datacompare)(void *, void *));
 int lu_length(u_list list);
 int lu_free(u_list *list, void (*datafree)(void *));
 int lu_print(u_list list, void (*dataprint)(void *));
