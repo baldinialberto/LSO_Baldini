@@ -6,7 +6,7 @@ LIBS:= -lpthread
 
 TARGETS:= client.exe server.exe
 LIB:= libsol.so
-LIB_OBJS:= mem_utils.o string_utils.o list_utils.o hash_utils.o
+LIB_OBJS:= mem_utils.o string_utils.o list_utils.o hash_utils.o file_utils.o
 
 test : tester.exe
 	-rm *.o

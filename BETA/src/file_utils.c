@@ -1,5 +1,25 @@
 #include "../include/file_utils.h"
 
+size_t fu_storage_avBytes(u_file_storage *fstorage)
+{
+    if (fstorage == NULL)
+    {
+        fprintf(stderr, "fu_storage_avBytes : param fstorage == NULL\n");
+        fflush(stderr);
+        return 0;
+    }
+    return fstorage->maxBytes - fstorage->nBytes;
+}
+size_t fu_storage_avFiles(u_file_storage *fstorage)
+{
+    if (fstorage == NULL)
+    {
+        fprintf(stderr, "fu_storage_avFiles : param fstorage == NULL\n");
+        fflush(stderr);
+        return 0;
+    }
+    return fstorage->maxfiles - fstorage->nfiles;
+}
 u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes)
 {
     if (maxfiles == 0)
@@ -32,7 +52,7 @@ u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes)
 
     return filestorage;
 }
-u_file* fu_allocfile(const char *path, const void *data, size_t datalen)
+u_file* fu_allocfile(const char *path, void *data, size_t datalen)
 {
     if (path == NULL)
     {
@@ -89,16 +109,99 @@ u_file* fu_allocfile_oncopy(const char *path, const void *data, size_t datalen)
 
     return fu_allocfile(path, datacopy, datalen);
 }
-void fu_freefile(u_file *file)
+int fu_addfile(u_file_storage *fstorage, u_file *file)
 {
+    if (fstorage == NULL)
+    {
+        fprintf(stderr, "fu_addfile : param fstorage == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
     if (file == NULL)
     {
-        fprintf(stderr, "fu_freefile : param file == NULL\n");
+        fprintf(stderr, "fu_addfile : param file == NULL\n");
         fflush(stderr);
+        return -1;
     }
-    su_free_string(&(file->path));
-    free(file->data);
-    free(file);
+    if (fu_storage_avFiles(fstorage) == 0)
+    {
+        fprintf(stderr, "fu_addfile : fstorage has stored the maximum amount of files\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (file->datalen > fu_storage_avBytes(fstorage))
+    {
+        fprintf(stderr, "fu_addfile : fstorage has not enough space to store this file\n");
+        fflush(stderr);
+        return -1;
+    }
+    
+    if (hu_insert(&(fstorage->table), file))
+    {
+        fprintf(stderr, "fu_addfile : hu_insert has returned an error, file is not stored in fstorage\n");
+        fflush(stderr);
+        return -1;
+    }
+    (fstorage->nfiles)++;
+    fstorage->nBytes += file->datalen;
+    return 0;
+}
+int fu_removefile(u_file_storage *fstorage, char *path)
+{
+    if (fstorage == NULL)
+    {
+        fprintf(stderr, "fu_removefile : param fstorage == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (path == NULL)
+    {
+        fprintf(stderr, "fu_removefile : param path == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (hu_ishere(&(fstorage->table), path))
+    {
+        fprintf(stderr, "fu_removefile : path is not stored in storage\n");
+        fflush(stderr);
+        return -1;
+    }
+    size_t filedatalen = fu_searchfile(fstorage, path)->datalen;
+    if (hu_remove(&(fstorage->table), (void *)path))
+    {
+        fprintf(stderr, "fu_removefile : hu_remove has returned an error, file is not removed from fstorage\n");
+        fflush(stderr);
+        return -1;
+    }
+    (fstorage->nfiles)--;
+    fstorage->nBytes -= filedatalen;
+    return 0;
+}
+u_file *fu_searchfile(u_file_storage *fstorage, char *path)
+{
+    if (fstorage == NULL)
+    {
+        fprintf(stderr, "fu_searchfile : param fstorage == NULL\n");
+        fflush(stderr);
+        return NULL;
+    }
+    if (path == NULL)
+    {
+        fprintf(stderr, "fu_searchfile : param path == NULL\n");
+        fflush(stderr);
+        return NULL;
+    }
+    return (u_file *)hu_get(&(fstorage->table), (void *)path);
+}
+void fu_storage_free(u_file_storage *fstorage)
+{
+    if (fstorage == NULL)
+    {
+        fprintf(stderr, "fu_storage_free : param fstorage == NULL\n");
+        fflush(stderr);
+        return;
+    }
+    hu_free(&(fstorage->table));
 }
 int fu_writefile(u_file *file, size_t i, void *data, size_t datalen)
 {
@@ -197,17 +300,23 @@ size_t fu_filehash(void *file)
 }
 int fu_filecompare(void *fileA, void *fileB)
 {
-    if (fileA == NULL)
+    if (fileA == NULL && fileB == NULL)
     {
-        fprintf(stderr, "fu_filepath : param file == NULL\n");
+        fprintf(stderr, "fu_filepath : params fileA and fileB are NULL\n");
         fflush(stderr);
-        return NULL;
+        return 0;
     }
-    if (fileB == NULL)
+    if (fileA == NULL && fileB != NULL)
     {
-        fprintf(stderr, "fu_filepath : param file == NULL\n");
+        fprintf(stderr, "fu_filepath : param fileA == NULL\n");
         fflush(stderr);
-        return NULL;
+        return 1;
+    }
+    if (fileB == NULL && fileA != NULL)
+    {
+        fprintf(stderr, "fu_filepath : param fileB == NULL\n");
+        fflush(stderr);
+        return -1;
     }
     return strcmp(((u_file *)fileA)->path.data, ((u_file *)fileB)->path.data);
 }

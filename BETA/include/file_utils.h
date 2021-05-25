@@ -24,11 +24,16 @@ typedef struct _utils_file_storage
     size_t nBytes;
 } u_file_storage;
 
+size_t fu_storage_avBytes(u_file_storage *fstorage);
+size_t fu_storage_avFiles(u_file_storage *fstorage);
 u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes);
-u_file* fu_allocfile(const char *path, const void *data, size_t datalen);
+u_file* fu_allocfile(const char *path, void *data, size_t datalen);
 u_file* fu_allocfile_empty(const char *path);
 u_file* fu_allocfile_oncopy(const char *path, const void *data, size_t datalen);
-void fu_freefile(u_file *file);
+int fu_addfile(u_file_storage *fstorage, u_file *file);
+int fu_removefile(u_file_storage *fstorage, char *path);
+u_file *fu_searchfile(u_file_storage *fstorage, char *path);
+void fu_storage_free(u_file_storage *fstorage);
 int fu_writefile(u_file *file, size_t i, void *data, size_t datalen);
 size_t fu_readfile(u_file *file, size_t i, void *dest, size_t destlen);
 size_t fu_readfile_realloc(u_file *file, size_t i, void **dest);

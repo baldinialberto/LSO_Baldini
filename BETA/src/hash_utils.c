@@ -1,7 +1,8 @@
 #include "../include/hash_utils.h"
 
-size_t hu_hashstring(const char *str)
+size_t hu_hashstring(void *key)
 {
+    char *str = (char *)key;
     if (str == NULL)
     {
         fprintf(stderr, "hu_hashstring : param str == NULL\n");
@@ -14,7 +15,7 @@ size_t hu_hashstring(const char *str)
     size_t hash = 5381;
     int c;
 
-    while (c = *str++)
+    while ((c = *(str++)))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
 
     return hash;
