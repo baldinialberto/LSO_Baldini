@@ -56,7 +56,6 @@ void lu_string_print(void *data)
 {
     fprintf(stdout, "%s -> ", (char *)data);
 }
-
 u_list lu_empty_list()
 {
     return NULL;

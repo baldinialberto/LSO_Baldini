@@ -256,7 +256,7 @@ void hu_free(u_hash_table *table)
     u_hash_item *temp;
     for (size_t i = 0; i < table->nentries; i++)
     {
-        for (u_hash_item *hi; hi != NULL;)
+        for (u_hash_item *hi = (table->table)[i]; hi != NULL;)
         {
             temp = hi;
             hi = hi->next;
@@ -265,7 +265,7 @@ void hu_free(u_hash_table *table)
             free(temp);
         }
     }
-    free(table);
+    free(table->table);
 }
 void hu_print(u_hash_table *table)
 {
