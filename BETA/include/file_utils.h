@@ -43,6 +43,8 @@ void fu_storage_free(u_file_storage *fstorage);
 int fu_writefile(u_file_data *file, size_t i, void *data, size_t datalen);
 size_t fu_readfile(u_file_data *file, size_t i, void *dest, size_t destlen);
 size_t fu_readfile_realloc(u_file_data *file, size_t i, void **dest);
+int fu_fread(const char *path, u_file_data *destfile);
+int fu_fwrite(u_file_data *file, const char *destpath);
 size_t fu_filehash(void *file);
 int fu_filecompare(void *fileA, void *fileB);
 void *fu_filepath(void *file);

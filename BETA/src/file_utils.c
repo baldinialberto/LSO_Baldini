@@ -77,7 +77,7 @@ u_file* fu_allocfile_empty(char *path)
         fflush(stderr);
         return NULL;
     }
-    return fu_allocfile(path, NULL);
+    return fu_allocfile_oncopy(path, NULL, 0);
 }
 u_file* fu_allocfile_oncopy(char *path, const void *data, size_t datalen)
 {
@@ -87,19 +87,29 @@ u_file* fu_allocfile_oncopy(char *path, const void *data, size_t datalen)
         fflush(stderr);
         return NULL;
     }
-    if (data == NULL || datalen == 0)
+    if (data == NULL && datalen != 0)
     {
         fprintf(stderr, "fu_allocfile_oncopy : param data == NULL\n");
         fflush(stderr);
         return NULL;
     }
+    if (data != NULL && datalen == 0)
+    {
+        fprintf(stderr, "fu_allocfile_oncopy : param data != NULL\n");
+        fflush(stderr);
+        return NULL;
+    }
+    u_file_data *filedata = mu_calloc(sizeof(u_file_data));
+    if (data != NULL)
+    {
+        filedata->data = mu_malloc(datalen); 
+        memccpy(filedata->data, data, 1, datalen);
+        filedata->datalen = datalen;
+    }
+    char *pathcopy = mu_malloc(strlen(path) + 1);
+    strcpy(pathcopy, path);
 
-    u_file_data *filedata = mu_malloc(sizeof(u_file_data));
-    filedata->data = mu_malloc(datalen); 
-    memccpy(filedata->data, data, 1, datalen);
-    filedata->datalen = datalen;
-
-    return fu_allocfile(path, filedata);
+    return fu_allocfile(pathcopy, filedata);
 }
 int fu_addfile(u_file_storage *fstorage, u_file *file)
 {
@@ -194,6 +204,136 @@ void fu_storage_free(u_file_storage *fstorage)
         return;
     }
     hu_free(&(fstorage->table));
+}
+int fu_fread(const char *path, u_file_data *destfile)
+{
+    if (path == NULL)
+    {
+        fprintf(stderr, "fu_fread : param path == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (destfile == NULL)
+    {
+        fprintf(stderr, "fu_fread : param destfile == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (destfile->data != NULL && destfile->datalen == 0)
+    {
+        fprintf(stderr, "fu_fread : destfile has data in it. Free old data\n");
+        fflush(stderr);
+        free(destfile->data);
+    }
+    if (destfile->data == NULL && destfile->datalen != 0)
+    {
+        fprintf(stderr, "fu_fread : destfile has wrong datalen in it. Reset datalen\n");
+        fflush(stderr);
+        destfile->datalen = 0;
+    }
+    if (destfile->data != NULL && destfile->datalen != 0)
+    {
+        fprintf(stderr, "fu_fread : destfile has data in it. Abort\n");
+        fflush(stderr);
+        return -1;
+    }
+    FILE *file_to_read = fopen(path, "r");
+    if (file_to_read == NULL)
+    {
+        fprintf(stderr, "fu_fread : unable to open %s\n", path);
+        fflush(stderr);
+        return -1;
+    }
+    size_t i = 0, datalen = 0, datachunk = 1024, readlen;
+    char *data = mu_malloc(datachunk);
+    while (!feof(file_to_read))
+    {
+        readlen = fread(data + i, 1, datachunk, file_to_read);
+        if (ferror(file_to_read))
+        {
+            perror("fu_fread : fread");
+            fprintf(stderr, "fu_fread : unable to read from %s\n", path);
+            fflush(stderr);
+            if (fclose(file_to_read))
+            {
+                perror("fu_fread : fclose");
+                fprintf(stderr, "fu_fread : unable to close %s\n", path);
+                fflush(stderr);
+            }
+            return -1;
+        }
+        datalen += readlen;
+        if (readlen == datachunk)
+        {   
+            i += readlen;
+            data = mu_realloc(data, datalen + datachunk);
+        }
+    }
+    data = mu_realloc(data, datalen);
+    destfile->data = data;
+    destfile->datalen = datalen;
+    if (fclose(file_to_read))
+    {
+        fprintf(stderr, "fu_fread : unable to close %s\n", path);
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
+}
+int fu_fwrite(u_file_data *file, const char *destpath)
+{
+    if (file == NULL)
+    {
+        fprintf(stderr, "fu_fwrite : param file == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (file->data == NULL && file->datalen != 0)
+    {
+        fprintf(stderr, "fu_fwrite : param file->data == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (file->datalen == 0 && file->data != NULL)
+    {
+        fprintf(stderr, "fu_fwrite : param file->datalen == 0\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (destpath == NULL)
+    {
+        fprintf(stderr, "fu_fwrite : param destpath == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    FILE *file_to_write = fopen(destpath, "w");
+    if (file_to_write == NULL)
+    {
+        fprintf(stderr, "fu_fwrite : unable to open %s\n", destpath);
+        fflush(stderr);
+        return -1;
+    }
+    fwrite(file->data, 1, file->datalen, file_to_write);
+    if (ferror(file_to_write))
+    {
+        perror("fu_fwrite : fwrite");
+        fprintf(stderr, "fu_fwrite : unable to write in %s\n", destpath);
+        fflush(stderr);
+        if (fclose(file_to_write))
+        {
+            perror("fu_fwrite : fclose");
+            fprintf(stderr, "fu_fwrite : unable to close %s\n", destpath);
+            fflush(stderr);
+        }
+        return -1;
+    }
+    if (fclose(file_to_write))
+    {
+        fprintf(stderr, "fu_fwrite : unable to close %s\n", destpath);
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
 }
 int fu_writefile(u_file_data *file, size_t i, void *data, size_t datalen)
 {
@@ -352,7 +492,8 @@ void fu_filefree(void *file)
         fflush(stderr);
         return;
     }
-    su_free_string(fu_filepath(file));
+    mu_free(fu_filepath(file));
+    mu_free(((u_file_data *)fu_filedata(file))->data);
     mu_free(fu_filedata(file));
     free(file);
 }
