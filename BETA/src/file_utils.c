@@ -269,7 +269,14 @@ int fu_fread(const char *path, u_file_data *destfile)
             data = mu_realloc(data, datalen + datachunk);
         }
     }
-    data = mu_realloc(data, datalen);
+    if (datalen)
+    {
+        data = mu_realloc(data, datalen);
+    } else 
+    {
+        mu_free(data);
+        data = NULL;
+    }
     destfile->data = data;
     destfile->datalen = datalen;
     if (fclose(file_to_read))
