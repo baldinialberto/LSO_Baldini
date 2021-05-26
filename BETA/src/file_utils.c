@@ -43,67 +43,67 @@ u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes)
         (filestorage.maxfiles >> 2) + 1, 
         sizeof(u_file), 
         hu_hashstring, 
-        fu_filecompare, 
+        fu_filenamecompare, 
         fu_filepath, 
         fu_filedata, 
         fu_fileprint, 
-        fu_filefree, 
-        free
+        fu_filedatafree, 
+        mu_free
     );
 
     return filestorage;
 }
-u_file* fu_allocfile(char *path, u_file_data *data)
+u_file fu_allocfile(char *path, u_file_data *data)
 {
     if (path == NULL)
     {
         fprintf(stderr, "fu_allocfile : param path == NULL\n");
         fflush(stderr);
-        return NULL;
+        return (u_file){NULL};
     }
 
-    u_file *newfile = mu_malloc(sizeof(u_file));
-    newfile->data = data;
-    newfile->data->datainfo = 0;
-    newfile->path = path;
+    u_file newfile;
+    newfile.data = data;
+    newfile.data->datainfo = 0;
+    newfile.path = path;
 
     return newfile;
 }
-u_file* fu_allocfile_empty(char *path)
+u_file fu_allocfile_empty(char *path)
 {
     if (path == NULL)
     {
         fprintf(stderr, "fu_allocfile_empty : param path == NULL\n");
         fflush(stderr);
-        return NULL;
+        return (u_file){NULL};
     }
     return fu_allocfile_oncopy(path, NULL, 0);
 }
-u_file* fu_allocfile_oncopy(char *path, const void *data, size_t datalen)
+u_file fu_allocfile_oncopy(char *path, const void *data, size_t datalen)
 {
     if (path == NULL)
     {
         fprintf(stderr, "fu_allocfile_oncopy : param path == NULL\n");
         fflush(stderr);
-        return NULL;
+        return (u_file){NULL};
     }
     if (data == NULL && datalen != 0)
     {
         fprintf(stderr, "fu_allocfile_oncopy : param data == NULL\n");
         fflush(stderr);
-        return NULL;
+        return (u_file){NULL};
     }
     if (data != NULL && datalen == 0)
     {
         fprintf(stderr, "fu_allocfile_oncopy : param data != NULL\n");
         fflush(stderr);
-        return NULL;
+        return (u_file){NULL};
     }
     u_file_data *filedata = mu_calloc(sizeof(u_file_data));
     if (data != NULL)
     {
         filedata->data = mu_malloc(datalen); 
-        memccpy(filedata->data, data, 1, datalen);
+        memcpy(filedata->data, data, datalen);
         filedata->datalen = datalen;
     }
     char *pathcopy = mu_malloc(strlen(path) + 1);
@@ -111,7 +111,7 @@ u_file* fu_allocfile_oncopy(char *path, const void *data, size_t datalen)
 
     return fu_allocfile(pathcopy, filedata);
 }
-int fu_addfile(u_file_storage *fstorage, u_file *file)
+int fu_addfile(u_file_storage *fstorage, u_file_data *file, char *filepath)
 {
     if (fstorage == NULL)
     {
@@ -131,21 +131,21 @@ int fu_addfile(u_file_storage *fstorage, u_file *file)
         fflush(stderr);
         return -1;
     }
-    if (file->data->datalen > fu_storage_avBytes(fstorage))
+    if (file->datalen > fu_storage_avBytes(fstorage))
     {
         fprintf(stderr, "fu_addfile : fstorage has not enough space to store this file\n");
         fflush(stderr);
         return -1;
     }
     
-    if (hu_insert(&(fstorage->table), hu_allocitem(file->path, file->data)))
+    if (hu_insert(&(fstorage->table), hu_allocitem(filepath, file)))
     {
         fprintf(stderr, "fu_addfile : hu_insert has returned an error, file is not stored in fstorage\n");
         fflush(stderr);
         return -1;
     }
     (fstorage->nfiles)++;
-    fstorage->nBytes += file->data->datalen;
+    fstorage->nBytes += file->datalen;
     return 0;
 }
 int fu_removefile(u_file_storage *fstorage, char *path)
@@ -430,7 +430,7 @@ size_t fu_filehash(void *file)
 {
     return 0;
 }
-int fu_filecompare(void *filenameA, void *filenameB)
+int fu_filenamecompare(void *filenameA, void *filenameB)
 {
     if (filenameA == NULL && filenameB == NULL)
     {
@@ -450,8 +450,6 @@ int fu_filecompare(void *filenameA, void *filenameB)
         fflush(stderr);
         return -1;
     }
-    filenameA = (void *)(((u_hash_item *)filenameA)->key);
-    filenameB = (void *)(((u_hash_item *)filenameB)->key);
     return strcmp((char *)filenameA, (char *)filenameB);
 }
 void *fu_filepath(void *file)
@@ -484,7 +482,7 @@ void fu_fileprint(void *file)
     }
     fprintf(stdout, "file %s, size %ld\n", (char*)fu_filepath(file), ((u_file_data *)fu_filedata(file))->datalen);
 }
-void fu_filefree(void *file)
+void fu_filedatafree(void *file)
 {
     if (file == NULL)
     {
@@ -492,8 +490,6 @@ void fu_filefree(void *file)
         fflush(stderr);
         return;
     }
-    mu_free(fu_filepath(file));
-    mu_free(((u_file_data *)fu_filedata(file))->data);
-    mu_free(fu_filedata(file));
-    free(file);
+    mu_free(((u_file_data *)file)->data);
+    mu_free((u_file_data *)file);
 }

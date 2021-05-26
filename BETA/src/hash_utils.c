@@ -262,10 +262,10 @@ void hu_free(u_hash_table *table)
             hi = hi->next;
             table->datafree(temp->data);
             table->keyfree(temp->key);
-            free(temp);
+            mu_free(temp);
         }
     }
-    free(table->table);
+    mu_free(table->table);
 }
 void hu_print(u_hash_table *table)
 {

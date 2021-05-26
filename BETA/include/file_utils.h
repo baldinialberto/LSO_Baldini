@@ -33,10 +33,10 @@ typedef struct _utils_file_storage
 size_t fu_storage_avBytes(u_file_storage *fstorage);
 size_t fu_storage_avFiles(u_file_storage *fstorage);
 u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes);
-u_file* fu_allocfile(char *path, u_file_data *data);
-u_file* fu_allocfile_empty(char *path);
-u_file* fu_allocfile_oncopy(char *path, const void *data, size_t datalen);
-int fu_addfile(u_file_storage *fstorage, u_file *file);
+u_file fu_allocfile(char *path, u_file_data *data);
+u_file fu_allocfile_empty(char *path);
+u_file fu_allocfile_oncopy(char *path, const void *data, size_t datalen);
+int fu_addfile(u_file_storage *fstorage, u_file_data *file, char *filepath);
 int fu_removefile(u_file_storage *fstorage, char *path);
 u_file_data *fu_getfile(u_file_storage *fstorage, char *path);
 void fu_storage_free(u_file_storage *fstorage);
@@ -46,10 +46,10 @@ size_t fu_readfile_realloc(u_file_data *file, size_t i, void **dest);
 int fu_fread(const char *path, u_file_data *destfile);
 int fu_fwrite(u_file_data *file, const char *destpath);
 size_t fu_filehash(void *file);
-int fu_filecompare(void *fileA, void *fileB);
+int fu_filenamecompare(void *fileA, void *fileB);
 void *fu_filepath(void *file);
 void *fu_filedata(void *file);
 void fu_fileprint(void *file);
-void fu_filefree(void *file);
+void fu_filedatafree(void *file);
 
 #endif
