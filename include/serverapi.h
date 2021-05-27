@@ -3,7 +3,7 @@
 
 #pragma once
 
-extern int socket_fd;
+extern int server_socket_fd;
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -15,6 +15,8 @@ extern int socket_fd;
 
 #include "server_common.h"
 #include "error_utils.h"
+
+
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime);
 int closeConnection(const char* sockname);

@@ -3,7 +3,7 @@
 
 #pragma once
 
-extern int socket_fd;
+extern int server_socket_fd;
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -12,10 +12,14 @@ extern int socket_fd;
 #include <sys/un.h>
 #include <unistd.h>
 #include <time.h>
+#include <errno.h>
 
-#include "error_utils.h"
-#include "server_common.h"
+#include "server_message.h"
 
+
+int sapi_sendop(const char *pathname, unsigned char op, unsigned char flag);
+int sapi_senddata(void *data, size_t datalen);
+int sapi_getresponse();
 int openConnection(const char* sockname, int msec, const struct timespec abstime);
 int closeConnection(const char* sockname);
 int openFile(const char* pathname, int flags);

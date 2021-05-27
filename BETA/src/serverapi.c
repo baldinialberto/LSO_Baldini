@@ -1,8 +1,79 @@
-#include <serverapi.h>
+#include "../include/serverapi.h"
 
 
-int socket_fd;
+int server_socket_fd;
 
+int sapi_sendop(const char *pathname, unsigned char op, unsigned char flags)
+{
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "sapi_sendop : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!server_socket_fd)
+    {
+        fprintf(stderr, "sapi_sendop : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    s_message message = SAPI_MESSAGE_LEN(flags, op, strlen(pathname));
+    if (write(server_socket_fd, &message, sizeof(s_message)) == -1)
+    {
+        fprintf(stderr, "sapi_sendop : write returned an error\n");
+        fflush(stderr);
+        perror("sapi_sendop : write");
+        return -1;
+    }
+    if (write(server_socket_fd, pathname, strlen(pathname) + 1) == -1)
+    {
+        fprintf(stderr, "sapi_sendop : write returned an error\n");
+        fflush(stderr);
+        perror("sapi_sendop : write");
+        return -1;
+    }
+    return 0;
+}
+int sapi_senddata(void *data, size_t datalen)
+{
+    if (data == NULL)
+    {
+        fprintf(stderr, "sapi_senddata : param data == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (datalen == 0)
+    {
+        fprintf(stderr, "sapi_senddata : param datalen == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!server_socket_fd)
+    {
+        fprintf(stderr, "sapi_senddata : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (write(server_socket_fd, data, datalen) == -1)
+    {
+        fprintf(stderr, "sapi_senddata : write returned an error\n");
+        fflush(stderr);
+        perror("sapi_senddata : write");
+        return -1;
+    }
+}
+int sapi_getresponse()
+{
+    s_message message;
+    if (read(server_socket_fd, &message, sizeof(s_message)) == -1)
+    {
+        fprintf(stderr, "sapi_getresponse : read returned an error\n");
+        fflush(stderr);
+        perror("sapi_getresponse : read");
+        return -1;
+    }
+    return message == SAPI_SUCCESS ? 0 : -1;
+}
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
     if (sockname == NULL)
@@ -16,7 +87,7 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 	strncpy(sa.sun_path, sockname, sizeof(sa.sun_path)-1);
 	sa.sun_family = AF_UNIX;
 
-    if (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0) == -1)
+    if (server_socket_fd = socket(AF_UNIX, SOCK_STREAM, 0) == -1)
     {
         fprintf(stderr, "openConnection : socket returned -1\n");
         fflush(stderr);
@@ -30,7 +101,7 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
         inter_requests_time.tv_nsec = 1000000;
     remaining_time.tv_nsec = abstime.tv_nsec;
 
-    while (connect(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
+    while (connect(server_socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
     remaining_time.tv_nsec > 0)
 	{
 		if (errno == ENOENT || errno == ECONNREFUSED) 
@@ -59,13 +130,13 @@ int closeConnection(const char* sockname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "closeConnection : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
         return -1;
     }
-    return close(socket_fd);
+    return close(server_socket_fd);
 }
 int openFile(const char* pathname, int flags)
 {
@@ -75,15 +146,36 @@ int openFile(const char* pathname, int flags)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "openFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
         return -1;
     }
-
-   
-
+    if (sapi_sendop(pathname, (unsigned char)flags, SAPI_OPENFILE) == -1)
+    {
+        fprintf(stderr, "openFile : sapi_sendop returned an error\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (sapi_getresponse() == -1)
+    {
+        fprintf(stderr, "openFile : sapi_getresponse returned an error\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (sapi_senddata(pathname, strlen(pathname)) == -1)
+    {
+        fprintf(stderr, "openFile : sapi_senddata returned an error\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (sapi_getresponse() == -1)
+    {
+        fprintf(stderr, "openFile : sapi_getresponse returned an error\n");
+        fflush(stderr);
+        return -1;
+    }
     return 0;
 }
 int readFile(const char* pathname, void** buf, size_t* size)
@@ -106,7 +198,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "readFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -129,7 +221,7 @@ int readNFiles(int N, const char *dirname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "readNFiles : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -151,7 +243,7 @@ int writeFile(const char* pathname, const char* dirname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "readNFiles : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -191,7 +283,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
         fflush(stderr);
         return 0;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "appendToFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -207,7 +299,7 @@ int lockFile(const char* pathname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "lockFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -223,7 +315,7 @@ int unlockFile(const char* pathname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "unlockFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -239,7 +331,7 @@ int closeFile(const char* pathname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "closeFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);
@@ -255,7 +347,7 @@ int removeFile(const char* pathname)
         fflush(stderr);
         return -1;
     }
-    if (!socket_fd)
+    if (!server_socket_fd)
     {
         fprintf(stderr, "closeFile : socket_fd == 0 -> client not connected\n");
         fflush(stderr);

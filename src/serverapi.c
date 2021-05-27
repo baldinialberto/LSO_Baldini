@@ -1,7 +1,7 @@
 #include <serverapi.h>
 #define DEBUG(X) X
 
-int socket_fd;
+int server_socket_fd;
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
@@ -11,7 +11,7 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 	sa.sun_family = AF_UNIX;
 
     CHECK_BADVAL_PERROR_RETURN(
-        socket_fd = socket(AF_UNIX, SOCK_STREAM, 0), 
+        server_socket_fd = socket(AF_UNIX, SOCK_STREAM, 0), 
         -1, "openConnection : socket", -1
     )
 
@@ -21,7 +21,7 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
         inter_requests_time.tv_nsec = 1000000;
     remaining_time.tv_nsec = abstime.tv_nsec;
 
-    while (connect(socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
+    while (connect(server_socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
     remaining_time.tv_nsec > 0)
 	{
 		if (errno == ENOENT || errno == ECONNREFUSED) 
@@ -46,12 +46,12 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 int closeConnection(const char* sockname)
 {
     DEBUG(puts("CloseConnection"));
-    if (!socket_fd) return -1;
-    return close(socket_fd);
+    if (!server_socket_fd) return -1;
+    return close(server_socket_fd);
 }
 int openFile(const char* pathname, int flags)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = OPEN_OP;
     command |= O_LOCK_FLAG;
@@ -63,17 +63,17 @@ int openFile(const char* pathname, int flags)
     command |= pathname_len;
 
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
 
@@ -81,7 +81,7 @@ int openFile(const char* pathname, int flags)
 }
 int readFile(const char* pathname, void** buf, size_t* size)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = READ_OP;
     command |= O_LOCK_FLAG;
@@ -93,17 +93,17 @@ int readFile(const char* pathname, void** buf, size_t* size)
     command |= pathname_len;
 
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
     if (res & OP_MASK) return res;
@@ -114,7 +114,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
     *size = (size_t)res;
 
     CHECK_BADVAL_RETURN(
-        read(socket_fd, *buf, res), 
+        read(server_socket_fd, *buf, res), 
         -1, -1
     )
 
@@ -128,7 +128,7 @@ int readNFiles(int N, const char *dirname)
 
 int writeFile(const char* pathname, const char* dirname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = WRITE_OP;
     command |= O_CREATE_FLAG;
@@ -143,12 +143,12 @@ int writeFile(const char* pathname, const char* dirname)
 
     // write command
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     // write pathname
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
     
@@ -173,13 +173,13 @@ int writeFile(const char* pathname, const char* dirname)
     // write datalen
     command = datalen;
     CHECK_BADVAL_RETURN(
-        write(socket_fd, &command, sizeof(server_command_t)), 
+        write(server_socket_fd, &command, sizeof(server_command_t)), 
         -1, -1
     )
 
     server_command_t res;
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
     if (res & WRBACK_FLAG) // server evicted a file
@@ -190,14 +190,14 @@ int writeFile(const char* pathname, const char* dirname)
     }
     // write data
     CHECK_BADVAL_RETURN(
-        write(socket_fd, data, datalen), 
+        write(server_socket_fd, data, datalen), 
         -1, -1
     )
     free(data);
 
     // read result of writeFile
     CHECK_BADVAL_RETURN(
-    read(socket_fd, &res, sizeof(server_command_t)), 
+    read(server_socket_fd, &res, sizeof(server_command_t)), 
     -1, -1
     )
 
@@ -205,7 +205,7 @@ int writeFile(const char* pathname, const char* dirname)
 }
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = APPEND_OP;
     command |= O_LOCK_FLAG;
@@ -219,19 +219,19 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 
     // write command
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     // write pathname
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
     if (res & WRBACK_FLAG) // server evicted a file
@@ -240,7 +240,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
     
         // read result of appendFile
         CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
         )
     }
@@ -249,7 +249,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 }
 int lockFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = LOCK_OP;
     command |= O_LOCK_FLAG;
@@ -262,19 +262,19 @@ int lockFile(const char* pathname)
 
     // write command
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     // write pathname
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
 
@@ -282,7 +282,7 @@ int lockFile(const char* pathname)
 }
 int unlockFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = UNLOCK_OP;
 
@@ -294,19 +294,19 @@ int unlockFile(const char* pathname)
 
     // write command
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     // write pathname
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     )
 
@@ -314,7 +314,7 @@ int unlockFile(const char* pathname)
 }
 int closeFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = CLOSE_OP;
 
@@ -326,19 +326,19 @@ int closeFile(const char* pathname)
 
     // write command
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     // write pathname
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     );
 
@@ -346,7 +346,7 @@ int closeFile(const char* pathname)
 }
 int removeFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (!server_socket_fd) return NOTCONN_FLAG;
 
     server_command_t command = REMOVE_OP;
 
@@ -358,19 +358,19 @@ int removeFile(const char* pathname)
 
     // write command
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
+        write(server_socket_fd, (void *)&command, sizeof(server_command_t)), 
         -1, -1
     )
     // write pathname
     CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
+        write(server_socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
         -1, -1
     )
 
     server_command_t res;
     // read result of appendFile 
     CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
+        read(server_socket_fd, &res, sizeof(server_command_t)), 
         -1, -1
     );
 
