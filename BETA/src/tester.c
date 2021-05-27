@@ -6,7 +6,7 @@ int main(int argc, char **argv)
     char temp[256] = {(char)0};
     int n = (argc == 2) ? strtol(argv[1], NULL, 10) : 10;
     u_file file;
-    for (int i = 0; i <= n; i++)
+    for (int i = 0; i < n; i++)
     {
         printf("---%d---\n", i);
         sprintf(temp, "/home/alberto/LSO_Baldini/towrite/meta_%d.txt", i);
