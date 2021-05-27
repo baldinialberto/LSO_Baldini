@@ -5,17 +5,24 @@ int socket_fd;
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
+    if (sockname == NULL)
+    {
+        fprintf(stderr, "openConnection : param sockname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
     
-
-
     struct sockaddr_un sa;
 	strncpy(sa.sun_path, sockname, sizeof(sa.sun_path)-1);
 	sa.sun_family = AF_UNIX;
 
-    CHECK_BADVAL_PERROR_RETURN(
-        socket_fd = socket(AF_UNIX, SOCK_STREAM, 0), 
-        -1, "openConnection : socket", -1
-    )
+    if (socket_fd = socket(AF_UNIX, SOCK_STREAM, 0) == -1)
+    {
+        fprintf(stderr, "openConnection : socket returned -1\n");
+        fflush(stderr);
+        perror("openConnection : socket");
+        return -1;
+    }
 
     struct timespec inter_requests_time, remaining_time;
     inter_requests_time.tv_nsec = msec * 1000;
@@ -28,13 +35,12 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 	{
 		if (errno == ENOENT || errno == ECONNREFUSED) 
         {
-            printf("Not connected");
+            fprintf(stdout, "Not connected\n");
 			nanosleep(&inter_requests_time, NULL);
             remaining_time.tv_nsec -= inter_requests_time.tv_nsec;
         }
 		else
         {
-            printf("errno = %d\n", errno);
             perror("openConnection : connect");
 			return(-1);
         }
@@ -47,334 +53,213 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
 }
 int closeConnection(const char* sockname)
 {
-    DEBUG(puts("CloseConnection"));
-    if (!socket_fd) return -1;
+    if (sockname == NULL)
+    {
+        fprintf(stderr, "closeConnection : param sockname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "closeConnection : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
     return close(socket_fd);
 }
 int openFile(const char* pathname, int flags)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "openFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "openFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
 
-    server_command_t command = OPEN_OP;
-    command |= O_LOCK_FLAG;
+   
 
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    )
-
-    return res;
+    return 0;
 }
 int readFile(const char* pathname, void** buf, size_t* size)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "readFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (buf == NULL)
+    {
+        fprintf(stderr, "readFile : param buf == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (size == NULL)
+    {
+        fprintf(stderr, "readFile : param size == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "readFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
 
-    server_command_t command = READ_OP;
-    command |= O_LOCK_FLAG;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    )
-    if (res & OP_MASK) return res;
-
-    res >>= MESSG_SHIFT; // len of chars readen
-
-    *buf = calloc(res, sizeof(char*));
-    *size = (size_t)res;
-
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, *buf, res), 
-        -1, -1
-    )
-
-    return res;
-}
-
-int readNFiles(int N, const char *dirname)
-{
     return 0;
 }
-
+int readNFiles(int N, const char *dirname)
+{
+    if (N == 0)
+    {
+        fprintf(stderr, "readNFiles : param N == 0 -> nothing to do\n");
+        fflush(stderr);
+        return 0;
+    }
+    if (dirname == NULL)
+    {
+        fprintf(stderr, "readNFiles : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "readNFiles : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
+}
 int writeFile(const char* pathname, const char* dirname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
-
-    server_command_t command = WRITE_OP;
-    command |= O_CREATE_FLAG;
-    command |= O_LOCK_FLAG;
-    if (dirname != NULL) command |= O_DIR_FLAG;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    
-    pathname_len <<= MESSG_SHIFT;
-    command |= pathname_len;
-
-    // write command
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    // write pathname
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-    
-    FILE *file = fopen(pathname, "r");
-    if (file == NULL) return -1;
-
-    size_t bytesreadend = 0, datalen = 1025, i = 0;
-    char *data = malloc(datalen);
-    while (!feof(file))
+    if (pathname == NULL)
     {
-        bytesreadend = fread(data + i, 
-            sizeof(char), 1024, file
-        );
-        i += bytesreadend;
-        datalen += bytesreadend;
-        data = realloc(data, datalen);
+        fprintf(stderr, "writeFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
     }
-    data[i] = (char) 0;
-
-    fclose(file);
-
-    // write datalen
-    command = datalen;
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, &command, sizeof(server_command_t)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    )
-    if (res & WRBACK_FLAG) // server evicted a file
+    if (dirname == NULL)
     {
-        // write back file to dir..
-        
-        
+        fprintf(stderr, "writeFile : param dirname == NULL\n");
+        fflush(stderr);
+        return -1;
     }
-    // write data
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, data, datalen), 
-        -1, -1
-    )
-    free(data);
-
-    // read result of writeFile
-    CHECK_BADVAL_RETURN(
-    read(socket_fd, &res, sizeof(server_command_t)), 
-    -1, -1
-    )
-
-    return res;
+    if (!socket_fd)
+    {
+        fprintf(stderr, "readNFiles : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
 }
 int appendToFile(const char* pathname, void* buf, size_t size, const char* dirname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
-
-    server_command_t command = APPEND_OP;
-    command |= O_LOCK_FLAG;
-    if (dirname != NULL) command |= O_DIR_FLAG;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    // write command
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    // write pathname
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    // read result of appendFile 
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    )
-    if (res & WRBACK_FLAG) // server evicted a file
+    if (pathname == NULL)
     {
-        // write back file to dir..
-    
-        // read result of appendFile
-        CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-        )
+        fprintf(stderr, "appendToFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
     }
-
-    return res;
+    if (dirname == NULL)
+    {
+        fprintf(stderr, "appendToFile : param dirname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (buf == NULL && size != 0)
+    {
+        fprintf(stderr, "appendToFile : param buf == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (size == 0 && buf != NULL)
+    {
+        fprintf(stderr, "appendToFile : param size == 0\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (size == 0 && buf == NULL)
+    {
+        fprintf(stderr, "appendToFile : param buf == NULL && size == 0 -> nothing to do\n");
+        fflush(stderr);
+        return 0;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "appendToFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
 }
 int lockFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
-
-    server_command_t command = LOCK_OP;
-    command |= O_LOCK_FLAG;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    // write command
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    // write pathname
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    // read result of appendFile 
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    )
-
-    return res;
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "lockFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "lockFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
 }
 int unlockFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
-
-    server_command_t command = UNLOCK_OP;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    // write command
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    // write pathname
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    // read result of appendFile 
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    )
-
-    return res;
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "unlockFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "unlockFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
 }
 int closeFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
-
-    server_command_t command = CLOSE_OP;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    // write command
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    // write pathname
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    // read result of appendFile 
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    );
-
-    return res;
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "closeFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "closeFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
+    return 0;
 }
 int removeFile(const char* pathname)
 {
-    if (!socket_fd) return NOTCONN_FLAG;
-
-    server_command_t command = REMOVE_OP;
-
-    unsigned int pathname_len = strlen(pathname);
-    if (pathname_len > MESSAGE_MAX_LEN) return -1;
-    pathname_len <<= MESSG_SHIFT;
-
-    command |= pathname_len;
-
-    // write command
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)&command, sizeof(server_command_t)), 
-        -1, -1
-    )
-    // write pathname
-    CHECK_BADVAL_RETURN(
-        write(socket_fd, (void *)pathname, pathname_len * sizeof(char)), 
-        -1, -1
-    )
-
-    server_command_t res;
-    // read result of appendFile 
-    CHECK_BADVAL_RETURN(
-        read(socket_fd, &res, sizeof(server_command_t)), 
-        -1, -1
-    );
-
+    if (pathname == NULL)
+    {
+        fprintf(stderr, "closeFile : param pathname == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (!socket_fd)
+    {
+        fprintf(stderr, "closeFile : socket_fd == 0 -> client not connected\n");
+        fflush(stderr);
+        return -1;
+    }
     return 0;
 }

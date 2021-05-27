@@ -1,113 +1,26 @@
-==1984== Memcheck, a memory error detector
-==1984== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==1984== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==1984== Command: ./tester.exe 99
-==1984== 
-mu_free : param ptr == NULL
----0---
----1---
----2---
----3---
----4---
----5---
----6---
----7---
----8---
----9---
----10---
----11---
----12---
----13---
----14---
----15---
----16---
----17---
----18---
----19---
----20---
----21---
----22---
----23---
----24---
----25---
----26---
----27---
----28---
----29---
----30---
----31---
----32---
----33---
----34---
----35---
----36---
----37---
----38---
----39---
----40---
----41---
----42---
----43---
----44---
----45---
----46---
----47---
----48---
----49---
----50---
----51---
----52---
----53---
----54---
----55---
----56---
----57---
----58---
----59---
----60---
----61---
----62---
----63---
----64---
----65---
----66---
----67---
----68---
----69---
----70---
----71---
----72---
----73---
----74---
----75---
----76---
----77---
----78---
----79---
----80---
----81---
----82---
----83---
----84---
----85---
----86---
----87---
----88---
----89---
----90---
----91---
----92---
----93---
----94---
----95---
----96---
----97---
----98---
-==1984== 
-==1984== HEAP SUMMARY:
-==1984==     in use at exit: 0 bytes in 0 blocks
-==1984==   total heap usage: 3,689 allocs, 3,689 frees, 62,704,016 bytes allocated
-==1984== 
-==1984== All heap blocks were freed -- no leaks are possible
-==1984== 
-==1984== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==3514== Memcheck, a memory error detector
+==3514== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3514== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==3514== Command: ./client.exe -f MyServerSocket.socket -w .,10 -W pippo.txt -D evicted -r /home/alberto/LSO_Baldini/towrite/pluto.txt,/home/alberto/LSO_Baldini/towrite/pippo.txt -R 10 -d /home/alberto/LSO_Baldini/readen -t 10 -l pippo.txt,pluto.txt -u pippo.txt,pluto.txt -c pippo.txt -p 99
+==3514== 
+char *server_socket_filename = MyServerSocket.socket
+char *writeback_foldername = evicted
+char *folder_to_write = .
+char *folder_destination = /home/alberto/LSO_Baldini/readen
+unsigned int folder_filecount = 10
+unsigned int read_filecount = 10
+unsigned int connection_timer = 10
+bool verbose = 1
+pippo.txt -> (NULL)
+/home/alberto/LSO_Baldini/towrite/pippo.txt -> /home/alberto/LSO_Baldini/towrite/pluto.txt -> (NULL)
+pippo.txt -> pluto.txt -> (NULL)
+pippo.txt -> pluto.txt -> (NULL)
+pippo.txt -> (NULL)
+==3514== 
+==3514== HEAP SUMMARY:
+==3514==     in use at exit: 0 bytes in 0 blocks
+==3514==   total heap usage: 19 allocs, 19 frees, 4,379 bytes allocated
+==3514== 
+==3514== All heap blocks were freed -- no leaks are possible
+==3514== 
+==3514== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

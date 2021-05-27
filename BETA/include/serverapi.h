@@ -13,6 +13,7 @@ extern int socket_fd;
 #include <unistd.h>
 #include <time.h>
 
+#include "error_utils.h"
 #include "server_common.h"
 
 int openConnection(const char* sockname, int msec, const struct timespec abstime);

@@ -8,7 +8,7 @@
 #include "mem_utils.h"
 #include "list_utils.h"
 #include "string_utils.h"
-#include "serverapi.h"
+//#include "serverapi.h"
 #include "server_message.h"
 
 typedef struct _client_conf
