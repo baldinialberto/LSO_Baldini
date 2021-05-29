@@ -17,9 +17,10 @@ extern int server_socket_fd;
 #include "server_message.h"
 
 
-int sapi_sendop(const char *pathname, unsigned char op, unsigned char flag);
+int sapi_sendop(unsigned int messlen, unsigned char op, unsigned char flag);
 int sapi_senddata(void *data, size_t datalen);
 int sapi_getresponse();
+int sapi_getdata(void **data, size_t *datalen);
 int openConnection(const char* sockname, int msec, const struct timespec abstime);
 int closeConnection(const char* sockname);
 int openFile(const char* pathname, int flags);
