@@ -500,3 +500,63 @@ void fu_filedatafree(void *file)
     mu_free(((u_file_data *)file)->data);
     mu_free((u_file_data *)file);
 }
+int fu_readpath(const char *path, void **data, size_t *datalen)
+{
+    if (path == NULL)
+    {
+        fprintf(stderr, "fu_readpath : param path == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (data == NULL)
+    {
+        fprintf(stderr, "fu_readpath : param data == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (datalen == NULL)
+    {
+        fprintf(stderr, "fu_readpath : param datalen == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    u_file_data temp = {*data, *datalen, 0};
+    if (fu_fread(path, &temp) == -1)
+    {
+        fprintf(stderr, "fu_readpath : fu_fread reaturned an error\n");
+        fflush(stderr);
+        return -1;
+    }
+    *data = temp.data;
+    *datalen = temp.datalen;
+    return 0;
+}
+int fu_writepath(const char *path, void *data, size_t datalen)
+{
+    if (path == NULL)
+    {
+        fprintf(stderr, "fu_writepath : param path == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (data == NULL && datalen != 0)
+    {
+        fprintf(stderr, "fu_writepath : param data == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (data != NULL && datalen == 0)
+    {
+        fprintf(stderr, "fu_writepath : param datalen == 0\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (data == NULL && datalen == 0)
+    {
+        fprintf(stderr, "fu_writepath : nothing to do\n");
+        fflush(stderr);
+        return 0;
+    }
+    u_file_data temp = {data, datalen, 0};
+    return fu_fwrite(&temp, path);
+}

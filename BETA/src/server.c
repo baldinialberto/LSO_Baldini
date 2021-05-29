@@ -2,21 +2,15 @@
 
 int main(int argc, char** argv)
 {
-	assert(sizeof(server_command_t) == 4);
-
 	static server_settings settings;
 	//static server_stats stats;
 	static server_infos infos;
-	static SFS_FS memory;
 	settings = init_server_settings();
 	//stats = init_server_stats();
 	infos = init_server_infos(&settings);
-	sfs_init(&memory, settings.avaiableMemory, settings.maxFileCount);
-	infos.memory = &memory;
 
-	DEBUG(sfs_find(&memory, "/home/alberto/LSO_Baldini/src/lol.txt"));
 
-	DEBUG(print_server_settings(&settings));
+	print_server_settings(&settings);
 	
 	thread_spawn_detached(&server_signalhandler, (void *) &infos);
 	
@@ -34,55 +28,46 @@ int main(int argc, char** argv)
 void server_dispatcher(server_infos *infos)
 {
 	DEBUG(puts("Dispatcher"));
-	infos->sq = calloc(1, sizeof(socket_queue));
 	
 	spawn_workers(infos);
 	
-	sq_push(infos->sq, infos->server_socket_fd, SQ_SSOCKET_FLAG);
-	sq_update_arr(infos->sq);
+	pu_add(&(infos->pollarr), infos->server_socket_fd, POLL_IN);
 
 	int poll_ready = 0;
 
-	while (pthread_mutex_lock(&(infos->sq->mutex)), 
-		!(infos->server_hu && !sq_has_clients(infos->sq)) && !infos->server_quit)
+	while (!(infos->server_hu && pu_isempty(&(infos->pollarr))) && !infos->server_quit)
 	{
-		if (infos->server_hu) sq_remove(infos->sq, infos->server_socket_fd);
+		if (infos->server_hu) pu_remove(&(infos->pollarr), infos->server_socket_fd);
 		DEBUG(puts("ServerWaiting"));
-		poll_ready = poll(infos->sq->pollarr, infos->sq->nsockets, 1000);
+		poll_ready = poll(infos->pollarr.arr, infos->pollarr.len, 1000);
 
-		for (int i = 0; poll_ready && i < infos->sq->nsockets; i++)
+		for (int i = 0; poll_ready && i < infos->pollarr.len; i++)
 		{
-			if (infos->sq->pollarr[i].revents & POLLIN)
+			if (infos->pollarr.arr[i].revents & POLLIN)
 			{	
-				if (infos->sq->pollarr[i].fd != infos->server_socket_fd) 
+				if (infos->pollarr.arr[i].fd != infos->server_socket_fd) 
 				{
-					assign_client(infos, infos->sq->pollarr[i].fd);
+					assign_client(infos, infos->pollarr.arr[i].fd);
 				}
-				else
+				else if (!pu_isfull(&(infos->pollarr)))
 				{
-					sq_push(infos->sq, 
-					accept(infos->server_socket_fd, NULL, 0), 
-					SQ_CSOCKET_FLAG
+					pu_add(&(infos->pollarr), 
+						accept(infos->server_socket_fd, NULL, 0), 
+						POLL_IN | POLL_HUP
 					);
 				} 
 			}
-			if (infos->sq->pollarr[i].revents & POLLHUP)
+			if (infos->pollarr.arr[i].revents & POLLHUP)
 			{
-				close(infos->sq->pollarr[i].fd);
-				sq_remove(infos->sq, infos->sq->pollarr[i].fd);
+				close(infos->pollarr.arr[i].fd);
+				pu_remove(&(infos->pollarr), infos->pollarr.arr[i].fd);
 			}
-			infos->sq->pollarr[i].revents &= 0;
 		}
-
-		pthread_mutex_unlock(&(infos->sq->mutex));
 	}
-
-	pthread_mutex_unlock(&(infos->sq->mutex)); // unlock mutex at server_hu
 	if (!infos->server_quit) infos->server_quit = 1;
 
 	DEBUG(puts("Cleanup"));
 	join_workers(infos);
-	sq_free(infos->sq);
 }
 
 void *server_worker(void *worker_arg)
@@ -117,10 +102,10 @@ void *server_worker(void *worker_arg)
 			&request, sizeof(int)
 		);
 		printf("received request %X from %d\n", request, (wa->infos->workers_clients)[wa->worker_id]);
-		if (request & OP_MASK)
+		if (request)
 			serve(request, 
 				(wa->infos->workers_clients)[wa->worker_id], 
-				wa->infos->memory
+				wa->infos->storage
 			);
 
 		(wa->infos->workers_clients)[wa->worker_id] = 0;
@@ -444,7 +429,10 @@ server_infos init_server_infos(server_settings *setts)
 {
 	server_infos infos;
 
-	infos.server_socket_fd = create_server_socket(setts);
+	CHECK_BADVAL_PERROR_EXIT(
+		infos.server_socket_fd = create_server_socket(setts), 
+		-1, "init_server_infos : create_server_socket"
+	);
 	infos.nworkers = setts->nworkers;
 	CHECK_BADVAL_PERROR_EXIT(
 		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)), 
@@ -455,11 +443,11 @@ server_infos init_server_infos(server_settings *setts)
 		NULL, "init_server_infos : calloc"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.worker_locks = calloc(infos.nworkers, sizeof(mutex_t)), 
+		infos.worker_locks = calloc(infos.nworkers, sizeof(pthread_mutex_t)), 
 		NULL, "init_server_infos : calloc"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.worker_conds = calloc(infos.nworkers, sizeof(cond_t)), 
+		infos.worker_conds = calloc(infos.nworkers, sizeof(pthread_cond_t)), 
 		NULL, "init_server_infos : calloc"
 	);
 	for (int i = 0; i < infos.nworkers; i++)
@@ -468,6 +456,8 @@ server_infos init_server_infos(server_settings *setts)
 		pthread_cond_init(infos.worker_conds + i, NULL);
 	}
 	infos.server_quit = (infos.server_hu = 0);
+	infos.pollarr = pu_initarr(setts->maxClientCount);
+	infos.storage = fu_init_file_storage(setts->maxFileCount, setts->avaiableMemory);
 
 	return infos;
 }
@@ -486,7 +476,8 @@ int free_server_infos(server_infos *infos)
 	}
 	if (infos->worker_conds != NULL) free(infos->worker_conds);
 	if (infos->worker_locks != NULL) free(infos->worker_locks);
-	if (infos->memory->filetable != NULL) free(infos->memory->filetable);
+	fu_storage_free(&(infos->storage));
+	pu_free(&(infos->pollarr));
 
 	return 0;
 }
@@ -499,12 +490,14 @@ void print_server_settings(server_settings *setts)
 CAPACITY = %dMB\n\
 FILECAPACITY = %d files\n\
 SOCKET_NAME = %s\n\
-LOGFILE_NAME = %s\n", 
+LOGFILE_NAME = %s\n\
+CLIENT_MAX = %d\n", 
 		setts->nworkers, 
 		setts->avaiableMemory, 
 		setts->maxFileCount, 
 		setts->socket_name,
-		setts->logfile_name
+		setts->logfile_name, 
+		setts->maxClientCount
 	);
 	fflush(stdout);
 }
@@ -609,6 +602,11 @@ void get_setting(char** str, FILE *fstream, server_settings *setts)
 	{
 		if (fscanf(fstream, "%d", &int_sett) != 1) return;
 		setts->avaiableMemory = int_sett;
+	}
+	else if (!strcmp(*str, CONFIG_CLIENT_MAX))
+	{
+		if (fscanf(fstream, "%d", &int_sett) != 1) return;
+		setts->maxClientCount = int_sett;
 	}
 	else if (!strcmp(*str, CONFIG_FILECAPACITY))
 	{

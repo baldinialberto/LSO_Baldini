@@ -61,6 +61,38 @@ int sapi_getresponse()
     }
     return message == SAPI_SUCCESS ? 0 : -1;
 }
+int sapi_getdata(void **buff, size_t *size)
+{
+    if (buff == NULL)
+    {
+        fprintf(stderr, "sapi_getdata : param buff == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (size == NULL)
+    {
+        fprintf(stderr, "sapi_getdata : param size == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (read(server_socket_fd, size, sizeof(size_t)) == -1)
+    {
+        fprintf(stderr, "sapi_getdata : read returned an error\n");
+        fflush(stderr);
+        perror("sapi_getdata : read");
+        return -1;
+    }
+    *buff = mu_realloc(*buff, *size);
+    if (read(server_socket_fd, *buff, *size) == -1)
+    {
+        fprintf(stderr, "sapi_getdata : read returned an error\n");
+        fflush(stderr);
+        perror("sapi_getdata : read");
+        return -1;
+    }
+
+    return 0;
+}
 int openConnection(const char* sockname, int msec, const struct timespec abstime)
 {
     if (sockname == NULL)
@@ -255,14 +287,50 @@ int readNFiles(int N, const char *dirname)
         fflush(stderr);
         return -1;
     }
-    void *buff;
-    size_t size;
+    int nfiles_readen = 0;
+    void *buff = NULL;
+    size_t size = 0;
+    u_string destpath = su_string_from_literal("");
+    FILE *file;
     while (sapi_getdata(&buff, &size) != -1)
     {
-
+        if (su_append_literal(&destpath, dirname))
+        {
+            fprintf(stderr, "readNFiles : su_append_literal returned an error\n");
+            fflush(stderr);
+            su_free_string(&destpath);
+            continue;
+        }
+        if (su_append_literal(&destpath, (char *)buff))
+        {
+            fprintf(stderr, "readNFiles : su_append_literal returned an error\n");
+            fflush(stderr);
+            su_free_string(&destpath);
+            continue;
+        }
+        if (sapi_getdata(&buff, &size) == -1)
+        {
+            fprintf(stderr, "readNFiles : sapi_senddata returned an error\n");
+            fflush(stderr);
+            continue;
+        }
+        else
+        {
+            if (fu_writepath(destpath.data, buff, size) == -1)
+            {
+                fprintf(stderr, "readNFiles : sapi_senddata returned an error\n");
+                fflush(stderr);
+                continue;
+            }
+            else 
+            {
+                nfiles_readen++;
+            }
+        }
+        su_realloc(&destpath, 0);
     }
 
-    return 0;
+    return nfiles_readen;
 }
 int writeFile(const char* pathname, const char* dirname)
 {

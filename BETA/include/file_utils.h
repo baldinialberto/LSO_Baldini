@@ -51,5 +51,7 @@ void *fu_filepath(void *file);
 void *fu_filedata(void *file);
 void fu_fileprint(void *file);
 void fu_filedatafree(void *file);
+int fu_readpath(const char *path, void **data, size_t *datalen);
+int fu_writepath(const char *path, void *data, size_t datalen);
 
 #endif

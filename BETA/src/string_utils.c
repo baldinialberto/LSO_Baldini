@@ -11,6 +11,7 @@ u_string su_string_from_literal(const char *literal)
     size_t literal_len = strlen(literal);
     u_string new_string;
     new_string.data = mu_malloc(literal_len + 1);
+    memcpy(new_string.data, literal, literal_len);
     new_string.len = literal_len;
     return new_string;
 }
@@ -77,6 +78,7 @@ int su_realloc(u_string *string, size_t newsize)
     }
     string->len = newsize;
     string->data = mu_realloc(string->data, newsize + 1);
+    (string->data)[string->len] = (char) 0;
 
     return 0;
 }
@@ -89,5 +91,5 @@ int su_strlen(u_string *string)
         fflush(stderr);
         return -1;
     }
-    return strlen(string->data);
+    return (string->len = strlen(string->data));
 }

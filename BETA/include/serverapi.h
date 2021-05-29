@@ -15,7 +15,8 @@ extern int server_socket_fd;
 #include <errno.h>
 
 #include "server_message.h"
-
+#include "mem_utils.h"
+#include "file_utils.h"
 
 int sapi_sendop(unsigned int messlen, unsigned char op, unsigned char flag);
 int sapi_senddata(void *data, size_t datalen);
