@@ -204,6 +204,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
         fflush(stderr);
         return -1;
     }
+    
 
     return 0;
 }
