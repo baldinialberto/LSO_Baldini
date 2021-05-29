@@ -18,9 +18,12 @@ extern int server_socket_fd;
 #include "mem_utils.h"
 #include "file_utils.h"
 
+int sapi_evict(const char *dirname);
+void sapi_printerror(FILE *fstream, s_message message);
 int sapi_sendop(unsigned int messlen, unsigned char op, unsigned char flag);
+int sapi_senddatalen(size_t datalen);
 int sapi_senddata(void *data, size_t datalen);
-int sapi_getresponse();
+s_message sapi_getresponse();
 int sapi_getdata(void **data, size_t *datalen);
 int openConnection(const char* sockname, int msec, const struct timespec abstime);
 int closeConnection(const char* sockname);

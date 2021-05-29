@@ -3,6 +3,8 @@
 
 #define SAPI_SUCCESS        0x00
 #define SAPI_FAILURE        0x01
+#define SAPI_EVICT          0x02
+#define SAPI_FNF            0x03
 
 #define O_CREATE            0x01
 #define O_LOCK              0x02

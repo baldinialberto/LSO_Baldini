@@ -5,19 +5,19 @@ int main(int argc, char** argv)
 	client_conf conf = {0};
 	parseargs(argc, argv, &conf);
     printargs(&conf);
+	int connected = 1;
 
-	// if (openConnection(conf.server_socket_filename, 500, 
-	// 	(struct timespec){0, 999999999}))
-	// {
-	// 	perror("openConnection");
-	// 	return -1;
-	// }
+	if (openConnection(conf.server_socket_filename, 500, 
+		(struct timespec){0, 999999999}))
+	{
+		perror("openConnection");
+		connected = 0;
+	}
 	
-	// if (closeConnection(conf.server_socket_filename))
-	// {
-	// 	perror("closeConnection");
-	// 	return -1;
-	// }
+	if (connected && closeConnection(conf.server_socket_filename))
+	{
+		perror("closeConnection");
+	}
 
 	client_conf_cleanup(&conf);	
 
@@ -99,7 +99,6 @@ int parseargs(int argc, char ** argv, client_conf *conf)
 
 	return EXIT_SUCCESS;
 }
-
 int printargs(client_conf *conf)
 {
 	printf(
@@ -129,7 +128,6 @@ bool verbose = %d\n",
 
 	return fflush(stdout);
 }
-
 int client_conf_cleanup(client_conf *conf)
 {
 	free(conf->folder_to_write);
@@ -140,7 +138,6 @@ int client_conf_cleanup(client_conf *conf)
 	lu_free(&(conf->files_to_delete), mu_free);
 	return 0;
 }
-
 int conf_add_list(const char *optarg, u_list *list)
 {
 	char opt[strlen(optarg) + 1], *temp;
