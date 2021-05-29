@@ -24,14 +24,14 @@ int sapi_evict(const char *dirname)
             return -1;
         }
         // create destpath  = dirname + filename 
-        if (su_append_literal(&destpath, dirname))
+        if (su_append_chars(&destpath, dirname))
         {
             fprintf(stderr, "writeFile : su_append_literal returned an error\n");
             fflush(stderr);
             su_free_string(&destpath);
             continue;
         }
-        if (su_append_literal(&destpath, (char *)tempdata))
+        if (su_append_chars(&destpath, (char *)tempdata))
         {
             fprintf(stderr, "writeFile : su_append_literal returned an error\n");
             fflush(stderr);
@@ -224,20 +224,22 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
         return -1;
     }
 
-    struct timespec inter_requests_time, remaining_time;
-    inter_requests_time.tv_nsec = msec * 1000;
-    if (inter_requests_time.tv_nsec > 999999999 || inter_requests_time.tv_nsec <= 0)
-        inter_requests_time.tv_nsec = 1000000;
-    remaining_time.tv_nsec = abstime.tv_nsec;
-
+    struct timespec inter_requests_time;
+    long int remaining_time;
+    inter_requests_time.tv_sec = msec / 1000;
+    inter_requests_time.tv_nsec = (msec % 1000) * 1000000;
+    if (inter_requests_time.tv_nsec > 999999999 || inter_requests_time.tv_nsec < 0)
+    {
+        inter_requests_time.tv_nsec = 500000000;
+    }
+    remaining_time = abstime.tv_nsec + (abstime.tv_sec * 1000000000L);
     while (connect(server_socket_fd, (struct sockaddr *)&sa, sizeof(sa)) == -1 && 
-    remaining_time.tv_nsec > 0)
+    remaining_time > 0)
 	{
 		if (errno == ENOENT || errno == ECONNREFUSED) 
         {
-            fprintf(stdout, "Not connected\n");
 			nanosleep(&inter_requests_time, NULL);
-            remaining_time.tv_nsec -= inter_requests_time.tv_nsec;
+            remaining_time -= (inter_requests_time.tv_nsec + inter_requests_time.tv_sec * 1000000000L);
         }
 		else
         {
@@ -246,10 +248,10 @@ int openConnection(const char* sockname, int msec, const struct timespec abstime
         }
 	}
 
-    if (remaining_time.tv_nsec > 0)
-        return 0;
+    if (remaining_time > 0) return 0;
 
-    return -1;;
+    fprintf(stdout, "Not connected\n");
+    return -1;
 }
 int closeConnection(const char* sockname)
 {
@@ -396,14 +398,14 @@ int readNFiles(int N, const char *dirname)
     {
         // there's data to read
         // create destpath  = dirname + filename 
-        if (su_append_literal(&destpath, dirname))
+        if (su_append_chars(&destpath, dirname))
         {
             fprintf(stderr, "readNFiles : su_append_literal returned an error\n");
             fflush(stderr);
             su_free_string(&destpath);
             continue;
         }
-        if (su_append_literal(&destpath, (char *)buff))
+        if (su_append_chars(&destpath, (char *)buff))
         {
             fprintf(stderr, "readNFiles : su_append_literal returned an error\n");
             fflush(stderr);

@@ -16,7 +16,7 @@ typedef struct _utils_string
 
 u_string su_string_from_literal(const char *literal);
 int su_free_string(u_string *string);
-int su_append_literal(u_string *string, const char *literal);
+int su_append_chars(u_string *string, const char *literal);
 int su_realloc(u_string *string, size_t newsize);
 int su_strlen(u_string *string);
 int su_string_extend(u_string *sting, size_t delta);

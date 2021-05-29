@@ -7,13 +7,15 @@ int main(int argc, char** argv)
     printargs(&conf);
 	int connected = 1;
 
-	if (openConnection(conf.server_socket_filename, 500, 
-		(struct timespec){0, 999999999}))
+	if (openConnection(conf.server_socket_filename, conf.connection_timer, 
+		(struct timespec){0, 500000000L}))
 	{
 		perror("openConnection");
 		connected = 0;
 	}
 	
+
+
 	if (connected && closeConnection(conf.server_socket_filename))
 	{
 		perror("closeConnection");
@@ -150,4 +152,66 @@ int conf_add_list(const char *optarg, u_list *list)
 	}
 
 	return 0;
+}
+int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir)
+{
+	// keep in here
+	
+}
+int write_files_list(u_list *filelist, const char *wbdir)
+{
+	int res = 0;
+	u_list_node *currnode;
+	lu_foreach(filelist, currnode, 
+		res += writeFile(currnode->data, wbdir);
+	);
+	return res ? -1 : 0;
+}
+int read_files_list(u_list *filelist, const char *destdir)
+{
+	int res = 0;
+	u_list_node *currnode;
+	void *buff;
+	size_t size;
+	u_string temp = su_string_from_literal("");
+	lu_foreach(filelist, currnode, 
+		if (readFile((char *)currnode->data, &buff, &size))
+		{
+			fprintf(stderr, "\n");
+			fflush(stderr);
+			res++;
+		} else {
+			su_append_chars(&temp, destdir);
+			su_append_chars(&temp, currnode->data);
+			res += fu_writepath(temp.data, buff, size);
+		}
+	);
+	return res ? -1 : 0;
+}
+int lock_files_list(u_list *filelist)
+{
+	int res = 0;
+	u_list_node *currnode;
+	lu_foreach(filelist, currnode, 
+		res += lockFile((char *)currnode->data);
+	);
+	return res ? -1 : 0;
+}
+int unlock_files_list(u_list *filelist)
+{
+	int res = 0;
+	u_list_node *currnode;
+	lu_foreach(filelist, currnode, 
+		res += unlockFile((char *)currnode->data);
+	);
+	return res ? -1 : 0;
+}
+int remove_files_list(u_list *filelist)
+{
+	int res = 0;
+	u_list_node *currnode;
+	lu_foreach(filelist, currnode, 
+		res += removeFile((char *)currnode->data);
+	);
+	return res ? -1 : 0;
 }

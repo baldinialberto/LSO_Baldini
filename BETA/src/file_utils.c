@@ -65,6 +65,7 @@ u_file fu_allocfile(char *path, u_file_data *data)
     u_file newfile;
     newfile.data = data;
     newfile.data->datainfo = 0;
+    newfile.data->client = -1;
     newfile.path = path;
 
     return newfile;

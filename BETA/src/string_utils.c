@@ -26,7 +26,7 @@ int su_free_string(u_string *string)
     mu_free(string->data);
     return 0;
 }
-int su_append_literal(u_string *string, const char *literal)
+int su_append_chars(u_string *string, const char *literal)
 {
     if (string == NULL)
     {

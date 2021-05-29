@@ -13,6 +13,7 @@ typedef struct _utils_file_data
 {
     void *data;
     size_t datalen;
+    int client;
     unsigned int datainfo;
 } u_file_data;
 typedef struct _utils_file

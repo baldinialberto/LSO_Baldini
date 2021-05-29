@@ -5,6 +5,8 @@
 #define SAPI_FAILURE        0x01
 #define SAPI_EVICT          0x02
 #define SAPI_FNF            0x03
+#define SAPI_LOCKED         0x04
+#define SAPI_NOTOPEN        0x05
 
 #define O_CREATE            0x01
 #define O_LOCK              0x02

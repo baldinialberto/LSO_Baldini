@@ -32,12 +32,11 @@ int parseargs(int argc, char ** argv, client_conf *conf);
 int printargs(client_conf *conf);
 int client_conf_cleanup(client_conf *conf);
 int conf_add_list(const char *optarg, u_list* list);
-int write_files(u_list list, const char *writeback_folder);
-int write_folder(char *folderpath, int count);
-int read_files(u_list list, const char *folder_dest);
-int read_rndm_nfiles(int count);
-int remove_files(u_list list);
-int write_file(u_list_node* list_node, const char *writeback_folder);
-int read_file(u_list_node* list_node, const char *folder_dest);
+int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir);
+int write_files_list(u_list *filelist, const char *wbdir);
+int read_files_list(u_list *filelist, const char *destdir);
+int lock_files_list(u_list *filelist);
+int unlock_files_list(u_list *filelist);
+int remove_files_list(u_list *filelist);
 
 #endif
