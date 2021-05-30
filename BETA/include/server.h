@@ -82,8 +82,6 @@ void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
 int thread_spawn_detached(void *(*fun)(void*), void *arg);
 pthread_t thread_spawn(void *(*fun)(void*), void *arg);
-
-
 int ignore_signals();
 int spawn_workers(server_infos* infos);
 int join_workers(server_infos* infos);
@@ -92,15 +90,15 @@ void server_dispatcher(server_infos *infos);
 void *server_worker(void *worker_args);
 int assign_client(server_infos *infos, int client);
 int serve(int request, int client_socket, u_file_storage* storage);
-
-int server_closeConnection(int request, server_infos* infos);
 int server_openFile(int request, int client_socket, u_file_storage* storage);
 int server_readFile(int request, int client_socket, u_file_storage* storage);
+int server_readNFiles(int request, int client_socket, u_file_storage* storage);
 int server_writeFile(int request, int client_socket, u_file_storage* storage);
 int server_appendToFile(int request, int client_socket, u_file_storage* storage);
 int server_lockFile(int request, int client_socket, u_file_storage* storage);
 int server_unlockFile(int request, int client_socket, u_file_storage* storage);
 int server_closeFile(int request, int client_socket, u_file_storage* storage);
 int server_removeFile(int request, int client_socket, u_file_storage* storage);
+int server_evictlist(u_list *savelist, size_t bytes_to_free);
 
 #endif

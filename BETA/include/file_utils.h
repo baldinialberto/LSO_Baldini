@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
 #include "hash_utils.h"
 #include "string_utils.h"
 #include "mem_utils.h"
@@ -15,6 +16,7 @@ typedef struct _utils_file_data
     size_t datalen;
     int client;
     unsigned int datainfo;
+    pthread_mutex_t mutex;
 } u_file_data;
 typedef struct _utils_file
 {

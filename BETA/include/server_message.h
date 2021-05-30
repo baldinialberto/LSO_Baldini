@@ -23,6 +23,10 @@
 #define SAPI_CLOSEFILE      0x28
 #define SAPI_REMOVEFILE     0x2C
 
+#define SAPI_OPMASK         0xFC
+#define SAPI_FLAGMASK       0x03
+#define SAPI_MESSMASK       0xFFFFFF00
+
 #define SAPI_MSSLEN_SHFT    0x08
 
 #define SAPI_MESSAGE_LEN(FLAG, OP, MESSAGELEN) ((unsigned int)FLAG | (unsigned int)OP | (unsigned int)(MESSAGELEN << SAPI_MSSLEN_SHFT))

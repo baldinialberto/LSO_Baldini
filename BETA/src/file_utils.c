@@ -66,6 +66,7 @@ u_file fu_allocfile(char *path, u_file_data *data)
     newfile.data = data;
     newfile.data->datainfo = 0;
     newfile.data->client = -1;
+    pthread_mutex_init(&(newfile.data->mutex), NULL);
     newfile.path = path;
 
     return newfile;
@@ -498,6 +499,7 @@ void fu_filedatafree(void *file)
         fflush(stderr);
         return;
     }
+    pthread_mutex_destroy(&(((u_file_data *)file)->mutex));
     mu_free(((u_file_data *)file)->data);
     mu_free((u_file_data *)file);
 }

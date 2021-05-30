@@ -194,7 +194,81 @@ int ignore_signals()
 
     return pthread_sigmask(SIG_BLOCK, &set, NULL);
 }
-
+int serve(int request, int client_socket, u_file_storage* storage)
+{
+	if (storage == NULL)
+	{
+		fprintf(stderr, "serve : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
+	unsigned char op = request & SAPI_OPMASK;
+	switch(op)
+	{
+		case SAPI_OPENFILE:
+			return server_openFile(request, client_socket, storage);
+		case SAPI_CLOSEFILE:
+			return server_closeFile(request, client_socket, storage);
+		case SAPI_READFILE:
+			return server_readFile(request, client_socket, storage);
+		case SAPI_READNFILES:
+			return server_readNFiles(request, client_socket, storage);
+		case SAPI_WRITEFILE:
+			return server_writeFile(request, client_socket, storage);
+		case SAPI_APPENDFILE:
+			return server_appendToFile(request, client_socket, storage);
+		case SAPI_LOCKFILE:
+			return server_lockFile(request, client_socket, storage);
+		case SAPI_UNLOCKFILE:
+			return server_unlockFile(request, client_socket, storage);
+		case SAPI_REMOVEFILE:
+			return server_remove(request, client_socket, storage);
+		default:
+			fprintf(stderr, "serve : unrecognized operation\n");
+			fflush(stderr);
+			return -1;
+	}
+}
+int server_openFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_readFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_readNFiles(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_writeFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_appendToFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_lockFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_unlockFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_closeFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_removeFile(int request, int client_socket, u_file_storage* storage)
+{
+	return 0;
+}
+int server_evictlist(u_list *savelist, size_t bytes_to_free)
+{
+	return 0;
+}
 server_settings init_server_settings()
 {
 	return parse_settings();
