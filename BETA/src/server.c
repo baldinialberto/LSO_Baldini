@@ -24,7 +24,6 @@ int main(int argc, char** argv)
 
 	return EXIT_SUCCESS;
 }
-
 void server_dispatcher(server_infos *infos)
 {
 	DEBUG(puts("Dispatcher"));
@@ -69,7 +68,6 @@ void server_dispatcher(server_infos *infos)
 	DEBUG(puts("Cleanup"));
 	join_workers(infos);
 }
-
 void *server_worker(void *worker_arg)
 {
 	DEBUG(puts("Worker"));
@@ -105,7 +103,7 @@ void *server_worker(void *worker_arg)
 		if (request)
 			serve(request, 
 				(wa->infos->workers_clients)[wa->worker_id], 
-				wa->infos->storage
+				&(wa->infos->storage)
 			);
 
 		(wa->infos->workers_clients)[wa->worker_id] = 0;
@@ -116,7 +114,6 @@ void *server_worker(void *worker_arg)
 
 	pthread_exit(NULL);
 }
-
 void *server_signalhandler(void *infos)
 {
 	DEBUG(puts("Signal_handler"));
@@ -136,7 +133,7 @@ void *server_signalhandler(void *infos)
 		perror("server_signalhandler : sigwait");
 
 	DEBUG(
-		printf("\nserver_signalhandler received signal %d\n", sig);
+		printf("\nserver_signalhandler received signal %d\n", sig)
 	);
 
 	if (sig == SIGINT || sig == SIGQUIT) 
@@ -146,7 +143,6 @@ void *server_signalhandler(void *infos)
 
 	pthread_exit(NULL);
 }
-
 int spawn_workers(server_infos* infos)
 {
 	struct _worker_arg *arg;
@@ -162,7 +158,6 @@ int spawn_workers(server_infos* infos)
 	}
 	return 0;
 }
-
 int join_workers(server_infos* infos)
 {
 	for (int i = 0; i < infos->nworkers; i++)
@@ -171,7 +166,6 @@ int join_workers(server_infos* infos)
 	}
 	return 0;
 }
-
 int assign_client(server_infos *infos, int client)
 {
 	if (infos == NULL || client < 0) return -1;
@@ -189,7 +183,6 @@ int assign_client(server_infos *infos, int client)
 
 	return 0;
 }
-
 int ignore_signals()
 {
 	sigset_t set;
@@ -202,229 +195,15 @@ int ignore_signals()
     return pthread_sigmask(SIG_BLOCK, &set, NULL);
 }
 
-int serve(int request, int client_socket, SFS_FS* memory)
-{
-	int (*server_ops[8])(int, int, SFS_FS*) = {
-		server_openFile, 
-		server_closeFile, 
-		server_readFile, 
-		server_writeFile,
-		server_appendToFile,
-		server_removeFile,
-		server_lockFile,
-		server_unlockFile
-	};
-
-	if ((request & OP_MASK) > 8) return -1;
-
-	return server_ops[(request & OP_MASK) - 1](request, client_socket, memory);
-}
-
-int server_closeConnection(int client_socket, server_infos *infos)
-{
-	DEBUG(puts("server_closeConnection"));
-	int response = 0;
-	write(client_socket, &response, sizeof(int));
-	sq_remove(infos->sq, client_socket);
-	return 0;
-}
-
-int server_openFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_openFile"));
-	unsigned int namelen = request >> MESSG_SHIFT;
-	char *filename;
-	int response = 0;
-
-	CHECK_BADVAL_PERROR_EXIT(
-		filename = calloc(namelen + 1, sizeof(char)), 
-		NULL, "server_openFile : calloc" 
-	);
-	CHECK_BADVAL_CALL_RETURN(
-		read(client_socket, filename, namelen * sizeof(char)), 
-		-1, free(filename), S_NOREAD
-	);
-
-	retptr file = sfs_find(memory, filename);
-	if (request & O_CREATE_FLAG && file.errorcodes == 0)
-	{
-		// create an already existent file
-		response = ALREADY_FLAG;
-		CHECK_BADVAL_CALL_RETURN(
-			write(client_socket, &response, sizeof(int)), 
-			-1, free(filename), S_NOWRITE
-		);
-		free(filename);
-		return 0;
-	}
-	if (!(request & O_CREATE_FLAG) && file.errorcodes == SFS_FILENOTFOUND)
-	{
-		// not create and not existent file
-		response = FNF_FLAG;
-		CHECK_BADVAL_CALL_RETURN(
-			write(client_socket, &response, sizeof(int)), 
-			-1, free(filename), S_NOWRITE
-		);
-		free(filename);
-		return 0;
-	}
-	if (request & O_CREATE_FLAG)
-	{
-		file = sfs_create(memory, filename, NULL, 0);
-		if (!file.errorcodes)
-			sfs_open(memory, filename, 'w');
-		if (file.errorcodes & SFS_FILELOCKED)
-		{
-			response = O_LOCK_FLAG;
-			if (write(client_socket, &response, sizeof(int)) != 0)
-			{
-				sfs_unlock((sfs_fd *)file.ptr, client_socket);
-				sfs_close(memory, (sfs_fd *)file.ptr);
-				sfs_remove(memory, filename);
-				return S_NOWRITE;
-			}
-			return 0;
-		}
-	}
-	else 
-	{
-		file = sfs_open(memory, filename, 'w');
-		if (file.errorcodes & SFS_FILELOCKED)
-		{
-			response = O_LOCK_FLAG;
-			if (write(client_socket, &response, sizeof(int)) != 0)
-			{
-				free(filename);
-				return S_NOWRITE;
-			}
-			return 0;
-		}
-	}
-	if (request & O_LOCK_FLAG)
-	{
-		sfs_lock((sfs_fd *)file.ptr, client_socket);
-	}
-
-	return 0;
-}
-int server_readFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_readFile"));
-	unsigned int namelen = request >> MESSG_SHIFT;
-	char filename[namelen + 1];
-	filename[namelen] = (char) 0;
-	server_command_t response = 0;
-
-	CHECK_BADVAL_RETURN(
-		read(client_socket, filename, namelen * sizeof(char)), 
-		-1, S_NOREAD
-	);
-
-	retptr file = sfs_find(memory, filename);
-
-	if (file.errorcodes == SFS_FILENOTFOUND)
-	{
-		response = FNF_FLAG;
-		CHECK_BADVAL_RETURN(
-			write(client_socket, &response, sizeof(int)), 
-			-1, S_NOWRITE
-		);
-	}
-	if (sfs_islocked((sfs_fd *)file.ptr, client_socket) == SFS_FILELOCKED)
-	{
-		response = LOCKED_FLAG;
-		CHECK_BADVAL_RETURN(
-			write(client_socket, &response, sizeof(int)), 
-			-1, S_NOWRITE
-		);
-	}
-
-	response = ((sfs_fd *)file.ptr)->file->datalen << MESSG_SHIFT;
-
-	CHECK_BADVAL_RETURN(
-		write(client_socket, &response, sizeof(int)), 
-		-1, S_NOWRITE
-	);
-
-	CHECK_BADVAL_RETURN(
-		write(client_socket, ((sfs_fd *)file.ptr)->file->data, ((sfs_fd *)file.ptr)->file->datalen), 
-		-1, S_NOWRITE
-	);
-
-	return 0;
-}
-int server_writeFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_writeFile"));
-	unsigned int namelen = request >> MESSG_SHIFT;
-	char filename[namelen + 1];
-	filename[namelen] = (char) 0;
-	CHECK_BADVAL_RETURN(
-		read(client_socket, &filename, namelen), 
-		-1, -1
-	);
-	char *data;
-	unsigned int datalen;
-	CHECK_BADVAL_RETURN(
-		read(client_socket, &datalen, sizeof(server_command_t)), 
-		-1, -1
-	);
-	CHECK_BADVAL_PERROR_EXIT
-	(
-		data = (char *)calloc(datalen, sizeof(char)), 
-		NULL, "server_writeFile : calloc"
-	);
-
-	retptr res;
-	if (memory->maxSize - memory->currentSize < datalen)
-	{
-		res = sfs_evict(memory, datalen);
-		if (res.errorcodes) return -1;
-	}
-	CHECK_BADVAL_RETURN(
-		read(client_socket, data, datalen), 
-		-1, -1
-	);
-
-
-	return 0;
-}
-int server_appendToFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_appendToFile"));
-	return 0;
-}
-int server_lockFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_lockFile"));
-	return 0;
-}
-int server_unlockFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_unlockFile"));
-	return 0;
-}
-int server_closeFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_closeFile"));
-	return 0;
-}
-int server_removeFile(int request, int client_socket, SFS_FS* memory)
-{
-	DEBUG(puts("server_removeFile"));
-	return 0;
-}
 server_settings init_server_settings()
 {
 	return parse_settings();
 }
-
 server_stats init_server_stats(server_settings *setts)
 {
 	server_stats stats = {0};
 	return stats;
 }
-
 server_infos init_server_infos(server_settings *setts)
 {
 	server_infos infos;
@@ -461,7 +240,6 @@ server_infos init_server_infos(server_settings *setts)
 
 	return infos;
 }
-
 int free_server_infos(server_infos *infos)
 {
 	if (infos == NULL)
@@ -481,7 +259,6 @@ int free_server_infos(server_infos *infos)
 
 	return 0;
 }
-
 void print_server_settings(server_settings *setts)
 {
 	fprintf(
@@ -501,7 +278,6 @@ CLIENT_MAX = %d\n",
 	);
 	fflush(stdout);
 }
-
 server_settings parse_settings()
 {
 	server_settings settings = {0};
@@ -554,7 +330,6 @@ int write_settings(server_settings* setts)
 {
 	return 0;
 }
-
 int write_log(const char* op, server_settings *setts)
 {
 	FILE* fOut;
@@ -585,7 +360,6 @@ int write_log(const char* op, server_settings *setts)
 
 	return 0;
 }
-
 void get_setting(char** str, FILE *fstream, server_settings *setts)
 {
 	int int_sett = 0;
@@ -649,7 +423,6 @@ void get_setting(char** str, FILE *fstream, server_settings *setts)
 		puts("SettingFormat not recongnized");
 	}
 }
-
 int create_server_socket(server_settings *setts)
 {
 	DEBUG(unlink(setts->socket_name));
@@ -678,7 +451,6 @@ int create_server_socket(server_settings *setts)
 
 	return socket_res;
 }
-
 int thread_spawn_detached(void *(*fun)(void*), void *arg)
 {
 	pthread_t thread;
@@ -689,7 +461,6 @@ int thread_spawn_detached(void *(*fun)(void*), void *arg)
 
 	return 0;
 }
-
 pthread_t thread_spawn(void *(*fun)(void*), void *arg)
 {
 	pthread_t thread;
@@ -697,7 +468,6 @@ pthread_t thread_spawn(void *(*fun)(void*), void *arg)
 
 	return thread;
 }
-
 int freeworker(server_infos *infos)
 {
 	return 0;
