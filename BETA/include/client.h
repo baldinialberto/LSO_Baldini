@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include "mem_utils.h"
 #include "list_utils.h"
+#include "dir_utils.h"
 #include "string_utils.h"
 #include "serverapi.h"
 #include "server_message.h"
@@ -33,10 +34,10 @@ int printargs(client_conf *conf);
 int client_conf_cleanup(client_conf *conf);
 int conf_add_list(const char *optarg, u_list* list);
 int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir);
-int write_files_list(u_list *filelist, const char *wbdir);
-int read_files_list(u_list *filelist, const char *destdir);
-int lock_files_list(u_list *filelist);
-int unlock_files_list(u_list *filelist);
-int remove_files_list(u_list *filelist);
+int write_files_list(u_list filelist, const char *wbdir);
+int read_files_list(u_list filelist, const char *destdir);
+int lock_files_list(u_list filelist);
+int unlock_files_list(u_list filelist);
+int remove_files_list(u_list filelist);
 
 #endif

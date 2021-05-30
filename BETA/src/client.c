@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 		connected = 0;
 	}
 	
-
+	write_nfiles_from_dir(conf.folder_to_write, 30, "");
 
 	if (connected && closeConnection(conf.server_socket_filename))
 	{
@@ -155,10 +155,16 @@ int conf_add_list(const char *optarg, u_list *list)
 }
 int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir)
 {
-	// keep in here
-	
+	u_list list = NULL;
+	du_getfilepaths_from_dir(dirname, nfiles, 0, &list);
+	u_list_node *currnode;
+	lu_foreach(list, currnode, 
+		printf("file %s\n", (char *)currnode->data)
+	);	
+	lu_free(&list, mu_free);
+	return 0;
 }
-int write_files_list(u_list *filelist, const char *wbdir)
+int write_files_list(u_list filelist, const char *wbdir)
 {
 	int res = 0;
 	u_list_node *currnode;
@@ -167,7 +173,7 @@ int write_files_list(u_list *filelist, const char *wbdir)
 	);
 	return res ? -1 : 0;
 }
-int read_files_list(u_list *filelist, const char *destdir)
+int read_files_list(u_list filelist, const char *destdir)
 {
 	int res = 0;
 	u_list_node *currnode;
@@ -188,7 +194,7 @@ int read_files_list(u_list *filelist, const char *destdir)
 	);
 	return res ? -1 : 0;
 }
-int lock_files_list(u_list *filelist)
+int lock_files_list(u_list filelist)
 {
 	int res = 0;
 	u_list_node *currnode;
@@ -197,7 +203,7 @@ int lock_files_list(u_list *filelist)
 	);
 	return res ? -1 : 0;
 }
-int unlock_files_list(u_list *filelist)
+int unlock_files_list(u_list filelist)
 {
 	int res = 0;
 	u_list_node *currnode;
@@ -206,7 +212,7 @@ int unlock_files_list(u_list *filelist)
 	);
 	return res ? -1 : 0;
 }
-int remove_files_list(u_list *filelist)
+int remove_files_list(u_list filelist)
 {
 	int res = 0;
 	u_list_node *currnode;

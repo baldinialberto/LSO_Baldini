@@ -1,11 +1,11 @@
-==2490== Memcheck, a memory error detector
-==2490== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==2490== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==2490== Command: ./client.exe -f MyServerSocket.socket -w .,10 -W pippo.txt -D evicted -r /home/alberto/LSO_Baldini/towrite/pluto.txt,/home/alberto/LSO_Baldini/towrite/pippo.txt -R 10 -d /home/alberto/LSO_Baldini/readen -t 10 -l pippo.txt,pluto.txt -u pippo.txt,pluto.txt -c pippo.txt -p
-==2490== 
+==3827== Memcheck, a memory error detector
+==3827== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==3827== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==3827== Command: ./client.exe -f MyServerSocket.socket -w ../towrite,10 -W pippo.txt -D evicted -r /home/alberto/LSO_Baldini/towrite/pluto.txt,/home/alberto/LSO_Baldini/towrite/pippo.txt -R 10 -d /home/alberto/LSO_Baldini/readen -t 10 -l pippo.txt,pluto.txt -u pippo.txt,pluto.txt -c pippo.txt -p
+==3827== 
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = evicted
-char *folder_to_write = .
+char *folder_to_write = ../towrite
 char *folder_destination = /home/alberto/LSO_Baldini/readen
 unsigned int folder_filecount = 10
 unsigned int read_filecount = 10
@@ -18,11 +18,71 @@ pippo.txt -> pluto.txt -> (NULL)
 pippo.txt -> (NULL)
 openConnection: No such file or directory
 Not connected
-==2490== 
-==2490== HEAP SUMMARY:
-==2490==     in use at exit: 0 bytes in 0 blocks
-==2490==   total heap usage: 19 allocs, 19 frees, 4,379 bytes allocated
-==2490== 
-==2490== All heap blocks were freed -- no leaks are possible
-==2490== 
-==2490== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+found file = meta_724.txt
+found file = meta_606.txt
+found file = meta_17.txt
+found file = meta_660.txt
+found file = meta_331.txt
+found file = meta_475.txt
+found file = meta_338.txt
+found file = meta_742.txt
+found file = meta_589.txt
+found file = meta_339.txt
+found file = meta_820.txt
+found file = meta_355.txt
+found file = meta_624.txt
+found file = meta_721.txt
+found file = meta_238.txt
+found file = meta_367.txt
+found file = meta_918.txt
+found file = meta_161.txt
+found file = meta_739.txt
+found file = meta_568.txt
+found file = meta_650.txt
+found file = meta_895.txt
+found file = meta_105.txt
+found file = meta_295.txt
+found file = meta_807.txt
+found file = meta_691.txt
+found file = meta_797.txt
+found file = meta_948.txt
+found file = meta_527.txt
+found file = meta_551.txt
+file meta_105.txt
+file meta_161.txt
+file meta_17.txt
+file meta_238.txt
+file meta_295.txt
+file meta_331.txt
+file meta_338.txt
+file meta_339.txt
+file meta_355.txt
+file meta_367.txt
+file meta_475.txt
+file meta_527.txt
+file meta_551.txt
+file meta_568.txt
+file meta_589.txt
+file meta_606.txt
+file meta_624.txt
+file meta_650.txt
+file meta_660.txt
+file meta_691.txt
+file meta_721.txt
+file meta_724.txt
+file meta_739.txt
+file meta_742.txt
+file meta_797.txt
+file meta_807.txt
+file meta_820.txt
+file meta_895.txt
+file meta_918.txt
+file meta_948.txt
+==3827== 
+==3827== HEAP SUMMARY:
+==3827==     in use at exit: 0 bytes in 0 blocks
+==3827==   total heap usage: 81 allocs, 81 frees, 38,083 bytes allocated
+==3827== 
+==3827== All heap blocks were freed -- no leaks are possible
+==3827== 
+==3827== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
