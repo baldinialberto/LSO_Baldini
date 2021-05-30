@@ -67,7 +67,6 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, int maxDepth, 
 		}
 		else if (filetype == '-')
 		{
-            printf("found file = %s\n", file->d_name);
 			lu_insert_oncopy(savelist, file->d_name, strlen(file->d_name) + 1, lu_string_compare);
             nfilepaths--;
         }

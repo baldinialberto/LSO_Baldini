@@ -155,6 +155,7 @@ int conf_add_list(const char *optarg, u_list *list)
 }
 int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir)
 {
+	// add dirlist to save each directory ever found
 	u_list list = NULL;
 	du_getfilepaths_from_dir(dirname, nfiles, 0, &list);
 	u_list_node *currnode;
