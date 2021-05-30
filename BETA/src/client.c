@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 		connected = 0;
 	}
 	
-	write_nfiles_from_dir(conf.folder_to_write, 30, "");
+	write_nfiles_from_dir(conf.folder_to_write, conf.folder_filecount, "");
 
 	if (connected && closeConnection(conf.server_socket_filename))
 	{
@@ -25,7 +25,6 @@ int main(int argc, char** argv)
 
 	return 0;
 }
-
 int parseargs(int argc, char ** argv, client_conf *conf)
 {
 	int opt;
@@ -155,14 +154,47 @@ int conf_add_list(const char *optarg, u_list *list)
 }
 int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir)
 {
-	// add dirlist to save each directory ever found
-	u_list list = NULL;
-	du_getfilepaths_from_dir(dirname, nfiles, 0, &list);
+	if (dirname == NULL)
+	{
+		fprintf(stderr, "write_nfiles_from_dir : param dirname == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (nfiles == 0)
+	{
+		fprintf(stderr, "write_nfiles_from_dir : param nfiles == 0 -> nothing to do\n");
+		fflush(stderr);
+		return 0;
+	}
+	
+	u_list filelist = NULL;
+	u_list dirlist = NULL;
 	u_list_node *currnode;
-	lu_foreach(list, currnode, 
-		printf("file %s\n", (char *)currnode->data)
-	);	
-	lu_free(&list, mu_free);
+	char *currdir;
+	int nfilesfound = 0;
+
+	lu_insert_oncopy(&dirlist, (void *)dirname, strlen(dirname) + 1, lu_string_compare);
+	
+	while (lu_length(dirlist) != 0 && nfiles > 0)
+	{
+		currdir = lu_get_byindex(dirlist, 0);
+		if ((nfilesfound = du_getfilepaths_from_dir(currdir, nfiles, &filelist, &dirlist)) == -1)
+		{
+			fprintf(stderr, "write_nfiles_from_dir : du_getfilepaths_from_dir returned an error\n");
+			fflush(stderr);
+			lu_free(&filelist, mu_free);
+			lu_free(&dirlist, mu_free);
+			return -1;
+		}
+		nfiles -= nfilesfound;
+		lu_foreach(filelist, currnode, 
+			printf("file %s\n", (char *)currnode->data);
+		);
+		write_files_list(filelist, wbdir);
+		lu_free(&filelist, mu_free);
+		lu_remove(&dirlist, currdir, lu_string_compare, mu_free);
+	}
+	lu_free(&dirlist, mu_free);
 	return 0;
 }
 int write_files_list(u_list filelist, const char *wbdir)

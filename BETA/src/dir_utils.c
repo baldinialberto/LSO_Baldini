@@ -1,6 +1,6 @@
 #include "../include/dir_utils.h"
 
-int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, int maxDepth, u_list *savelist)
+int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *filelist, u_list *dirlist)
 {
     if (dirpath == NULL)
     {
@@ -14,12 +14,14 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, int maxDepth, 
         fflush(stderr);
         return 0;
     }
-    if (savelist == NULL)
+    if (filelist == NULL)
     {
         fprintf(stderr, "du_getfilepaths_from_dir : param savelist == NULL\n");
         fflush(stderr);
         return -1;
     }
+
+    int res = nfilepaths;
 
     DIR *dir = NULL;
     struct dirent *file;
@@ -42,36 +44,29 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, int maxDepth, 
         return -1;
     }
 
-    // discard dir . and ..
-    if (readdir(dir) == NULL)
-    {
-        fprintf(stderr, "du_getfilepaths_from_dir : readdir returned NULL\n");
-        fflush(stderr);
-        return -1;
-    }
-    if (readdir(dir) == NULL)
-    {
-        fprintf(stderr, "du_getfilepaths_from_dir : readdir returned NULL\n");
-        fflush(stderr);
-        return -1;
-    }
-
     while (nfilepaths && (file = readdir(dir)) != NULL)
     {
         stat(file->d_name, &filestat);
 		filetype = du_filenodetype(&filestat);
 
-		if (filetype == 'd')
+		if (filetype == 'd' && strcmp(file->d_name, ".") && strcmp(file->d_name, ".."))
 		{
-            printf("found dir = %s\n", file->d_name);
+            su_append_chars(&tempstring, dirpath);
+            su_append_chars(&tempstring, "/");
+            su_append_chars(&tempstring, file->d_name);
+            lu_insert_oncopy(dirlist, tempstring.data, tempstring.len + 1, lu_string_compare);
+            su_realloc(&tempstring, 0);
 		}
 		else if (filetype == '-')
 		{
-			lu_insert_oncopy(savelist, file->d_name, strlen(file->d_name) + 1, lu_string_compare);
-            nfilepaths--;
-        }
+            su_append_chars(&tempstring, dirpath);
+            su_append_chars(&tempstring, "/");
+            su_append_chars(&tempstring, file->d_name);
+			if (lu_insert_oncopy(filelist, tempstring.data, tempstring.len + 1, lu_string_compare) != -1)
+                nfilepaths--;
+            su_realloc(&tempstring, 0);
+		}
     }
-
     su_free_string(&tempstring);
 
     if (closedir(dir) == -1)
@@ -82,7 +77,7 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, int maxDepth, 
         return -1;
     }
 
-    return 0;
+    return res - nfilepaths;
 }
 
 char du_filenodetype(struct stat *_stat)

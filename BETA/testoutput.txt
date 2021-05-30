@@ -1,13 +1,13 @@
-==3827== Memcheck, a memory error detector
-==3827== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==3827== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==3827== Command: ./client.exe -f MyServerSocket.socket -w ../towrite,10 -W pippo.txt -D evicted -r /home/alberto/LSO_Baldini/towrite/pluto.txt,/home/alberto/LSO_Baldini/towrite/pippo.txt -R 10 -d /home/alberto/LSO_Baldini/readen -t 10 -l pippo.txt,pluto.txt -u pippo.txt,pluto.txt -c pippo.txt -p
-==3827== 
+==7299== Memcheck, a memory error detector
+==7299== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==7299== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==7299== Command: ./client.exe -f MyServerSocket.socket -w /home/alberto/LSO_Baldini,100 -W pippo.txt -D evicted -r /home/alberto/LSO_Baldini/towrite/pluto.txt,/home/alberto/LSO_Baldini/towrite/pippo.txt -R 10 -d /home/alberto/LSO_Baldini/readen -t 10 -l pippo.txt,pluto.txt -u pippo.txt,pluto.txt -c pippo.txt -p
+==7299== 
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = evicted
-char *folder_to_write = ../towrite
+char *folder_to_write = /home/alberto/LSO_Baldini
 char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 10
+unsigned int folder_filecount = 100
 unsigned int read_filecount = 10
 unsigned int connection_timer = 10
 bool verbose = 1
@@ -17,72 +17,116 @@ pippo.txt -> pluto.txt -> (NULL)
 pippo.txt -> pluto.txt -> (NULL)
 pippo.txt -> (NULL)
 openConnection: No such file or directory
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
 Not connected
-found file = meta_724.txt
-found file = meta_606.txt
-found file = meta_17.txt
-found file = meta_660.txt
-found file = meta_331.txt
-found file = meta_475.txt
-found file = meta_338.txt
-found file = meta_742.txt
-found file = meta_589.txt
-found file = meta_339.txt
-found file = meta_820.txt
-found file = meta_355.txt
-found file = meta_624.txt
-found file = meta_721.txt
-found file = meta_238.txt
-found file = meta_367.txt
-found file = meta_918.txt
-found file = meta_161.txt
-found file = meta_739.txt
-found file = meta_568.txt
-found file = meta_650.txt
-found file = meta_895.txt
-found file = meta_105.txt
-found file = meta_295.txt
-found file = meta_807.txt
-found file = meta_691.txt
-found file = meta_797.txt
-found file = meta_948.txt
-found file = meta_527.txt
-found file = meta_551.txt
-file meta_105.txt
-file meta_161.txt
-file meta_17.txt
-file meta_238.txt
-file meta_295.txt
-file meta_331.txt
-file meta_338.txt
-file meta_339.txt
-file meta_355.txt
-file meta_367.txt
-file meta_475.txt
-file meta_527.txt
-file meta_551.txt
-file meta_568.txt
-file meta_589.txt
-file meta_606.txt
-file meta_624.txt
-file meta_650.txt
-file meta_660.txt
-file meta_691.txt
-file meta_721.txt
-file meta_724.txt
-file meta_739.txt
-file meta_742.txt
-file meta_797.txt
-file meta_807.txt
-file meta_820.txt
-file meta_895.txt
-file meta_918.txt
-file meta_948.txt
-==3827== 
-==3827== HEAP SUMMARY:
-==3827==     in use at exit: 0 bytes in 0 blocks
-==3827==   total heap usage: 81 allocs, 81 frees, 38,083 bytes allocated
-==3827== 
-==3827== All heap blocks were freed -- no leaks are possible
-==3827== 
-==3827== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+file /home/alberto/LSO_Baldini/.gitattributes
+file /home/alberto/LSO_Baldini/.gitignore
+file /home/alberto/LSO_Baldini/Makefile
+file /home/alberto/LSO_Baldini/README.md
+file /home/alberto/LSO_Baldini/bibi.sh
+file /home/alberto/LSO_Baldini/cl1test.sh
+file /home/alberto/LSO_Baldini/client.exe
+file /home/alberto/LSO_Baldini/config.txt
+file /home/alberto/LSO_Baldini/makefilelog.txt
+file /home/alberto/LSO_Baldini/server.exe
+file /home/alberto/LSO_Baldini/updatetemp.sh
+file /home/alberto/LSO_Baldini/valgrindtemp.sh
+file /home/alberto/LSO_Baldini/.git/COMMIT_EDITMSG
+file /home/alberto/LSO_Baldini/.git/FETCH_HEAD
+file /home/alberto/LSO_Baldini/.git/HEAD
+file /home/alberto/LSO_Baldini/.git/ORIG_HEAD
+file /home/alberto/LSO_Baldini/.git/config
+file /home/alberto/LSO_Baldini/.git/description
+file /home/alberto/LSO_Baldini/.git/index
+file /home/alberto/LSO_Baldini/.git/packed-refs
+file /home/alberto/LSO_Baldini/.git/hooks/applypatch-msg.sample
+file /home/alberto/LSO_Baldini/.git/hooks/commit-msg.sample
+file /home/alberto/LSO_Baldini/.git/hooks/fsmonitor-watchman.sample
+file /home/alberto/LSO_Baldini/.git/hooks/post-update.sample
+file /home/alberto/LSO_Baldini/.git/hooks/pre-applypatch.sample
+file /home/alberto/LSO_Baldini/.git/hooks/pre-commit.sample
+file /home/alberto/LSO_Baldini/.git/hooks/pre-merge-commit.sample
+file /home/alberto/LSO_Baldini/.git/hooks/pre-push.sample
+file /home/alberto/LSO_Baldini/.git/hooks/pre-rebase.sample
+file /home/alberto/LSO_Baldini/.git/hooks/pre-receive.sample
+file /home/alberto/LSO_Baldini/.git/hooks/prepare-commit-msg.sample
+file /home/alberto/LSO_Baldini/.git/hooks/update.sample
+file /home/alberto/LSO_Baldini/.git/info/exclude
+file /home/alberto/LSO_Baldini/.git/logs/HEAD
+file /home/alberto/LSO_Baldini/.git/logs/refs/heads/master
+file /home/alberto/LSO_Baldini/.git/logs/refs/remotes/origin/HEAD
+file /home/alberto/LSO_Baldini/.git/logs/refs/remotes/origin/master
+file /home/alberto/LSO_Baldini/.git/objects/00/2863e5a6eef0d380774fc8c500cb2728f67010
+file /home/alberto/LSO_Baldini/.git/objects/00/edd590679f30e4805061b217036340409aa987
+file /home/alberto/LSO_Baldini/.git/objects/01/257649b60f697493873928404a3b61d74fd44b
+file /home/alberto/LSO_Baldini/.git/objects/01/44df84ab70137556cda4cc8d9cd9bd1632de38
+file /home/alberto/LSO_Baldini/.git/objects/01/dad731f671014fea9c50e5e223aa8603fedcf0
+file /home/alberto/LSO_Baldini/.git/objects/01/ef6f85db5c2bcf36df637456ad3e24ef382ac4
+file /home/alberto/LSO_Baldini/.git/objects/02/2ec02fc31f8363518bc64b97bd97dd184b9aca
+file /home/alberto/LSO_Baldini/.git/objects/02/ecbe04a047f240fcb950063471776db95ed9fa
+file /home/alberto/LSO_Baldini/.git/objects/03/0b7a05512907a281732da708ea1feca1d089c2
+file /home/alberto/LSO_Baldini/.git/objects/03/68ed780cbf331e6af7c881626d2ed05d4eeffc
+file /home/alberto/LSO_Baldini/.git/objects/04/1be9c98042b9305ff2a236b93e28f48f45a99a
+file /home/alberto/LSO_Baldini/.git/objects/04/25be46b7801487c8dc832e019c61c7464ec9c5
+file /home/alberto/LSO_Baldini/.git/objects/04/66c56e0c38877b32a3df299b054b4cc7b8987a
+file /home/alberto/LSO_Baldini/.git/objects/04/a6749d01bf770ef1fee82684630a54667b9b69
+file /home/alberto/LSO_Baldini/.git/objects/05/0dc49f8d3c9ad5ae3d6d1359b5b2f0f4a7c872
+file /home/alberto/LSO_Baldini/.git/objects/06/57d74769be6bbaf0df1c45fdadfb2a6cecbb64
+file /home/alberto/LSO_Baldini/.git/objects/06/768a820fe01e8cd9c16cb9dfdfb6dd89bd9f35
+file /home/alberto/LSO_Baldini/.git/objects/06/b90edce21f0aec84f9a73a41344503b6a96000
+file /home/alberto/LSO_Baldini/.git/objects/06/e7944c60388adc88e5e60b22a845c4ed1eea4d
+file /home/alberto/LSO_Baldini/.git/objects/07/5d988f4b41e0c0d1770a609b18f4d1546f79e3
+file /home/alberto/LSO_Baldini/.git/objects/08/7b3a2958366454a71e0d149a5a76e946f89cfb
+file /home/alberto/LSO_Baldini/.git/objects/08/cad61a4e61101bac34e7396cf5c7691ac09324
+file /home/alberto/LSO_Baldini/.git/objects/0a/3573707d85b12ed242c3e283b60595bba20e20
+file /home/alberto/LSO_Baldini/.git/objects/0b/0a563126fa5965b0c929bbc02af6420bca1751
+file /home/alberto/LSO_Baldini/.git/objects/0b/40190df44050faa8e070826de393634d869611
+file /home/alberto/LSO_Baldini/.git/objects/0b/6b4d4f4fb06bb8b01d1113815e4d00ac7577b1
+file /home/alberto/LSO_Baldini/.git/objects/0b/d83361ef174552642cbff068d1b5cad4eadc7c
+file /home/alberto/LSO_Baldini/.git/objects/0c/8c115f734eddb8cd9192c74273e41ab01725c2
+file /home/alberto/LSO_Baldini/.git/objects/0d/1d5f05ca19b56d241f9f64c544f546d70ef1c2
+file /home/alberto/LSO_Baldini/.git/objects/0d/aa8ff7cdb617fa637185f5fe9b8f716d2652d3
+file /home/alberto/LSO_Baldini/.git/objects/0d/ddcbbb6e6a93b9f8c0327db447fafd3a0debfe
+file /home/alberto/LSO_Baldini/.git/objects/0e/85313250f04ac5578119d63b54a77c02ce9361
+file /home/alberto/LSO_Baldini/.git/objects/0e/956041a7ec2adf43477addbcd49c36d3874fa0
+file /home/alberto/LSO_Baldini/.git/objects/0e/9b0aba89b6fec3e8fd67fe0dec24bbef528ba8
+file /home/alberto/LSO_Baldini/.git/objects/0f/6dc9092a9c380a49fc2eac97bb62903ccd67f7
+file /home/alberto/LSO_Baldini/.git/objects/10/02becccecdae37bd23bebc5c1b8efffef459ea
+file /home/alberto/LSO_Baldini/.git/objects/10/1a98e84fc39548e19b0257b77a775a8f04beab
+file /home/alberto/LSO_Baldini/.git/objects/10/1f2d57a65f290a4a77194843ed23e9df0c9183
+file /home/alberto/LSO_Baldini/.git/objects/11/7403d1230ffb2f3521cd51bd5ef80e9f7a28e5
+file /home/alberto/LSO_Baldini/.git/objects/12/9156efc64441c462eaf00c2465822a18d1912a
+file /home/alberto/LSO_Baldini/.git/objects/12/9b7bc4d0fd3a581541b8bc95b1f1e242d093b1
+file /home/alberto/LSO_Baldini/.git/objects/12/bcc5c7dacafa2246b0de14265582c3ce5a7c3d
+file /home/alberto/LSO_Baldini/.git/objects/14/12fb60c9dcc75a35c411c079776995356b6ee2
+file /home/alberto/LSO_Baldini/.git/objects/15/31827b2dbe67857f52f4951bdc733dccf27e6d
+file /home/alberto/LSO_Baldini/.git/objects/16/8945a155ce7310c0d801943f0320fa7ed0bd77
+file /home/alberto/LSO_Baldini/.git/objects/17/c18d5f1f9420b91827d7ef23d475b5d4733094
+file /home/alberto/LSO_Baldini/.git/objects/19/ac98c22947ce5af7900c08d7ffd192a08d11ef
+file /home/alberto/LSO_Baldini/.git/objects/19/af086023f621788877388b7a1f4a50f1267623
+file /home/alberto/LSO_Baldini/.git/objects/19/b17560e86d82ea7aed11c59def1c2033fd9649
+file /home/alberto/LSO_Baldini/.git/objects/1a/665e2992be77664b4932c23af20137d0d1b45e
+file /home/alberto/LSO_Baldini/.git/objects/1a/9d02fbcb270538d886db2f9b549cf1da000fea
+file /home/alberto/LSO_Baldini/.git/objects/1a/a0699c1e61b5a51945a58c8f65b5710872cb5b
+file /home/alberto/LSO_Baldini/.git/objects/1b/3f07b67dd0ae703a9dd3f162dd02db533b6b46
+file /home/alberto/LSO_Baldini/.git/objects/1b/6ead4d5f02fdbcd0008a00bd568693297a3c38
+file /home/alberto/LSO_Baldini/.git/objects/1c/1927c603afaabd8634758317d0fae2e078af6e
+file /home/alberto/LSO_Baldini/.git/objects/1c/939463ee9e11cf8a2d5c76806bd18d2f7c3055
+file /home/alberto/LSO_Baldini/.git/objects/1c/ac8a0a89f92e4a90f00a20db6dbb1231c64c65
+file /home/alberto/LSO_Baldini/.git/objects/1e/1cd5ef483e0cb014bd182353080fb966b739a5
+file /home/alberto/LSO_Baldini/.git/objects/1e/5dd6c738bc5a7549024f316df4119061f7bda3
+file /home/alberto/LSO_Baldini/.git/objects/1e/7ecd67ff1daebf8b261af57f6ffa77531978ce
+file /home/alberto/LSO_Baldini/.git/objects/1f/5f112956b83e5d8f536972d54ece1f70f56e66
+file /home/alberto/LSO_Baldini/.git/objects/1f/ea11fc17e2a44da3281d6468eee3bcea7f989b
+file /home/alberto/LSO_Baldini/.git/objects/20/3491eca40b17dda43d81533cd5e48db0a5e6ea
+==7299== 
+==7299== HEAP SUMMARY:
+==7299==     in use at exit: 0 bytes in 0 blocks
+==7299==   total heap usage: 2,207 allocs, 2,207 frees, 1,385,080 bytes allocated
+==7299== 
+==7299== All heap blocks were freed -- no leaks are possible
+==7299== 
+==7299== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

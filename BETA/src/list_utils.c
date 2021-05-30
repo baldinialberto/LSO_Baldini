@@ -264,6 +264,28 @@ int lu_search(u_list *list, void *data, int (*datacompare)(void *, void *))
     }
     return 0;
 }
+void *lu_get_byindex(u_list list, int index)
+{
+    if (list == NULL)
+    {
+        fprintf(stderr, "lu_get : param list == NULL\n");
+        fflush(stderr);
+        return NULL;
+    }
+    if (index < 0 || index >= lu_length(list))
+    {
+        fprintf(stderr, "lu_get : param index out of range\n");
+        fflush(stderr);
+        return NULL;
+    }
+    u_list_node *curr = list;
+    while (curr != NULL  && index > 0)
+    {
+        curr = curr->next;
+        index--;
+    }
+    return curr == NULL ? NULL : curr->data;
+}
 void *lu_get(u_list *list, void *data, int (*datacompare)(void *, void *))
 {
     if (list == NULL)

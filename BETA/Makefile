@@ -25,7 +25,7 @@ server.exe : server.o $(LIB_OBJS)
 
 client.exe : client.o $(LIB_OBJS)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
-	
+	-rm *.o
 
 %.o : src/%.c include/%.h
 	$(CC) $(CFLAGS) $< -c 

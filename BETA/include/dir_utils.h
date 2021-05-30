@@ -16,7 +16,7 @@
 #include "list_utils.h"
 #include "mem_utils.h"
 
-int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, int maxDepth, u_list *savelist);
+int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *filelist, u_list *dirlist);
 char du_filenodetype(struct stat *_stat);
 
 #endif
