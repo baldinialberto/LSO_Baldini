@@ -2,17 +2,15 @@
 #define _CLIENT_H
 
 #pragma once
-
-#include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
-
-#include "common.h"
-#include "error_utils.h"
+#include "mem_utils.h"
+#include "list_utils.h"
+#include "dir_utils.h"
+#include "string_utils.h"
 #include "serverapi.h"
-
-#define STRING_STDLEN 256
+#include "server_message.h"
 
 typedef struct _client_conf
 {
@@ -20,28 +18,26 @@ typedef struct _client_conf
     char *writeback_foldername;
     char *folder_to_write;
     char *folder_destination;
-    ln_ptr files_to_write;
-    ln_ptr files_to_read;
-    ln_ptr files_to_lock;
-    ln_ptr files_to_unlock;
-    ln_ptr files_to_delete;
+    u_list files_to_write;
+    u_list files_to_read;
+    u_list files_to_lock;
+    u_list files_to_unlock;
+    u_list files_to_delete;
     unsigned int folder_filecount;
     unsigned int read_filecount;
     unsigned int connection_timer;
-    bool verbose;
+    char verbose;
 } client_conf;
 
 int parseargs(int argc, char ** argv, client_conf *conf);
 int printargs(client_conf *conf);
 int client_conf_cleanup(client_conf *conf);
-int conf_add_list(const char *optarg, ln_ptr* list);
-int write_files(ln_ptr list, const char *writeback_folder);
-int write_folder(char *folderpath, int count);
-int read_files(ln_ptr list, const char *folder_dest);
-int read_rndm_nfiles(int count);
-int remove_files(ln_ptr list);
-int write_file(ln_ptr list_node, const char *writeback_folder);
-int read_file(ln_ptr list_node, const char *folder_dest);
-
+int conf_add_list(const char *optarg, u_list* list);
+int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir);
+int write_files_list(u_list filelist, const char *wbdir);
+int read_files_list(u_list filelist, const char *destdir);
+int lock_files_list(u_list filelist);
+int unlock_files_list(u_list filelist);
+int remove_files_list(u_list filelist);
 
 #endif

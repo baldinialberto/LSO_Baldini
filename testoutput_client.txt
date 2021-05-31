@@ -1,0 +1,33 @@
+==14094== Memcheck, a memory error detector
+==14094== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==14094== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==14094== Command: ./client.exe
+==14094== 
+lu_print : param list == NULL -> list empty
+lu_print : param list == NULL -> list empty
+lu_print : param list == NULL -> list empty
+lu_print : param list == NULL -> list empty
+lu_print : param list == NULL -> list empty
+char *server_socket_filename = NULL
+char *writeback_foldername = NULL
+char *folder_to_write = NULL
+char *folder_destination = NULL
+unsigned int folder_filecount = 0
+unsigned int read_filecount = 0
+unsigned int connection_timer = 0
+bool verbose = 0
+openConnection : param sockname == NULL
+openConnection: Success
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
+lu_search : param *list == NULL -> list empty
+==14094== 
+==14094== HEAP SUMMARY:
+==14094==     in use at exit: 0 bytes in 0 blocks
+==14094==   total heap usage: 1 allocs, 1 frees, 4,096 bytes allocated
+==14094== 
+==14094== All heap blocks were freed -- no leaks are possible
+==14094== 
+==14094== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

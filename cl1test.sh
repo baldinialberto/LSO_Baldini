@@ -1,2 +1,0 @@
-make no_obj
-valgrind --leak-check=full ./client.exe -f 'MyServerSocket.socket' -w '.',10 -W 'pippo.txt' -D 'evicted' -r '/home/alberto/LSO_Baldini/towrite/pluto.txt','/home/alberto/LSO_Baldini/towrite/pippo.txt' -R 10 -d '/home/alberto/LSO_Baldini/readen' -t 10 -l 'pippo.txt','pluto.txt' -u 'pippo.txt','pluto.txt' -c 'pippo.txt' -p 

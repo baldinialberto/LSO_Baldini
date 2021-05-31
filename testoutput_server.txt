@@ -1,0 +1,44 @@
+==14093== Memcheck, a memory error detector
+==14093== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==14093== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==14093== Command: ./server.exe
+==14093== 
+NWORKERS = 4
+CAPACITY = 32MB
+FILECAPACITY = 1000 files
+SOCKET_NAME = MyServerSocket.socket
+LOGFILE_NAME = MyServerLog.log
+CLIENT_MAX = 100
+Dispatcher
+Signal_handler
+Worker
+Worker
+Worker
+ServerWaiting
+Worker
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+ServerWaiting
+
+server_signalhandler received signal 3
+Cleanup
+==14093== 
+==14093== HEAP SUMMARY:
+==14093==     in use at exit: 0 bytes in 0 blocks
+==14093==   total heap usage: 30 allocs, 30 frees, 15,074 bytes allocated
+==14093== 
+==14093== All heap blocks were freed -- no leaks are possible
+==14093== 
+==14093== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

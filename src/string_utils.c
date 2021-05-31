@@ -1,66 +1,95 @@
-#include <error_utils.h>
-#include <string_utils.h>
+#include "../include/string_utils.h"
 
-string create_string(size_t len)
+u_string su_string_from_literal(const char *literal)
 {
-	string res;
+    if (literal == NULL)
+    {
+        fprintf(stderr, "su_string_from_literal : param literal == NULL\n");
+        fflush(stderr);
+        return (u_string){NULL, 0};
+    }
+    size_t literal_len = strlen(literal);
+    u_string new_string;
+    new_string.data = mu_malloc(literal_len + 1);
+    memcpy(new_string.data, literal, literal_len);
+    new_string.len = literal_len;
+    return new_string;
+}
+int su_free_string(u_string *string)
+{
+    if (string == NULL)
+    {
+        fprintf(stderr, "su_free_string : param string == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    mu_free(string->data);
+    return 0;
+}
+int su_append_chars(u_string *string, const char *literal)
+{
+    if (string == NULL)
+    {
+        fprintf(stderr, "su_append_literal : param string == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (literal == NULL)
+    {
+        fprintf(stderr, "su_append_literal : param literal == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    size_t literal_len = strlen(literal), i = string->len;
+    if (su_string_extend(string, literal_len)) return -1;
+    strcpy(string->data + i, literal);
 
-	res.data = calloc(len + 1, sizeof(char));
-	res.len = res.data == NULL ? 0 : len;
+    return 0;
+}
+int su_string_extend(u_string *string, size_t delta)
+{
+    if (string == NULL)
+    {
+        fprintf(stderr, "su_string_extend : param string == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    if (delta == 0) return 0;
 
-	return res;
+    return su_realloc(string, string->len + delta);
+}
+int su_string_shrinktofit(u_string *string)
+{
+    if (string == NULL)
+    {
+        fprintf(stderr, "su_string_shrinktofit : param string == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    return su_realloc(string, su_strlen(string));
+}
+int su_realloc(u_string *string, size_t newsize)
+{
+    if (string == NULL)
+    {
+        fprintf(stderr, "su_realloc : param string == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    string->len = newsize;
+    string->data = mu_realloc(string->data, newsize + 1);
+    (string->data)[string->len] = (char) 0;
+
+    return 0;
 }
 
-string create_string_from_literal(const char* str)
+int su_strlen(u_string *string)
 {
-	string res;
-	res.len = strlen(str);
-	res.data = calloc(res.len + 1, sizeof(char));
-	memcpy(res.data, str, res.len * sizeof(char));
-	return res;
+    if (string == NULL)
+    {
+        fprintf(stderr, "su_strlen : param string == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    return (string->len = strlen(string->data));
 }
-
-int string_cat(string* head, const string* tail)
-{
-	return 0;
-}
-
-int string_append(string *oldString, const char *append)
-{
-	if (oldString == NULL || append == NULL)
-	{
-		fprintf(stderr, "string_append : arg is NULL\n");
-		return -1;
-	}
-	size_t appendLen = strlen(append), oldStringLen = oldString->len;
-	CHECK_BADVAL_PERROR_RETURN(
-		realloc_string(oldString, oldString->len + appendLen),
-		NULL, "realloc_string", -1
-	);
-	memcpy(oldString + oldStringLen, append, appendLen);
-	return 0;
-}
-
-void free_string(string* str)
-{
-	free(str->data);
-	str->data = NULL;
-	str->len = 0;
-}
-
-string* realloc_string(string* str, size_t newSize)
-{
-	newSize++;
-	char* temp = realloc(str->data, newSize);
-	if (temp == NULL)
-		return (string *)-1;
-
-	memset(temp + str->len, (char)0, 
-		(newSize - str->len) * sizeof(char)
-	);
-	str->data = temp;
-	str->len = newSize - 1;
-
-	return str;
-}
-
