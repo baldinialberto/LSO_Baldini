@@ -100,5 +100,8 @@ int server_unlockFile(int request, int client_socket, u_file_storage* storage);
 int server_closeFile(int request, int client_socket, u_file_storage* storage);
 int server_removeFile(int request, int client_socket, u_file_storage* storage);
 int server_evictlist(u_list *savelist, size_t bytes_to_free);
+int server_sendresponse(s_message response, int client_socket);
+int server_senddata(void *data, size_t datalen, int client_socket);
+
 
 #endif

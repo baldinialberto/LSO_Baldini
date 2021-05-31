@@ -7,6 +7,7 @@
 #define SAPI_FNF            0x03
 #define SAPI_LOCKED         0x04
 #define SAPI_NOTOPEN        0x05
+#define SAPI_ALREADY        0x06
 
 #define O_CREATE            0x01
 #define O_LOCK              0x02

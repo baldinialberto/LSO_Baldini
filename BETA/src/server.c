@@ -294,6 +294,7 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 		{
 			fprintf(stderr, "server_openFile : %s is already locked\n", filename);
 			fflush(stderr);
+			pthread_mutex_unlock(&(fdata->mutex));
 			return -1;
 		}
 		if (fdata->client != 0)
@@ -302,6 +303,7 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 				"server_openFile : %s is already opened by another client(%d)\n", 
 				filename, fdata->client);
 			fflush(stderr);
+			pthread_mutex_unlock(&(fdata->mutex));
 			return -1;
 		}
 		fdata->client = client_socket;
@@ -337,6 +339,72 @@ int server_readFile(int request, int client_socket, u_file_storage* storage)
 		fprintf(stderr, "server_readFile : param storage == NULL\n");
 		fflush(stderr);
 		return -1;
+	}
+	s_message m;
+	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
+	char filename[filename_len];
+	memset(filename, 0, filename_len);
+	if (read(client_socket, filename, filename_len) == -1)
+	{
+		perror("server_readFile : read");
+		fprintf(stderr, "server_readFile : read returned an error\n");
+		fflush(stderr);
+		return -1;
+	}
+	u_file_data *fdata = fu_getfile(storage, filename);
+	if (fdata == NULL)
+	{
+		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
+		{
+			fprintf(stderr, "server_readFile : server_sendresponse returned an error\n", filename);
+			fflush(stderr);
+			return -1;
+		}
+		fprintf(stderr, "server_readFile : file %s not in storage\n", filename);
+		fflush(stderr);
+		return -1;
+	}
+	else 
+	{
+		pthead_mutex_lock(&(fdata->mutex));
+		if (fdata->client)
+		{
+			if (server_sendresponse(SAPI_ALREADY, client_socket) == -1)
+			{
+				fprintf(stderr, "server_readFile : server_sendresponse returned an error\n", filename);
+				fflush(stderr);
+			}
+			pthread_mutex_unlock(&(fdata->mutex));
+			return -1;
+		}
+		else if (fdata->datainfo & O_LOCK)
+		{
+			if (server_sendresponse(SAPI_LOCKED, client_socket) == -1)
+			{
+				fprintf(stderr, "server_readFile : server_sendresponse returned an error\n", filename);
+				fflush(stderr);
+			}
+			pthread_mutex_unlock(&(fdata->mutex));
+			return -1;
+		}
+		else 
+		{
+			if (server_sendresponse(SAPI_SUCCESS, client_socket) == -1)
+			{
+				fprintf(stderr, "server_readFile : server_sendresponse returned an error\n", filename);
+				fflush(stderr);
+				pthread_mutex_unlock(&(fdata->mutex));
+				return -1;
+			}
+			if (server_senddata(fdata->data, fdata->datalen, client_socket) == -1)
+			{
+				fprintf(stderr, "server_readFile : server_senddata returned an error\n", filename);
+				fflush(stderr);
+				pthread_mutex_unlock(&(fdata->mutex));
+				return -1;
+			}
+		}	
+		pthread_mutex_unlock(&(fdata->mutex));
 	}
 	return 0;
 }
@@ -772,7 +840,32 @@ pthread_t thread_spawn(void *(*fun)(void*), void *arg)
 
 	return thread;
 }
-int freeworker(server_infos *infos)
+int server_sendresponse(s_message response, int client_socket)
 {
+	if (write(client_socket, &response, sizeof(s_message)) == -1)
+	{
+		perror("server_sendresponse : write");
+		fprintf(stderr, "server_sendresponse : write returned an error\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_senddata(void *data, size_t datalen, int client_socket)
+{
+	if (write(client_socket, &datalen, sizeof(size_t)) == -1)
+	{
+		perror("server_senddata : write");
+		fprintf(stderr, "server_senddata : write returned an error\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (write(client_socket, data, datalen) == -1)
+	{
+		perror("server_senddata : write");
+		fprintf(stderr, "server_senddata : write returned an error\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
