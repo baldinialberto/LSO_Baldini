@@ -3,17 +3,11 @@
 int main(int argc, char** argv)
 {
 	static server_settings settings;
-	//static server_stats stats;
 	static server_infos infos;
 	settings = init_server_settings();
-	//stats = init_server_stats();
 	infos = init_server_infos(&settings);
-
-
-	print_server_settings(&settings);
 	
 	thread_spawn_detached(&server_signalhandler, (void *) &infos);
-	
 	ignore_signals();
 
 	server_dispatcher(&infos);
@@ -37,7 +31,6 @@ void server_dispatcher(server_infos *infos)
 	while (!(infos->server_hu && pu_isempty(&(infos->pollarr))) && !infos->server_quit)
 	{
 		if (infos->server_hu) pu_remove(&(infos->pollarr), infos->server_socket_fd);
-		DEBUG(puts("ServerWaiting"));
 		poll_ready = poll(infos->pollarr.arr, infos->pollarr.len, 1000);
 
 		for (int i = 0; poll_ready && i < infos->pollarr.len; i++)
@@ -48,13 +41,21 @@ void server_dispatcher(server_infos *infos)
 				{
 					assign_client(infos, infos->pollarr.arr[i].fd);
 				}
-				else if (!pu_isfull(&(infos->pollarr)))
+				else 
 				{
-					pu_add(&(infos->pollarr), 
-						accept(infos->server_socket_fd, NULL, 0), 
-						POLL_IN | POLL_HUP
-					);
-				} 
+					if (!pu_isfull(&(infos->pollarr)))
+					{
+						fprintf(stderr, "not full\n");
+						fflush(stderr);
+						pu_add(&(infos->pollarr), 
+							accept(infos->server_socket_fd, NULL, 0), 
+							POLL_IN | POLL_HUP
+						);
+					}
+					fprintf(stderr, "full\n");
+					fflush(stderr);
+				}
+				infos->pollarr.arr[i].revents &= 0;
 			}
 			if (infos->pollarr.arr[i].revents & POLLHUP)
 			{
@@ -101,10 +102,14 @@ void *server_worker(void *worker_arg)
 		);
 		printf("received request %X from %d\n", request, (wa->infos->workers_clients)[wa->worker_id]);
 		if (request)
+		{
+			pu_remove(&(wa->infos->pollarr), (wa->infos->workers_clients)[wa->worker_id]);
 			serve(request, 
 				(wa->infos->workers_clients)[wa->worker_id], 
 				&(wa->infos->storage)
 			);
+			pu_add(&(wa->infos->pollarr), (wa->infos->workers_clients)[wa->worker_id], POLLIN | POLLHUP);
+		}
 
 		(wa->infos->workers_clients)[wa->worker_id] = 0;
 		pthread_mutex_unlock(wa->infos->worker_locks + wa->worker_id);
@@ -231,6 +236,8 @@ int serve(int request, int client_socket, u_file_storage* storage)
 }
 int server_openFile(int request, int client_socket, u_file_storage* storage)
 {
+	fprintf(stderr, "----OPENFILE----\n");
+	fflush(stderr);
 	if (request == 0)
 	{
 		fprintf(stderr, "server_openFile : param request == 0\n");
@@ -249,7 +256,6 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 		fflush(stderr);
 		return -1;
 	}
-	s_message m;
 	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
 	char filename[filename_len];
 	memset(filename, 0, filename_len);
@@ -278,14 +284,19 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 		{
 			fprintf(stderr, "server_openFile : storage is full of files\n");
 			fflush(stderr);
+			server_sendresponse(SAPI_FAILURE, client_socket);
 			return -1;
 		}
 		if (fu_addfile(storage, file.data, file.path) == -1)
 		{	
 			fprintf(stderr, "server_openFile : fu_addfile returned an error\n");
 			fflush(stderr);
+			server_sendresponse(SAPI_FAILURE, client_socket);
 			return -1;
 		}
+		fprintf(stderr, "file %s added\n", filename);
+		fflush(stderr);
+		fu_storage_print(storage);
 	}
 	else // open existing file
 	{
@@ -295,6 +306,7 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 			fprintf(stderr, "server_openFile : %s is already locked\n", filename);
 			fflush(stderr);
 			pthread_mutex_unlock(&(fdata->mutex));
+			server_sendresponse(SAPI_FAILURE, client_socket);
 			return -1;
 		}
 		if (fdata->client != 0)
@@ -304,24 +316,20 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 				filename, fdata->client);
 			fflush(stderr);
 			pthread_mutex_unlock(&(fdata->mutex));
+			server_sendresponse(SAPI_FAILURE, client_socket);
 			return -1;
 		}
 		fdata->client = client_socket;
 		if (flags & O_LOCK) fdata->datainfo |= O_LOCK;
 		pthread_mutex_unlock(&(fdata->mutex));
 	}
-	m = SAPI_SUCCESS;
-	if (write(client_socket, &m, sizeof(s_message)) == -1)
-	{
-		perror("server_openFile : write");
-		fprintf(stderr, "server_openFile : write returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
+	server_sendresponse(SAPI_SUCCESS, client_socket);
 	return 0;
 }
 int server_readFile(int request, int client_socket, u_file_storage* storage)
 {
+	fprintf(stderr, "----READFILE----\n");
+	fflush(stderr);
 	if (request == 0)
 	{
 		fprintf(stderr, "server_readFile : param request == 0\n");
@@ -431,6 +439,8 @@ int server_readNFiles(int request, int client_socket, u_file_storage* storage)
 }
 int server_writeFile(int request, int client_socket, u_file_storage* storage)
 {
+	fprintf(stderr, "----WRITEFILE----\n");
+	fflush(stderr);
 	if (request == 0)
 	{
 		fprintf(stderr, "server_writeFile : param request == 0\n");
@@ -459,6 +469,7 @@ int server_writeFile(int request, int client_socket, u_file_storage* storage)
 		fflush(stderr);
 		return -1;
 	}
+	fprintf(stderr, "----WRITEFILE----0\n");
 	u_file_data *file = fu_getfile(storage, filename);
 	if (file == NULL)
 	{
@@ -469,6 +480,7 @@ int server_writeFile(int request, int client_socket, u_file_storage* storage)
 		}
 		return -1;
 	}
+	fprintf(stderr, "----WRITEFILE----1\n");
 	size_t datalen = 0;
 	if (read(client_socket, &datalen, sizeof(size_t)) == -1)
 	{
@@ -477,6 +489,7 @@ int server_writeFile(int request, int client_socket, u_file_storage* storage)
 		fflush(stderr);
 		return -1;
 	}
+	fprintf(stderr, "----WRITEFILE----2\n");
 	if (fu_storage_avBytes(storage) < datalen)
 	{
 		if (server_sendresponse(SAPI_EVICT, client_socket))
@@ -820,6 +833,8 @@ int server_unlockFile(int request, int client_socket, u_file_storage* storage)
 }
 int server_closeFile(int request, int client_socket, u_file_storage* storage)
 {
+	fprintf(stderr, "----CLOSEFILE----\n");
+	fflush(stderr);
 	if (request == 0)
 	{
 		fprintf(stderr, "server_closeFile : param request == 0\n");
@@ -1299,7 +1314,6 @@ int server_skipline(FILE *fstream)
 
     return 0;
 }
-
 int server_readline(FILE *fstream, char **str)
 {
     int lineLen = 0;
@@ -1322,7 +1336,6 @@ int server_readline(FILE *fstream, char **str)
     );
     return 0;
 }
-    
 int server_readword(FILE *fstream, char **str)
 {
     int wordLen = 0;

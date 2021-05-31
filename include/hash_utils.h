@@ -42,7 +42,6 @@ u_hash_table hu_init(size_t nentries, size_t datasize,
     size_t (*hashfunc)(void *key), int (*keycompare)(void *a, void *b), 
     void *(*extractkey)(void *data), void *(*extractdata)(void *data), 
     void (*dataprint)(void *data), void (*datafree)(void *data), void (*keyfree)(void *data));
-
 u_hash_item *hu_allocitem(void *key, void *data);
 u_hash_item *hu_allocitem_oncopy(void *key, void *data, size_t keylen, size_t datalen);
 int hu_ishere(u_hash_table *table, void *key);

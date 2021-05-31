@@ -66,7 +66,7 @@ int pu_add(u_pollarr *arr, int newfd, short events)
         return -1;
     }
     (arr->arr)[(arr->len)].fd = newfd;
-    (arr->arr)[(arr->len)++].events = events;
+    (arr->arr)[(arr->len)].events = events;
     (arr->arr)[(arr->len)++].revents &= 0;
     return 0;
 }

@@ -1,5 +1,9 @@
 #include "../include/file_utils.h"
 
+void fu_storage_print(u_file_storage *fstorage)
+{
+    hu_print(&(fstorage->table));
+}
 size_t fu_storage_avBytes(u_file_storage *fstorage)
 {
     if (fstorage == NULL)
@@ -46,7 +50,7 @@ u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes)
         fu_filenamecompare, 
         fu_filepath, 
         fu_filedata, 
-        fu_fileprint, 
+        fu_fileprint_hash, 
         fu_filedatafree, 
         mu_free
     );
@@ -138,8 +142,7 @@ int fu_addfile(u_file_storage *fstorage, u_file_data *file, char *filepath)
         fprintf(stderr, "fu_addfile : fstorage has not enough space to store this file\n");
         fflush(stderr);
         return -1;
-    }
-    
+    }   
     if (hu_insert(&(fstorage->table), hu_allocitem(filepath, file)))
     {
         fprintf(stderr, "fu_addfile : hu_insert has returned an error, file is not stored in fstorage\n");
@@ -490,6 +493,17 @@ void fu_fileprint(void *file)
         return;
     }
     fprintf(stdout, "file %s, size %ld\n", (char*)fu_filepath(file), ((u_file_data *)fu_filedata(file))->datalen);
+}
+void fu_fileprint_hash(void *file)
+{
+    if (file == NULL)
+    {
+        fprintf(stderr, "fu_fileprint : param file == NULL\n");
+        fflush(stderr);
+        return;
+    }
+    u_hash_item *item = (u_hash_item *)file;
+    fprintf(stdout, "file %s, size %ld\n", (char *)(item->key), ((u_file_data *)(item->data))->datalen);
 }
 void fu_filedatafree(void *file)
 {

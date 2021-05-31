@@ -4,7 +4,7 @@ int main(int argc, char** argv)
 {	
 	client_conf conf = {0};
 	parseargs(argc, argv, &conf);
-    printargs(&conf);
+    //printargs(&conf);
 	int connected = 1;
 
 	if (openConnection(conf.server_socket_filename, conf.connection_timer, 
@@ -14,7 +14,11 @@ int main(int argc, char** argv)
 		connected = 0;
 	}
 	
-	//write_nfiles_from_dir(conf.folder_to_write, conf.folder_filecount, "");
+	sleep(1);
+	write_files_list(conf.files_to_write, conf.writeback_foldername, conf.connection_timer);
+	sleep(1);
+	read_files_list(conf.files_to_read, conf.folder_destination, conf.connection_timer);
+	sleep(1);
 
 	if (connected && closeConnection(conf.server_socket_filename))
 	{
@@ -152,7 +156,7 @@ int conf_add_list(const char *optarg, u_list *list)
 
 	return 0;
 }
-int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir)
+int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir, size_t msec)
 {
 	if (dirname == NULL)
 	{
@@ -190,30 +194,44 @@ int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir)
 		lu_foreach(filelist, currnode, 
 			printf("file %s\n", (char *)currnode->data);
 		);
-		write_files_list(filelist, wbdir);
+		write_files_list(filelist, wbdir, msec);
 		lu_free(&filelist, mu_free);
 		lu_remove(&dirlist, currdir, lu_string_compare, mu_free);
 	}
 	lu_free(&dirlist, mu_free);
 	return 0;
 }
-int write_files_list(u_list filelist, const char *wbdir)
+int write_files_list(u_list filelist, const char *wbdir, size_t msec)
 {
 	int res = 0;
 	u_list_node *currnode;
+	struct timespec t;
+	t.tv_sec = msec / 1000;
+	t.tv_nsec = msec % 1000 * 1000000;
 	lu_foreach(filelist, currnode, 
+		nanosleep(&t, NULL);
+		res += openFile(currnode->data, O_CREATE | O_LOCK);
+		nanosleep(&t, NULL);
 		res += writeFile(currnode->data, wbdir);
+		nanosleep(&t, NULL);
+		res += closeFile(currnode->data);
 	);
 	return res ? -1 : 0;
 }
-int read_files_list(u_list filelist, const char *destdir)
+int read_files_list(u_list filelist, const char *destdir, size_t msec)
 {
+	struct timespec t;
+	t.tv_sec = msec / 1000;
+	t.tv_nsec = msec % 1000 * 1000000;
 	int res = 0;
 	u_list_node *currnode;
 	void *buff;
 	size_t size;
 	u_string temp = su_string_from_literal("");
 	lu_foreach(filelist, currnode, 
+		nanosleep(&t, NULL);
+		res += openFile(currnode->data, O_LOCK);
+		nanosleep(&t, NULL);
 		if (readFile((char *)currnode->data, &buff, &size))
 		{
 			fprintf(stderr, "\n");
@@ -224,6 +242,8 @@ int read_files_list(u_list filelist, const char *destdir)
 			su_append_chars(&temp, currnode->data);
 			res += fu_writepath(temp.data, buff, size);
 		}
+		nanosleep(&t, NULL);
+		res += closeFile(currnode->data);
 	);
 	return res ? -1 : 0;
 }

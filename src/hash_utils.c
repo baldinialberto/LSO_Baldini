@@ -269,6 +269,7 @@ void hu_free(u_hash_table *table)
 }
 void hu_print(u_hash_table *table)
 {
+    puts("hu_print");
     if (table == NULL)
     {
         fprintf(stderr, "hu_print : param table == NULL\n");
@@ -282,6 +283,7 @@ void hu_print(u_hash_table *table)
         return;
     }
     hu_foreach(table->table, table->nentries, 
+        puts("Hey");
         table->dataprint(hi)
     );
 }
