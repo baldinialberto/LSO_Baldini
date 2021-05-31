@@ -231,42 +231,272 @@ int serve(int request, int client_socket, u_file_storage* storage)
 }
 int server_openFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_openFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_openFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_openFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
+	s_message m;
+	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
+	char filename[filename_len];
+	memset(filename, 0, filename_len);
+	unsigned char flags = request & SAPI_FLAGMASK;
+	if (read(client_socket, filename, filename_len) == -1)
+	{
+		perror("server_openFile : read");
+		fprintf(stderr, "server_openFile : read returned an error\n");
+		fflush(stderr);
+		return -1;
+	}
+	u_file_data *fdata = fu_getfile(storage, filename);
+	if ((fdata != NULL && (flags & O_CREATE)) || (fdata == NULL && !(flags & O_CREATE)))
+	{
+		fprintf(stderr, "server_openFile : file %s in storage\n", 
+			(flags & O_CREATE) ? "already" : "not");
+		fflush(stderr);
+		return -1;
+	}
+	if (fdata == NULL) // create and open new file
+	{
+		u_file file = fu_allocfile_empty(filename);
+		file.data->client = client_socket;
+		if (flags & O_LOCK) file.data->datainfo |= O_LOCK;
+		if (!fu_storage_avFiles(storage))
+		{
+			fprintf(stderr, "server_openFile : storage is full of files\n");
+			fflush(stderr);
+			return -1;
+		}
+		if (fu_addfile(storage, file.data, file.path) == -1)
+		{	
+			fprintf(stderr, "server_openFile : fu_addfile returned an error\n");
+			fflush(stderr);
+			return -1;
+		}
+	}
+	else // open existing file
+	{
+		pthread_mutex_lock(&(fdata->mutex));
+		if (fdata->datainfo & O_LOCK)
+		{
+			fprintf(stderr, "server_openFile : %s is already locked\n", filename);
+			fflush(stderr);
+			return -1;
+		}
+		if (fdata->client != 0)
+		{
+			fprintf(stderr, 
+				"server_openFile : %s is already opened by another client(%d)\n", 
+				filename, fdata->client);
+			fflush(stderr);
+			return -1;
+		}
+		fdata->client = client_socket;
+		if (flags & O_LOCK) fdata->datainfo |= O_LOCK;
+		pthread_mutex_unlock(&(fdata->mutex));
+	}
+	m = SAPI_SUCCESS;
+	if (write(client_socket, &m, sizeof(s_message)) == -1)
+	{
+		perror("server_openFile : write");
+		fprintf(stderr, "server_openFile : write returned an error\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_readFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_readFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_readFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_readFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_readNFiles(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_readNFiles : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_readNFiles : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_readNFiles : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_writeFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_writeFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_writeFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_writeFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_appendToFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_appendToFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_appendToFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_appendToFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_lockFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_lockFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_lockFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_lockFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_unlockFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_unlockFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_unlockFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_unlockFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_closeFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_closeFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_closeFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_closeFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_removeFile(int request, int client_socket, u_file_storage* storage)
 {
+	if (request == 0)
+	{
+		fprintf(stderr, "server_removeFile : param request == 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (client_socket < 0)
+	{
+		fprintf(stderr, "server_removeFile : param client_socket < 0\n");
+		fflush(stderr);
+		return -1;
+	}
+	if (storage == NULL)
+	{
+		fprintf(stderr, "server_removeFile : param storage == NULL\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }
 int server_evictlist(u_list *savelist, size_t bytes_to_free)
 {
+	
 	return 0;
 }
 server_settings init_server_settings()

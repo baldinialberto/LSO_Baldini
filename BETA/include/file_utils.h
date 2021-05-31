@@ -39,6 +39,8 @@ u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes);
 u_file fu_allocfile(char *path, u_file_data *data);
 u_file fu_allocfile_empty(char *path);
 u_file fu_allocfile_oncopy(char *path, const void *data, size_t datalen);
+size_t fu_storage_filesavailable(u_file_storage *fstorage);
+size_t fu_storage_bytesavailable(u_file_storage *fstorage);
 int fu_addfile(u_file_storage *fstorage, u_file_data *file, char *filepath);
 int fu_removefile(u_file_storage *fstorage, char *path);
 u_file_data *fu_getfile(u_file_storage *fstorage, char *path);
