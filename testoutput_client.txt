@@ -1,2 +1,0 @@
-writeFile : sapi_getdata returned an error
-writeFile : sapi_evict returned an error
