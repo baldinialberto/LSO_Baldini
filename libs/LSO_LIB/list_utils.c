@@ -68,7 +68,7 @@ u_list lu_empty_list()
 {
     return NULL;
 }
-u_list_node *lu_allocnode(void *data)
+u_list_node *lu_alloc_node(void *data)
 {
     if (data == NULL)
     {
@@ -81,7 +81,7 @@ u_list_node *lu_allocnode(void *data)
     newnode->next = NULL;
     return newnode;
 }
-u_list_node *lu_allocnode_oncopy(void *data, size_t size)
+u_list_node *lu_alloc_node_oncopy(void *data, size_t size)
 {
     if (data == NULL)
     {
@@ -115,8 +115,8 @@ int lu_insert(u_list *list, void *data, int (*datacompare)(void *, void *))
         fflush(stderr);
         return -1;
     }
-    u_list_node *curr, *prev, *newnode = lu_allocnode(data);
-    _lu_navigate(*list, &curr, &prev, data, datacompare);
+    u_list_node *curr, *prev, *newnode = lu_alloc_node(data);
+    lu_navigate(*list, &curr, &prev, data, datacompare);
     if (prev == NULL)
     {
         newnode->next = curr;
@@ -149,8 +149,8 @@ int lu_insert_oncopy(u_list *list, void *data, size_t size, int (*datacompare)(v
         fflush(stderr);
         return -1;
     }
-    u_list_node *curr, *prev, *newnode = lu_allocnode_oncopy(data, size);
-    _lu_navigate(*list, &curr, &prev, data, datacompare);
+    u_list_node *curr, *prev, *newnode = lu_alloc_node_oncopy(data, size);
+    lu_navigate(*list, &curr, &prev, data, datacompare);
     if (prev == NULL)
     {
         newnode->next = curr;
@@ -184,7 +184,7 @@ int lu_remove(u_list *list, void *data, int (*datacompare)(void *, void *), void
         return -1;
     }
     u_list_node *curr, *prev;
-    _lu_navigate(*list, &curr, &prev, data, datacompare);
+    lu_navigate(*list, &curr, &prev, data, datacompare);
     if (curr == NULL || datacompare(data, curr->data))
     {
         fprintf(stderr, "lu_remove : data not in list\n");
@@ -230,7 +230,7 @@ int lu_remove_node(u_list *list, u_list_node *node, int (*datacompare)(void *, v
     }
     return lu_remove(list, node->data, datacompare, datafree);
 }
-void _lu_navigate(u_list list, u_list_node **curr, u_list_node **prev, void *data, int (*datacompare)(void *, void *))
+void lu_navigate(u_list list, u_list_node **curr, u_list_node **prev, void *data, int (*datacompare)(void *, void *))
 {
     *curr = list;
     *prev = NULL;
@@ -261,7 +261,7 @@ int lu_search(u_list *list, void *data, int (*datacompare)(void *, void *))
         return -1;
     }
     u_list_node *curr, *prev;
-    _lu_navigate(*list, &curr, &prev, data, datacompare);
+    lu_navigate(*list, &curr, &prev, data, datacompare);
     if (curr == NULL || datacompare(data, curr->data))
     {
         fprintf(stderr, "lu_search : data not in list\n");
@@ -272,7 +272,7 @@ int lu_search(u_list *list, void *data, int (*datacompare)(void *, void *))
     }
     return 0;
 }
-void *lu_get_byindex(u_list list, int index)
+void *lu_get_by_index(u_list list, int index)
 {
     if (list == NULL)
     {
@@ -315,7 +315,7 @@ void *lu_get(u_list *list, void *data, int (*datacompare)(void *, void *))
         return NULL;
     }
     u_list_node *curr, *prev;
-    _lu_navigate(*list, &curr, &prev, data, datacompare);
+    lu_navigate(*list, &curr, &prev, data, datacompare);
     if (curr == NULL || datacompare(data, curr->data))
     {
         fprintf(stderr, "lu_get : data not in list\n");

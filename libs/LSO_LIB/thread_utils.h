@@ -5,9 +5,9 @@
 #ifndef LSO_LIB_THREAD_UTILS_H
 #define LSO_LIB_THREAD_UTILS_H
 
+#pragma once
 #include <pthread.h>
-
-#define size_t unsigned long
+#include <stdlib.h>
 
 #define mutex_lock(mutex)       pthread_mutex_lock(&(mutex))
 #define mutex_unlock(mutex)     pthread_mutex_unlock(&(mutex))

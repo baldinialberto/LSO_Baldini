@@ -5,7 +5,8 @@
 #ifndef LSO_LIB_ARRAY_UTILS_H
 #define LSO_LIB_ARRAY_UTILS_H
 
-#define size_t unsigned long
+#pragma once
+#include <stdlib.h>
 
 typedef struct u_arr
 {
@@ -13,18 +14,22 @@ typedef struct u_arr
     size_t len;
     size_t element_count;
     size_t element_size;
-    int (*compare)(void *, void *);
-    void (*print)(void *);
+    int (*compare)(const void *, const void *);
+    void (*print)(const void *);
+    char is_sorted;
 } u_arr;
 
 u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(void *, void *));
 void au_free(u_arr *arr);
 int au_insert(u_arr *arr, void *new_element);
 int au_remove(u_arr *arr, void *old_element);
-int au_print(u_arr *arr);
-void *au_get(u_arr *arr, size_t i);
+void au_print(u_arr *arr);
+void *au_get(u_arr *arr, size_t index);
+long int au_index_of_obj(u_arr *arr, void *obj);
 void au_sort(u_arr *arr);
 int au_extends(u_arr *arr, size_t new_len);
 int au_shrinks(u_arr *arr);
+int au_is_full(u_arr *arr);
+int au_is_empty(u_arr *arr);
 
 #endif //LSO_LIB_ARRAY_UTILS_H

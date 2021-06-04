@@ -5,9 +5,10 @@
 #ifndef LSO_LIB_FILE_UTILS_H
 #define LSO_LIB_FILE_UTILS_H
 
+#pragma once
+#include <stdlib.h>
 #include <pthread.h>
 #include "hash_utils.h"
-#define size_t unsigned long
 
 typedef struct _utils_file_data
 {
