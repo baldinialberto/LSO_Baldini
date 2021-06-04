@@ -304,6 +304,33 @@ string_utils.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/string_utils.c.s
 .PHONY : string_utils.c.s
 
+tester.o: tester.c.o
+
+.PHONY : tester.o
+
+# target to build an object file
+tester.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/tester.c.o
+.PHONY : tester.c.o
+
+tester.i: tester.c.i
+
+.PHONY : tester.i
+
+# target to preprocess a source file
+tester.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/tester.c.i
+.PHONY : tester.c.i
+
+tester.s: tester.c.s
+
+.PHONY : tester.s
+
+# target to generate assembly for a file
+tester.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/tester.c.s
+.PHONY : tester.c.s
+
 thread_utils.o: thread_utils.c.o
 
 .PHONY : thread_utils.o
@@ -358,6 +385,9 @@ help:
 	@echo "... string_utils.o"
 	@echo "... string_utils.i"
 	@echo "... string_utils.s"
+	@echo "... tester.o"
+	@echo "... tester.i"
+	@echo "... tester.s"
 	@echo "... thread_utils.o"
 	@echo "... thread_utils.i"
 	@echo "... thread_utils.s"

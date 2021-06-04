@@ -19,7 +19,8 @@ typedef struct u_arr
     char is_sorted;
 } u_arr;
 
-u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(void *, void *));
+u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(const void *, const void *),
+                  void (*print)(const void *));
 void au_free(u_arr *arr);
 int au_insert(u_arr *arr, void *new_element);
 int au_remove(u_arr *arr, void *old_element);

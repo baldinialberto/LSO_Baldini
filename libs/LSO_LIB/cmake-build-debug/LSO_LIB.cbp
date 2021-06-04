@@ -117,6 +117,9 @@
 		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.h">
 			<Option target="LSO_LIB"/>
 		</Unit>
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/tester.c">
+			<Option target="LSO_LIB"/>
+		</Unit>
 		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c">
 			<Option target="LSO_LIB"/>
 		</Unit>

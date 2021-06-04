@@ -8,7 +8,7 @@
 #include <string.h>
 #include <search.h>
 
-u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(void *, void *))
+u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(const void *, const void *), void (*print)(const void *))
 {
     if (len == 0 || element_size == 0)
     {
@@ -21,6 +21,7 @@ u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(void *, void *)
     new_arr.len = len;
     new_arr.element_size = element_size;
     new_arr.compare = compare;
+    new_arr.print = print;
     new_arr.element_count = 0;
     new_arr.data = mu_calloc(len * element_size);
     new_arr.is_sorted = 1;
@@ -191,4 +192,24 @@ int au_shrinks(u_arr *arr)
     arr->len = arr->element_count;
 
     return 0;
+}
+int au_is_full(u_arr *arr)
+{
+    if (arr == NULL)
+    {
+        fprintf(stderr, "au_is_full : wrong params\n");
+        fflush(stderr);
+        return -1;
+    }
+    return (arr->element_count == arr->len);
+}
+int au_is_empty(u_arr *arr)
+{
+    if (arr == NULL)
+    {
+        fprintf(stderr, "au_is_empty : wrong params\n");
+        fflush(stderr);
+        return -1;
+    }
+    return (arr->element_count == 0);
 }
