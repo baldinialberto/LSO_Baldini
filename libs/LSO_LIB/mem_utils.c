@@ -35,6 +35,7 @@ void *mu_calloc(unsigned long int size) {
             perror("mu_calloc");
             exit(-1);
         }
+        return res;
     }
     return NULL;
 }

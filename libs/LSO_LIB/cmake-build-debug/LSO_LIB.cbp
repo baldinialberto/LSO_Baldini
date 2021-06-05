@@ -77,6 +77,46 @@
 					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="tester.exe">
+				<Option output="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/tester.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 tester.exe"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="tester.exe/fast">
+				<Option output="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/tester.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 tester.exe/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 		</Build>
 		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.c">
 			<Option target="LSO_LIB"/>
@@ -118,7 +158,7 @@
 			<Option target="LSO_LIB"/>
 		</Unit>
 		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/tester.c">
-			<Option target="LSO_LIB"/>
+			<Option target="tester.exe"/>
 		</Unit>
 		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c">
 			<Option target="LSO_LIB"/>

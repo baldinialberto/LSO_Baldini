@@ -23,7 +23,7 @@ size_t hu_hashstring(void *key)
     // Dan Bernstein
 
     size_t hash = 5381;
-    int c;
+    char c;
 
     while ((c = *(str++)))
         hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
@@ -313,7 +313,7 @@ size_t hu_index(u_hash_table *table, void *key)
     }
     return table->hashfunc(key) % table->nentries;
 }
-void _hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, void *key, int (*keycompare)(void *, void *))
+void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, void *key, int (*keycompare)(void *, void *))
 {
     *curr = list;
     *prev = NULL;

@@ -3,6 +3,10 @@
 //
 
 #include "string_utils.h"
+#include "mem_utils.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 u_string su_string_from_literal(const char *literal)
 {
@@ -87,13 +91,13 @@ int su_realloc(u_string *string, size_t newsize)
     return 0;
 }
 
-int su_strlen(u_string *string)
+size_t su_strlen(u_string *string)
 {
     if (string == NULL)
     {
         fprintf(stderr, "su_strlen : param string == NULL\n");
         fflush(stderr);
-        return -1;
+        return 0;
     }
     return (string->len = strlen(string->data));
 }

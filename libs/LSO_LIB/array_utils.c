@@ -40,7 +40,7 @@ void au_free(u_arr *arr)
     mu_free(arr->data);
     memset(arr, 0, sizeof(u_arr));
 }
-int au_insert(u_arr *arr, void *new_element)
+int au_insert(u_arr *arr, const void *new_element)
 {
     if (arr == NULL || new_element == NULL)
     {
@@ -49,20 +49,19 @@ int au_insert(u_arr *arr, void *new_element)
         return 1;
     }
 
-    if (arr->element_count == arr->len)
+    if (au_is_full(arr))
     {
         fprintf(stdout, "au_insert :  array is full\n");
         fflush(stdout);
         return 1;
     }
-
     memcpy(au_get(arr, arr->element_count), new_element, arr->element_size);
     arr->element_count++;
     arr->is_sorted = 0;
 
     return 0;
 }
-int au_remove(u_arr *arr, void *old_element)
+int au_remove(u_arr *arr, const void *old_element)
 {
     if (arr == NULL || old_element == NULL)
     {
@@ -70,22 +69,21 @@ int au_remove(u_arr *arr, void *old_element)
         fflush(stderr);
         return 1;
     }
-    if (arr->element_count == 0)
+    if (au_is_empty(arr))
     {
         fprintf(stdout, "au_remove : array is empty\n");
         fflush(stdout);
         return 1;
     }
-    size_t i = (size_t) au_index_of_obj(arr, old_element);
+    long i = au_index_of_obj(arr, old_element);
     if (i == -1)
     {
         fprintf(stdout, "au_remove : old_element not in array\n");
         fflush(stdout);
         return 1;
     }
-
-    memcpy(au_get(arr, arr->element_count), au_get(arr, i), arr->element_size);
-    memset(au_get(arr, arr->element_count), 0, arr->element_size); // optional
+    memcpy(au_get(arr, i), au_get(arr, arr->element_count-1), arr->element_size);
+    memset(au_get(arr, arr->element_count-1), 0, arr->element_size); // optional
     arr->element_count--;
     arr->is_sorted = 0;
 
@@ -118,10 +116,9 @@ void *au_get(u_arr *arr, size_t index)
         fflush(stdout);
         return NULL;
     }
-
-    return (void *)((char *)(arr->data) + (index * arr->element_size));
+    return (void *)((unsigned long)(arr->data) + (unsigned long)(index * arr->element_size));
 }
-long int au_index_of_obj(u_arr *arr, void *obj)
+long int au_index_of_obj(u_arr *arr, const void *obj)
 {
     if (arr == NULL || obj == NULL)
     {
@@ -138,7 +135,7 @@ long int au_index_of_obj(u_arr *arr, void *obj)
     {
         ret_ptr = lfind(obj, arr->data, &(arr->element_count), arr->element_size, arr->compare);
     }
-    return ret_ptr != NULL ? (ret_ptr - arr->data) / arr->element_size : -1;
+    return ret_ptr != NULL ? ((long)ret_ptr - (long)arr->data) / (long)arr->element_size : -1;
 }
 void au_sort(u_arr *arr)
 {

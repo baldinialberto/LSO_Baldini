@@ -10,7 +10,6 @@ set(CMAKE_DEPENDS_CHECK_C
   "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/list_utils.c.o"
   "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/mem_utils.c.o"
   "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/string_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/tester.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/tester.c.o"
   "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/thread_utils.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
