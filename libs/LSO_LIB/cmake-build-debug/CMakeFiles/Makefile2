@@ -73,7 +73,6 @@ CMAKE_BINARY_DIR = /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/c
 
 # The main recursive "all" target.
 all: CMakeFiles/LSO_LIB.dir/all
-all: CMakeFiles/tester.exe.dir/all
 
 .PHONY : all
 
@@ -84,7 +83,6 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/LSO_LIB.dir/clean
-clean: CMakeFiles/tester.exe.dir/clean
 
 .PHONY : clean
 
@@ -95,12 +93,12 @@ clean: CMakeFiles/tester.exe.dir/clean
 CMakeFiles/LSO_LIB.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target LSO_LIB"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9 "Built target LSO_LIB"
 .PHONY : CMakeFiles/LSO_LIB.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/LSO_LIB.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/LSO_LIB.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles 0
 .PHONY : CMakeFiles/LSO_LIB.dir/rule
@@ -114,33 +112,6 @@ LSO_LIB: CMakeFiles/LSO_LIB.dir/rule
 CMakeFiles/LSO_LIB.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/clean
 .PHONY : CMakeFiles/LSO_LIB.dir/clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/tester.exe.dir
-
-# All Build rule for target.
-CMakeFiles/tester.exe.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=9,10 "Built target tester.exe"
-.PHONY : CMakeFiles/tester.exe.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/tester.exe.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/tester.exe.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles 0
-.PHONY : CMakeFiles/tester.exe.dir/rule
-
-# Convenience name for target.
-tester.exe: CMakeFiles/tester.exe.dir/rule
-
-.PHONY : tester.exe
-
-# clean rule for target.
-CMakeFiles/tester.exe.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/clean
-.PHONY : CMakeFiles/tester.exe.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

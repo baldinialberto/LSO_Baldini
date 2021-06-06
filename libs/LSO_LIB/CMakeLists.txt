@@ -11,4 +11,5 @@ add_library(LSO_LIB SHARED
         string_utils.c string_utils.h
         error_utils.h
         thread_utils.c thread_utils.h
-        array_utils.c array_utils.h)
+        array_utils.c array_utils.h
+        tester.c)

@@ -142,19 +142,6 @@ LSO_LIB/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/build
 .PHONY : LSO_LIB/fast
 
-#=============================================================================
-# Target rules for targets named tester.exe
-
-# Build rule for target.
-tester.exe: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tester.exe
-.PHONY : tester.exe
-
-# fast build rule for target.
-tester.exe/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/build
-.PHONY : tester.exe/fast
-
 array_utils.o: array_utils.c.o
 
 .PHONY : array_utils.o
@@ -323,7 +310,7 @@ tester.o: tester.c.o
 
 # target to build an object file
 tester.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/tester.c.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/tester.c.o
 .PHONY : tester.c.o
 
 tester.i: tester.c.i
@@ -332,7 +319,7 @@ tester.i: tester.c.i
 
 # target to preprocess a source file
 tester.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/tester.c.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/tester.c.i
 .PHONY : tester.c.i
 
 tester.s: tester.c.s
@@ -341,7 +328,7 @@ tester.s: tester.c.s
 
 # target to generate assembly for a file
 tester.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/tester.exe.dir/build.make CMakeFiles/tester.exe.dir/tester.c.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_LIB.dir/build.make CMakeFiles/LSO_LIB.dir/tester.c.s
 .PHONY : tester.c.s
 
 thread_utils.o: thread_utils.c.o
@@ -380,7 +367,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... LSO_LIB"
-	@echo "... tester.exe"
 	@echo "... array_utils.o"
 	@echo "... array_utils.i"
 	@echo "... array_utils.s"

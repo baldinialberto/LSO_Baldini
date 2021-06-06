@@ -5,8 +5,6 @@
 *.log
 *.socket
 *.sh
-*temp*
-*test*
 towrite/
 evicted/
 readen/

@@ -46,5 +46,4 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/LSO_LIB.dir/DependInfo.cmake"
-  "CMakeFiles/tester.exe.dir/DependInfo.cmake"
   )
