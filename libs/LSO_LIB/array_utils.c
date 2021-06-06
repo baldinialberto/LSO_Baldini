@@ -151,8 +151,8 @@ void au_sort(u_arr *arr)
         fflush(stdout);
         return;
     }
-    arr->is_sorted = (char)!heapsort(arr->data, arr->element_count, arr->element_size, arr->compare);
-    if (!arr->is_sorted) perror("au_sort : heapsort");
+    qsort(arr->data, arr->element_count, arr->element_size, arr->compare);
+    arr->is_sorted = 1;
 }
 int au_extends(u_arr *arr, size_t new_len)
 {
