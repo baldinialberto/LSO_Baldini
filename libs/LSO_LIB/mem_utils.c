@@ -48,7 +48,7 @@ void mu_free(void *ptr)
     }
 }
 
-void *mu_clone(void *ptr, unsigned long int size)
+void *mu_clone(void *ptr, size_t size)
 {
     if (ptr == NULL || size == 0) return NULL;
     void *res = mu_malloc(size);

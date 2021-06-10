@@ -16,7 +16,7 @@ int int_comp(const void *a, const void *b)
 
 int main(void)
 {
-    u_arr array = au_init_arr(100, sizeof(int), int_comp, print);
+    u_arr array = au_init_arr(100, sizeof(int), int_comp, print, NULL);
     int i = 100;
     for (; i > 0; i--)
     {

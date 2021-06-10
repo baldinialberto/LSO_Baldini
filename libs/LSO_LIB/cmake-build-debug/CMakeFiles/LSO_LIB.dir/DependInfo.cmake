@@ -4,16 +4,16 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/array_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/file_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/file_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/hash_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/hash_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/list_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/mem_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/string_utils.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/tester.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/tester.c.o"
-  "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c" "/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/thread_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/array_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/file_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/file_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/hash_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/hash_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/list_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/list_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/mem_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/mem_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/string_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/string_utils.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/tester.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/tester.c.o"
+  "/home/alberto/LSO_Baldini/libs/LSO_LIB/thread_utils.c" "/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/thread_utils.c.o"
   )
-set(CMAKE_C_COMPILER_ID "AppleClang")
+set(CMAKE_C_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_C

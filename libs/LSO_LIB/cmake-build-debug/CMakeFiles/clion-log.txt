@@ -1,4 +1,10 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB
+/snap/clion/152/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/alberto/LSO_Baldini/libs/LSO_LIB
+-- The C compiler identification is GNU 9.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
 -- Configuring done
 -- Generating done
--- Build files have been written to: /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug
+-- Build files have been written to: /home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug

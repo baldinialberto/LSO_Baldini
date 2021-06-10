@@ -8,9 +8,18 @@
 #include <string.h>
 #include <search.h>
 
-u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(const void *, const void *), void (*print)(const void *))
+u_arr au_init_arr(size_t len, size_t element_size,
+                  int(*compare_func)(const void *, const void *),
+                  void (*print_func)(const void *),
+                  void (*free_func)(const void *))
 {
     if (len == 0 || element_size == 0)
+    {
+        fprintf(stderr, "au_init_arr : wrong params\n");
+        fflush(stderr);
+        return (u_arr){0};
+    }
+    if (compare_func == NULL || print_func == NULL)
     {
         fprintf(stderr, "au_init_arr : wrong params\n");
         fflush(stderr);
@@ -20,8 +29,9 @@ u_arr au_init_arr(size_t len, size_t element_size, int(*compare)(const void *, c
     u_arr new_arr;
     new_arr.len = len;
     new_arr.element_size = element_size;
-    new_arr.compare = compare;
-    new_arr.print = print;
+    new_arr.compare = compare_func;
+    new_arr.print = print_func;
+    new_arr.free = free_func;
     new_arr.element_count = 0;
     new_arr.data = mu_calloc(len * element_size);
     new_arr.is_sorted = 1;
@@ -35,6 +45,13 @@ void au_free(u_arr *arr)
         fprintf(stderr, "au_free : wrong params\n");
         fflush(stderr);
         return;
+    }
+    if (arr->free != NULL)
+    {
+        for (size_t i = 0; i < arr->element_count; i++)
+        {
+            arr->free(au_get(arr, i));
+        }
     }
 
     mu_free(arr->data);
