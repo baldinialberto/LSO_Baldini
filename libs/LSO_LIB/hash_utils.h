@@ -7,14 +7,14 @@
 
 #define size_t unsigned long
 
-#define hu_foreach(table, nentries, do) \
-for (size_t i = 0; i < (nentries); i++) \
-{   \
-    for (u_hash_item *hi = (table)[i]; hi != NULL; hi = hi->next)   \
-    {   \
-        do; \
-    }   \
-}   \
+#define hu_foreach(table, nentries, do)                                 \
+for (size_t i = 0; i < (nentries); i++)                                 \
+{                                                                       \
+    for (u_hash_item *hi = (table)[i]; hi != NULL; hi = hi->next)       \
+    {                                                                   \
+        do;                                                             \
+    }                                                                   \
+}                                                                       \
 
 typedef struct utils_hash_item
 {
@@ -26,25 +26,20 @@ typedef u_hash_item *u_hash_list;
 typedef struct utils_hash_table
 {
     u_hash_list *table;
-    size_t nentries;
-    size_t datasize;
-    size_t (*hashfunc)(void *key);
-    int (*keycompare)(void *a, void *b);
-    void *(*extractkey)(void *data);
-    void *(*extractdata)(void *data);
-    void (*dataprint)(void *data);
-    void (*datafree)(void *data);
-    void (*keyfree)(void *data);
+    size_t n_entries;
+    size_t data_size;
+    size_t (*hash)(void *key);
+    int (*compare)(void *a, void *b);
+    void (*print)(void *data);
+    void (*free_data)(void *data);
+    void (*free_key)(void *data);
 } u_hash_table;
 
-size_t hu_hashstring(void *key);
-u_hash_table hu_init(size_t nentries, size_t datasize,
-                     size_t (*hashfunc)(void *key), int (*keycompare)(void *a, void *b),
-                     void *(*extractkey)(void *data), void *(*extractdata)(void *data),
-                     void (*dataprint)(void *data), void (*datafree)(void *data), void (*keyfree)(void *data));
-u_hash_item *hu_allocitem(void *key, void *data);
-u_hash_item *hu_allocitem_oncopy(void *key, void *data, size_t keylen, size_t datalen);
-int hu_ishere(u_hash_table *table, void *key);
+
+u_hash_table hu_init(size_t n_entries, size_t data_size, size_t (*hash)(void *key),
+                     int (*compare)(void *a, void *b), void (*print)(void *data),
+                     void (*free_data)(void *data), void (*free_key)(void *data));
+u_hash_item *hu_alloc_item(void *key, void *data);
 int hu_insert(u_hash_table *table, u_hash_item *item);
 int hu_remove(u_hash_table *table, void *key);
 void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, void *key, int (*keycompare)(void *, void *));

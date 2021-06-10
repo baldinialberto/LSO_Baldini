@@ -152,7 +152,7 @@ int fu_addfile(u_file_storage *fstorage, u_file_data *file, char *filepath)
         fflush(stderr);
         return -1;
     }
-    if (hu_insert(&(fstorage->table), hu_allocitem(filepath, file)))
+    if (hu_insert(&(fstorage->table), hu_alloc_item(filepath, file)))
     {
         fprintf(stderr, "fu_addfile : hu_insert has returned an error, file is not stored in fstorage\n");
         fflush(stderr);

@@ -8,8 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-u_list lu_empty_list(size_t element_size, int (*compare_func)(const void *, const void *),
-                     void (*free_func)(const void *), void (*print_func)(const void *))
+u_list lu_init_list(size_t element_size, int (*compare_func)(const void *, const void *),
+                    void (*free_func)(void *), void (*print_func)(const void *))
 {
     u_list new_list = {0};
 
@@ -21,7 +21,7 @@ u_list lu_empty_list(size_t element_size, int (*compare_func)(const void *, cons
         new_list.print = print_func;
     } else
     {
-        fprintf(stderr, "lu_empty_list : wrong params\n");
+        fprintf(stderr, "lu_init_list : wrong params\n");
         fflush(stderr);
     }
 
@@ -40,7 +40,7 @@ u_list_node *lu_alloc_node(void *data)
     new_node->next = NULL;
     return new_node;
 }
-int lu_insert(u_list *list, void *data)
+int lu_insert(u_list *list, const void *data)
 {
     if (list == NULL || data == NULL)
     {
@@ -48,7 +48,7 @@ int lu_insert(u_list *list, void *data)
         fflush(stderr);
         return -1;
     }
-    u_list_node *curr, *prev, *new_node = lu_alloc_node(data);
+    u_list_node *curr, *prev, *new_node = lu_alloc_node(mu_clone(data, list->element_size));
     lu_navigate(list, &curr, &prev, data);
     if (prev == NULL)
     {
@@ -63,7 +63,7 @@ int lu_insert(u_list *list, void *data)
     list->len++;
     return 0;
 }
-int lu_remove(u_list *list, void *data)
+int lu_remove(u_list *list, const void *data)
 {
     if (list == NULL || data == NULL)
     {
@@ -101,7 +101,7 @@ int lu_remove(u_list *list, void *data)
 
     return 0;
 }
-void lu_navigate(u_list *list, u_list_node **curr, u_list_node **prev, void *data)
+void lu_navigate(u_list *list, u_list_node **curr, u_list_node **prev, const void *data)
 {
     *curr = list->head;
     *prev = NULL;
@@ -111,7 +111,7 @@ void lu_navigate(u_list *list, u_list_node **curr, u_list_node **prev, void *dat
         *curr = (*curr)->next;
     }
 }
-long int lu_index_of_obj(u_list *list, void *obj)
+long int lu_index_of_obj(u_list *list, const void *obj)
 {
     if (list == NULL || obj == NULL)
     {
@@ -163,82 +163,60 @@ void *lu_get(u_list *list, long int index)
 }
 void lu_free(u_list *list)
 {
-    // keep diggin'
     if (list == NULL)
     {
-        fprintf(stderr, "lu_free : param list == NULL\n");
+        fprintf(stderr, "lu_free : wrong params\n");
         fflush(stderr);
         return;
     }
-    if (*list == NULL)
+    if (lu_is_empty(list)) return;
+    u_list_node *old_node, *curr_node = list->head;
+    while (curr_node != NULL)
     {
-        fprintf(stderr, "lu_search : param *list == NULL -> list empty\n");
-        fflush(stderr);
-        return;
+        old_node = curr_node;
+        curr_node = curr_node->next;
+        list->free(old_node->data);
+        mu_free(old_node);
     }
-    u_list_node *oldnode;
-    while (*list != NULL)
-    {
-        oldnode = *list;
-        *list = (*list)->next;
-        datafree(oldnode->data);
-        free(oldnode);
-    }
+    list->head = NULL;
+    list->len = 0;
 }
 void lu_print(u_list *list)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_print : param list == NULL -> list empty\n");
+        fprintf(stderr, "lu_print : wrong params\n");
         fflush(stderr);
         return;
     }
-    u_list_node *temp;
-    lu_foreach(list, temp, dataprint(temp->data));
+    if (!lu_is_empty(list)) {
+        u_list_node *temp = list->head;
+        while (temp != NULL)
+        {
+            list->print(temp->data);
+            temp = temp->next;
+        }
+    }
     fprintf(stdout, "(NULL)\n");
     fflush(stdout);
-    return;
 }
 void *lu_plain_arr(u_list *list)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_plainarr : param list == NULL -> list empty\n");
+        fprintf(stderr, "lu_plainarr : wrong params\n");
         fflush(stderr);
         return NULL;
     }
-    if (datasize == 0)
-    {
-        fprintf(stderr, "lu_plainarr : param datasize == NULL\n");
-        fflush(stderr);
-        return NULL;
-    }
-    size_t listlen = lu_length(list);
-    char *arr = mu_malloc(listlen * datasize);
+    if (lu_is_empty(list)) return NULL;
+    char *arr = mu_malloc(list->len * list->element_size);
+    u_list_node *temp = list->head;
     size_t i = 0;
-    u_list_node *temp;
-    lu_foreach(list, temp,
-               memcpy(arr + (i * datasize), temp->data, datasize);
-    i++;
-    );
-    return arr;
-}
-char *lu_tostring(u_list *list)
-{
-    if (list == NULL)
+    while (temp != NULL)
     {
-        fprintf(stderr, "lu_tostring : param list == NULL -> list empty\n");
-        fflush(stderr);
-        return NULL;
+        memcpy(arr + (i * list->element_size), temp->data, list->element_size);
+        temp = temp->next;
+        i++;
     }
-    size_t listlen = lu_length(list);
-    char *arr = mu_malloc(listlen + 1);
-    size_t i = 0;
-    u_list_node *temp;
-    lu_foreach(list, temp,
-               memcpy(arr + i, temp->data, sizeof(char));
-    i++;
-    );
-    arr[i] = (char)0;
     return arr;
 }

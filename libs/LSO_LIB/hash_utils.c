@@ -37,24 +37,24 @@ u_hash_table hu_init(size_t nentries, size_t datasize,
                      void (*keyfree)(void *key))
 {
     u_hash_table table;
-    table.nentries = nentries;
-    table.datasize = datasize;
-    table.hashfunc = hashfunc;
-    table.keycompare = keycompare;
-    table.extractkey = extractkey;
-    table.extractdata = extractdata;
-    table.dataprint = dataprint;
-    table.datafree = datafree;
-    table.keyfree = keyfree;
+    table.n_entries = nentries;
+    table.data_size = datasize;
+    table.hash = hashfunc;
+    table.compare = keycompare;
+    table.extract_key = extractkey;
+    table.extract_data = extractdata;
+    table.print = dataprint;
+    table.free_data = datafree;
+    table.free_key = keyfree;
     table.table = mu_calloc(sizeof(u_list) * nentries);
 
     return table;
 }
-u_hash_item *hu_allocitem(void *key, void *data)
+u_hash_item *hu_alloc_item(void *key, void *data)
 {
     if (key == NULL)
     {
-        fprintf(stderr, "hu_allocitem : param key == NULL\n");
+        fprintf(stderr, "hu_alloc_item : param key == NULL\n");
         fflush(stderr);
         return NULL;
     }
@@ -63,71 +63,6 @@ u_hash_item *hu_allocitem(void *key, void *data)
     newitem->data = data;
     newitem->next = NULL;
     return newitem;
-}
-u_hash_item *hu_allocitem_oncopy(void *key, void *data, size_t keylen, size_t datalen)
-{
-    if (key == NULL || keylen == 0)
-    {
-        fprintf(stderr, "hu_allocitem_oncopy : param key == NULL\n");
-        fflush(stderr);
-        return NULL;
-    }
-    if (data == NULL && datalen != 0)
-    {
-        fprintf(stderr, "hu_allocitem_oncopy : param data == NULL\n");
-        fflush(stderr);
-        return NULL;
-    }
-    if (data != NULL && datalen == 0)
-    {
-        fprintf(stderr, "hu_allocitem_oncopy : param datale == 0\n");
-        fflush(stderr);
-        return NULL;
-    }
-    void *keycopy = mu_malloc(keylen), *datacopy = NULL;
-    memcpy(keycopy, key, keylen);
-    if (data != NULL)
-    {
-        datacopy = mu_malloc(datalen);
-        memcpy(datacopy, data, datalen);
-    }
-    return hu_allocitem(keycopy, datacopy);
-}
-int hu_ishere(u_hash_table *table, void *key)
-{
-    if (table == NULL)
-    {
-        fprintf(stderr, "hu_ishere : param table == NULL\n");
-        fflush(stderr);
-        return -1;
-    }
-    if (key == NULL)
-    {
-        fprintf(stderr, "hu_ishere : param key == NULL\n");
-        fflush(stderr);
-        return -1;
-    }
-    if (table->table == NULL)
-    {
-        fprintf(stderr, "hu_ishere : param table->table == NULL -> hashtable empty\n");
-        fflush(stderr);
-        return -1;
-    }
-
-    u_hash_item *prev, *curr;
-    hu_navigate_list((table->table)[hu_index(table, key)],
-                      &curr, &prev, key, table->keycompare);
-
-    if (curr == NULL || table->keycompare(key, curr->key))
-    {
-        fprintf(stderr, "hu_ishere : data not in list\n");
-        fflush(stderr);
-        fprintf(stdout, "hu_ishere : data not in list\n");
-        fflush(stdout);
-        return -1;
-    }
-
-    return 0;
 }
 int hu_insert(u_hash_table *table, u_hash_item *data)
 {
@@ -145,7 +80,7 @@ int hu_insert(u_hash_table *table, u_hash_item *data)
     }
     u_hash_list *list = table->table + hu_index(table, data->key);
     u_hash_item *curr, *prev;
-    hu_navigate_list(*list, &curr, &prev, data->key, table->keycompare);
+    hu_navigate_list(*list, &curr, &prev, data->key, table->compare);
     if (prev == NULL)
     {
         data->next = curr;
@@ -186,8 +121,8 @@ int hu_remove(u_hash_table *table, void *key)
     }
     u_hash_list *list = table->table + hu_index(table, key);
     u_hash_item *curr, *prev;
-    hu_navigate_list(*list, &curr, &prev, key, table->keycompare);
-    if (curr == NULL || table->keycompare(key, curr->key))
+    hu_navigate_list(*list, &curr, &prev, key, table->compare);
+    if (curr == NULL || table->compare(key, curr->key))
     {
         fprintf(stderr, "hu_remove : data not in list\n");
         fflush(stderr);
@@ -204,8 +139,8 @@ int hu_remove(u_hash_table *table, void *key)
         {
             prev->next = curr->next;
         }
-        table->datafree(curr->data);
-        table->keyfree(curr->key);
+        table->free_data(curr->data);
+        table->free_key(curr->key);
         free(curr);
     }
     return 0;
@@ -238,8 +173,8 @@ void *hu_get(u_hash_table *table, void *key)
     }
     u_hash_list *list = table->table + hu_index(table, key);
     u_hash_item *curr, *prev;
-    hu_navigate_list(*list, &curr, &prev, key, table->keycompare);
-    if (curr == NULL || table->keycompare(key, curr->key))
+    hu_navigate_list(*list, &curr, &prev, key, table->compare);
+    if (curr == NULL || table->compare(key, curr->key))
     {
         fprintf(stderr, "hu_get : data not in list\n");
         fflush(stderr);
@@ -264,14 +199,14 @@ void hu_free(u_hash_table *table)
         return;
     }
     u_hash_item *temp;
-    for (size_t i = 0; i < table->nentries; i++)
+    for (size_t i = 0; i < table->n_entries; i++)
     {
         for (u_hash_item *hi = (table->table)[i]; hi != NULL;)
         {
             temp = hi;
             hi = hi->next;
-            table->datafree(temp->data);
-            table->keyfree(temp->key);
+            table->free_data(temp->data);
+            table->free_key(temp->key);
             mu_free(temp);
         }
     }
@@ -292,9 +227,9 @@ void hu_print(u_hash_table *table)
         fflush(stderr);
         return;
     }
-    hu_foreach(table->table, table->nentries,
+    hu_foreach(table->table, table->n_entries,
                puts("Hey");
-                       table->dataprint(hi)
+                       table->print(hi)
     );
 }
 size_t hu_index(u_hash_table *table, void *key)
@@ -311,7 +246,7 @@ size_t hu_index(u_hash_table *table, void *key)
         fflush(stderr);
         return 0;
     }
-    return table->hashfunc(key) % table->nentries;
+    return table->hash(key) % table->n_entries;
 }
 void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, void *key, int (*keycompare)(void *, void *))
 {
