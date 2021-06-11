@@ -30,13 +30,12 @@ size_t hu_hash_string(const void *key)
 
     return hash;
 }
-u_hash_table hu_init(size_t n_entries, size_t data_size, size_t (*hash_func)(const void *key),
+u_hash_table hu_init(size_t n_entries, size_t (*hash_func)(const void *key),
                      int (*compare_func)(const void *a, const void *b), void (*print_func)(const void *data),
                      void (*free_data_func)(void *data), void (*free_key_func)(void *data))
 {
     u_hash_table table;
     table.n_entries = n_entries;
-    table.data_size = data_size;
     table.hash = hash_func;
     table.compare = compare_func;
     table.print = print_func;
@@ -85,19 +84,18 @@ int hu_insert(u_hash_table *table, const void *key, void *data)
 }
 int hu_remove(u_hash_table *table, const void *key)
 {
-    if (table == NULL)
+    if (table == NULL || key == NULL)
     {
-        fprintf(stderr, "hu_remove : param table == NULL\n");
+        fprintf(stderr, "hu_remove : wrong params\n");
         fflush(stderr);
         return -1;
     }
-    if (key == NULL)
+    if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_remove : param key == NULL\n");
+        fprintf(stderr, "hu_remove : hashtable is empty\n");
         fflush(stderr);
         return -1;
     }
-
 
     u_hash_list *list = table->table + hu_index(table, key);
     u_hash_item *curr, *prev;
@@ -120,37 +118,26 @@ int hu_remove(u_hash_table *table, const void *key)
             prev->next = curr->next;
         }
         table->free_data(curr->data);
-        table->free_key(curr->key);
+        table->free_key((void *)curr->key);
         free(curr);
     }
     return 0;
 }
 void *hu_get(u_hash_table *table, const void *key)
 {
-    if (table == NULL)
+    if (table == NULL || key == NULL)
     {
-        fprintf(stderr, "hu_get : param table == NULL\n");
+        fprintf(stderr, "hu_get : wrong params\n");
         fflush(stderr);
         return NULL;
     }
-    if (table->table == NULL)
+    if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_get : param table->table == NULL -> hashtable empty\n");
+        fprintf(stderr, "hu_get : hashtable is empty\n");
         fflush(stderr);
         return NULL;
     }
-    if (key == NULL)
-    {
-        fprintf(stderr, "hu_get : param key == NULL\n");
-        fflush(stderr);
-        return NULL;
-    }
-    if (hu_ishere(table, key))
-    {
-        fprintf(stderr, "hu_get : hu_ishere returned an error, data not in table\n");
-        fflush(stderr);
-        return NULL;
-    }
+
     u_hash_list *list = table->table + hu_index(table, key);
     u_hash_item *curr, *prev;
     hu_navigate_list(*list, &curr, &prev, key, table->compare);
@@ -164,17 +151,39 @@ void *hu_get(u_hash_table *table, const void *key)
     }
     return curr->data;
 }
+int hu_is_empty(u_hash_table *table)
+{
+    if (table == NULL)
+    {
+        fprintf(stderr, "hu_is_empty : wrong params\n");
+        fflush(stderr);
+        return -1;
+    }
+    int empty = 1;
+    u_hash_list list = NULL;
+
+    for (size_t i = 0; i < table->n_entries && empty; i++)
+    {
+        list = table->table[i];
+        if (list != NULL)
+        {
+            empty = 0;
+        }
+    }
+
+    return empty;
+}
 void hu_free(u_hash_table *table)
 {
     if (table == NULL)
     {
-        fprintf(stderr, "hu_free : param table == NULL\n");
+        fprintf(stderr, "hu_free : wrong params\n");
         fflush(stderr);
         return;
     }
-    if (table->table == NULL)
+    if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_free : param table->table == NULL -> hashtable empty\n");
+        fprintf(stderr, "hu_free : hashtable is empty\n");
         fflush(stderr);
         return;
     }
@@ -186,7 +195,7 @@ void hu_free(u_hash_table *table)
             temp = hi;
             hi = hi->next;
             table->free_data(temp->data);
-            table->free_key(temp->key);
+            table->free_key((void *)temp->key);
             mu_free(temp);
         }
     }
@@ -197,32 +206,25 @@ void hu_print(u_hash_table *table)
     puts("hu_print");
     if (table == NULL)
     {
-        fprintf(stderr, "hu_print : param table == NULL\n");
+        fprintf(stderr, "hu_print : wrong params\n");
         fflush(stderr);
         return;
     }
-    if (table->table == NULL)
+    if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_print : param table->table == NULL -> hashtable empty\n");
+        fprintf(stderr, "hu_print : hashtable is empty\n");
         fflush(stderr);
         return;
     }
     hu_foreach(table->table, table->n_entries,
-               puts("Hey");
                        table->print(hi)
     );
 }
 size_t hu_index(u_hash_table *table, const void *key)
 {
-    if (table == NULL)
+    if (table == NULL || key == NULL)
     {
-        fprintf(stderr, "hu_index : param table == NULL\n");
-        fflush(stderr);
-        return 0;
-    }
-    if (key == NULL)
-    {
-        fprintf(stderr, "hu_index : param data == NULL\n");
+        fprintf(stderr, "hu_index : wrong params\n");
         fflush(stderr);
         return 0;
     }
@@ -230,6 +232,12 @@ size_t hu_index(u_hash_table *table, const void *key)
 }
 void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, const void *key, int (*compare)(const void *, const void *))
 {
+    if (curr == NULL || prev == NULL || key == NULL || compare == NULL)
+    {
+        fprintf(stderr, "hu_navigate_list : wrong params\n");
+        fflush(stderr);
+        return;
+    }
     *curr = list;
     *prev = NULL;
     while (*curr != NULL && compare(key, (*curr)->key) > 0)

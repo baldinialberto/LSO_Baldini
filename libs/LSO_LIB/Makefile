@@ -1,6 +1,6 @@
 CC:=gcc
 CFLAGS:=-Wall -pedantic -g
-LIB_OBJS:=mem_utils.o string_utils.o thread_utils.o file_utils.o hash_utils.o array_utils.o list_utils.o
+LIB_OBJS:=mem_utils.o string_utils.o thread_utils.o hash_utils.o array_utils.o list_utils.o
 EXEC_OBJ:=tester.o
 EXEC_LIST:=tester.exe
 
