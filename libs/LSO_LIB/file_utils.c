@@ -55,7 +55,7 @@ u_file_storage fu_init_file_storage(size_t maxfiles, size_t maxBytes)
     filestorage.table = hu_init(
             (filestorage.maxfiles >> 2) + 1,
             sizeof(u_file),
-            hu_hashstring,
+            hu_hash_string,
             fu_filenamecompare,
             fu_filepath,
             fu_filedata,

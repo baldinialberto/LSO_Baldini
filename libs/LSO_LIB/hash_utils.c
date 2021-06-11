@@ -10,12 +10,12 @@
 #include "mem_utils.h"
 #include "hash_utils.h"
 
-size_t hu_hashstring(void *key)
+size_t hu_hash_string(const void *key)
 {
     char *str = (char *)key;
     if (str == NULL)
     {
-        fprintf(stderr, "hu_hashstring : param str == NULL\n");
+        fprintf(stderr, "hu_hash_string : param str == NULL\n");
         fflush(stderr);
         return 0;
     }
@@ -30,27 +30,23 @@ size_t hu_hashstring(void *key)
 
     return hash;
 }
-u_hash_table hu_init(size_t nentries, size_t datasize,
-                     size_t (*hashfunc)(void *key), int (*keycompare)(void *a, void *b),
-                     void *(*extractkey)(void *data), void *(*extractdata)(void *data),
-                     void (*dataprint)(void *data), void (*datafree)(void *data),
-                     void (*keyfree)(void *key))
+u_hash_table hu_init(size_t n_entries, size_t data_size, size_t (*hash_func)(const void *key),
+                     int (*compare_func)(const void *a, const void *b), void (*print_func)(const void *data),
+                     void (*free_data_func)(void *data), void (*free_key_func)(void *data))
 {
     u_hash_table table;
-    table.n_entries = nentries;
-    table.data_size = datasize;
-    table.hash = hashfunc;
-    table.compare = keycompare;
-    table.extract_key = extractkey;
-    table.extract_data = extractdata;
-    table.print = dataprint;
-    table.free_data = datafree;
-    table.free_key = keyfree;
-    table.table = mu_calloc(sizeof(u_list) * nentries);
+    table.n_entries = n_entries;
+    table.data_size = data_size;
+    table.hash = hash_func;
+    table.compare = compare_func;
+    table.print = print_func;
+    table.free_data = free_data_func;
+    table.free_key = free_key_func;
+    table.table = mu_calloc(sizeof(u_hash_list) * n_entries);
 
     return table;
 }
-u_hash_item *hu_alloc_item(void *key, void *data)
+u_hash_item *hu_alloc_item(const void *key, void *data)
 {
     if (key == NULL)
     {
@@ -58,42 +54,36 @@ u_hash_item *hu_alloc_item(void *key, void *data)
         fflush(stderr);
         return NULL;
     }
-    u_hash_item *newitem = mu_malloc(sizeof(u_hash_item));
-    newitem->key = key;
-    newitem->data = data;
-    newitem->next = NULL;
-    return newitem;
+    u_hash_item *new_item = mu_malloc(sizeof(u_hash_item));
+    new_item->key = key;
+    new_item->data = data;
+    new_item->next = NULL;
+    return new_item;
 }
-int hu_insert(u_hash_table *table, u_hash_item *data)
+int hu_insert(u_hash_table *table, const void *key, void *data)
 {
-    if (table == NULL)
+    if (table == NULL || data == NULL)
     {
         fprintf(stderr, "hu_insert : param table == NULL\n");
         fflush(stderr);
         return -1;
     }
-    if (data == NULL)
-    {
-        fprintf(stderr, "hu_insert : param key == NULL\n");
-        fflush(stderr);
-        return -1;
-    }
-    u_hash_list *list = table->table + hu_index(table, data->key);
-    u_hash_item *curr, *prev;
-    hu_navigate_list(*list, &curr, &prev, data->key, table->compare);
+    u_hash_list *list = table->table + hu_index(table, key);
+    u_hash_item *curr, *prev, *new_item = hu_alloc_item(key, data);
+    hu_navigate_list(*list, &curr, &prev, key, table->compare);
     if (prev == NULL)
     {
-        data->next = curr;
-        *list = data;
+        new_item->next = curr;
+        *list = new_item;
     }
     else
     {
-        prev->next = data;
-        data->next = curr;
+        prev->next = new_item;
+        new_item->next = curr;
     }
     return 0;
 }
-int hu_remove(u_hash_table *table, void *key)
+int hu_remove(u_hash_table *table, const void *key)
 {
     if (table == NULL)
     {
@@ -107,18 +97,8 @@ int hu_remove(u_hash_table *table, void *key)
         fflush(stderr);
         return -1;
     }
-    if (table->table == NULL)
-    {
-        fprintf(stderr, "hu_remove : param table->table == NULL -> hashtable empty\n");
-        fflush(stderr);
-        return -1;
-    }
-    if (hu_ishere(table, key))
-    {
-        fprintf(stderr, "hu_remove : hu_ishere returned an error, data not in table\n");
-        fflush(stderr);
-        return -1;
-    }
+
+
     u_hash_list *list = table->table + hu_index(table, key);
     u_hash_item *curr, *prev;
     hu_navigate_list(*list, &curr, &prev, key, table->compare);
@@ -145,7 +125,7 @@ int hu_remove(u_hash_table *table, void *key)
     }
     return 0;
 }
-void *hu_get(u_hash_table *table, void *key)
+void *hu_get(u_hash_table *table, const void *key)
 {
     if (table == NULL)
     {
@@ -232,7 +212,7 @@ void hu_print(u_hash_table *table)
                        table->print(hi)
     );
 }
-size_t hu_index(u_hash_table *table, void *key)
+size_t hu_index(u_hash_table *table, const void *key)
 {
     if (table == NULL)
     {
@@ -248,11 +228,11 @@ size_t hu_index(u_hash_table *table, void *key)
     }
     return table->hash(key) % table->n_entries;
 }
-void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, void *key, int (*keycompare)(void *, void *))
+void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, const void *key, int (*compare)(const void *, const void *))
 {
     *curr = list;
     *prev = NULL;
-    while (*curr != NULL && keycompare(key, (void*)((*curr)->key)) > 0)
+    while (*curr != NULL && compare(key, (*curr)->key) > 0)
     {
         *prev = *curr;
         *curr = (*curr)->next;
