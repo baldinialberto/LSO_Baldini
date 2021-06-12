@@ -12,8 +12,8 @@
 #define O_CREATE            0x01
 #define O_LOCK              0x02
 
-//#define SAPI_OPENCONN       0x04
-//#define SAPI_CLOSECONN      0x08
+#define SAPI_STARTREQUEST   0x04
+#define SAPI_ENDREQUEST     0x08
 #define SAPI_OPENFILE       0x0C
 #define SAPI_READFILE       0x10
 #define SAPI_READNFILES     0x14

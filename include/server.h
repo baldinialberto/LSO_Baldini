@@ -21,7 +21,7 @@
 
 #define DEBUG(X) X
 
-typedef struct _server_settings
+typedef struct server_settings
 {
 	unsigned short nworkers;		// 
 	unsigned int avaiableMemory;
@@ -31,7 +31,7 @@ typedef struct _server_settings
 	unsigned int maxClientCount;
 } server_settings;
 
-typedef struct _server_stats
+typedef struct server_stats
 {
 	unsigned int nfile_max;			// max number of files in server at once
 	unsigned int MB_max;			// max memory load in server
@@ -40,7 +40,7 @@ typedef struct _server_stats
 	unsigned int ncache_replace;	// number of chache replaces
 } server_stats;
 
-typedef struct _server_infos
+typedef struct server_infos
 {
 	u_file_storage storage;
 	int server_socket_fd;		// file descriptor of sever_socket
@@ -54,47 +54,29 @@ typedef struct _server_infos
 	pthread_mutex_t *worker_locks;
 } server_infos;
 
-struct _worker_arg
+struct worker_arg
 {
     int worker_id;
     server_infos *infos;
 };
 
-server_settings init_server_settings();
-server_stats init_server_stats();
-server_infos init_server_infos(server_settings *setts);
+int init_server_settings(server_settings *setts);
+int init_server_infos(server_settings *setts, server_infos* infos);
 int free_server_infos(server_infos *infos);
 void print_server_settings(server_settings *setts);
 server_settings parse_settings();
-int write_settings(server_settings* setts);
 int write_log(const char* op, server_settings* setts);
 void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
-int thread_spawn_detached(void *(*fun)(void*), void *arg);
-pthread_t thread_spawn(void *(*fun)(void*), void *arg);
 int ignore_signals();
 int spawn_workers(server_infos* infos);
 int join_workers(server_infos* infos);
-void *server_signalhandler(void *infos);
+void *server_signal_handler(void *infos);
 void server_dispatcher(server_infos *infos);
 void *server_worker(void *worker_args);
 int assign_client(server_infos *infos, int client);
 int serve(int request, int client_socket, u_file_storage* storage);
-int server_openFile(int request, int client_socket, u_file_storage* storage);
-int server_readFile(int request, int client_socket, u_file_storage* storage);
-int server_readNFiles(int request, int client_socket, u_file_storage* storage);
-int server_writeFile(int request, int client_socket, u_file_storage* storage);
-int server_appendToFile(int request, int client_socket, u_file_storage* storage);
-int server_lockFile(int request, int client_socket, u_file_storage* storage);
-int server_unlockFile(int request, int client_socket, u_file_storage* storage);
-int server_closeFile(int request, int client_socket, u_file_storage* storage);
-int server_removeFile(int request, int client_socket, u_file_storage* storage);
-int server_evictlist(u_list *savelist, size_t bytes_to_free);
-int server_sendresponse(s_message response, int client_socket);
-int server_senddata(void *data, size_t datalen, int client_socket);
-int server_getresponse(int client_socket);
-int server_skipline(FILE *fstream);
+void server_skipline(FILE *fstream);
 int server_readline(FILE *fstream, char **str);
 int server_readword(FILE *fstream, char **str);
-
 #endif

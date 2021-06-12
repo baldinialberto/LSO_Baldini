@@ -1,4 +1,7 @@
-#include "../include/client.h"
+#include <client.h>
+#include <serverapi.h>
+#include <list_utils.h>
+#include <mem_utils.h>
 
 int main(int argc, char** argv)
 {	
@@ -125,22 +128,22 @@ bool verbose = %d\n",
 		conf->verbose
 	);
 
-	lu_print(conf->files_to_write, lu_string_print);
-    lu_print(conf->files_to_read, lu_string_print);
-    lu_print(conf->files_to_lock, lu_string_print);
-    lu_print(conf->files_to_unlock, lu_string_print);
-    lu_print(conf->files_to_delete, lu_string_print);
+	lu_print(&(conf->files_to_write));
+    lu_print(&(conf->files_to_read));
+    lu_print(&(conf->files_to_lock));
+    lu_print(&(conf->files_to_unlock));
+    lu_print(&(conf->files_to_delete));
 
 	return fflush(stdout);
 }
 int client_conf_cleanup(client_conf *conf)
 {
 	free(conf->folder_to_write);
-	lu_free(&(conf->files_to_write), mu_free);
-	lu_free(&(conf->files_to_read), mu_free);
-	lu_free(&(conf->files_to_lock), mu_free);
-	lu_free(&(conf->files_to_unlock), mu_free);
-	lu_free(&(conf->files_to_delete), mu_free);
+	lu_free(&(conf->files_to_write));
+	lu_free(&(conf->files_to_read));
+	lu_free(&(conf->files_to_lock));
+	lu_free(&(conf->files_to_unlock));
+	lu_free(&(conf->files_to_delete));
 	return 0;
 }
 int conf_add_list(const char *optarg, u_list *list)
@@ -150,7 +153,7 @@ int conf_add_list(const char *optarg, u_list *list)
 	temp = strtok(opt, ",");
 	while(temp != NULL)
 	{
-        lu_insert_oncopy(list, temp, (strlen(temp) + 1), lu_string_compare);
+        lu_insert(list, mu_clone(temp, strlen(temp) + 1));
 		temp = strtok(NULL, ",");
 	}
 
@@ -171,13 +174,13 @@ int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir, si
 		return 0;
 	}
 	
-	u_list filelist = NULL;
-	u_list dirlist = NULL;
+	u_list *filelist = NULL;
+	u_list *dirlist = NULL;
 	u_list_node *currnode;
 	char *currdir;
 	int nfilesfound = 0;
 
-	lu_insert_oncopy(&dirlist, (void *)dirname, strlen(dirname) + 1, lu_string_compare);
+	lu_insert(&dirlist, mu_clone((void *)dirname, strlen(dirname) + 1));
 	
 	while (lu_length(dirlist) != 0 && nfiles > 0)
 	{

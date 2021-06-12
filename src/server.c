@@ -6,25 +6,114 @@
 #include <sys/signal.h>
 #include <string.h>
 #include <file_utils.h>
-
+#include <error_utils.h>
+#include <thread_utils.h>
+#include <mem_utils.h>
 
 int main(int argc, char** argv)
 {
 	static server_settings settings;
 	static server_infos infos;
-	settings = init_server_settings();
-	infos = init_server_infos(&settings);
 
-	thread_spawn_detached(&server_signalhandler, (void *) &infos);
-	ignore_signals();
+    CHECK_PERROR_EXIT(init_server_settings(&settings),
+                      "init_server_settings at main");
+    CHECK_PERROR_EXIT(init_server_infos(&settings, &infos),
+                      "init_server_infos at main");
+
+    CHECK_PERROR_EXIT((tu_create_thread_detached(&server_signal_handler, (void *) &infos)),
+            "tu_create_thread_detached at main");
+    CHECK_PERROR_EXIT((ignore_signals()),
+                      "ignore_signals at main");
 
 	server_dispatcher(&infos);
 
-	close(infos.server_socket_fd);
-	unlink(settings.socket_name);
-	free_server_infos(&infos);
+    CHECK_PERROR_EXIT(close(infos.server_socket_fd),
+                      "close at main");
+    CHECK_PERROR_EXIT(unlink(settings.socket_name),
+                      "unlink at main");
+    CHECK_PERROR_EXIT(free_server_infos(&infos),
+                      "free_server_infos at main");
 
 	return EXIT_SUCCESS;
+}
+
+int init_server_settings(server_settings *setts)
+{
+    FILE* configFile = NULL;
+    CHECK_PERROR_EXIT((configFile = fopen(SERVER_CONFIGFILE_PATH, "r")) == NULL,
+             "fopen at init_server_settings");
+
+    //size_t fstream_pos = 0;
+    char *tempRead = NULL;
+
+    while (!feof(configFile))
+    {
+        switch ((char)fgetc(configFile))
+        {
+            case '#': // comment
+                server_skipline(configFile);
+                break;
+            case '\n': // emptyline
+                break;
+            default:
+                CHECK_PERROR_EXIT(fseek(configFile, -1, SEEK_CUR) == -1,
+                        "fseek at init_server_settings");
+                if (server_readword(configFile, &tempRead) != 0)
+                {
+                    if (tempRead != NULL) free(tempRead);
+                    fclose(configFile);
+                    CHECK_ERRNO_PERROR_EXIT("fclose at init_server_settings");
+                    return -1;
+                }
+                get_setting(&tempRead, configFile, setts);
+                server_skipline(configFile);
+                break;
+        }
+        if (tempRead != NULL)
+        {
+            free(tempRead);
+            tempRead = NULL;
+        }
+    }
+    fclose(configFile);
+    CHECK_ERRNO_PERROR_EXIT("fclose at init_server_settings");
+    return 0;
+}
+int init_server_infos(server_settings *setts, server_infos* infos)
+{
+    server_infos infos;
+
+    CHECK_BADVAL_PERROR_EXIT(
+            infos.server_socket_fd = create_server_socket(setts),
+            -1, "init_server_infos : create_server_socket"
+    );
+    infos.nworkers = setts->nworkers;
+    CHECK_BADVAL_PERROR_EXIT(
+            infos.workers = calloc(infos.nworkers, sizeof(pthread_t)),
+            NULL, "init_server_infos : calloc"
+    );
+    CHECK_BADVAL_PERROR_EXIT(
+            infos.workers_clients = calloc(infos.nworkers, sizeof(int)),
+            NULL, "init_server_infos : calloc"
+    );
+    CHECK_BADVAL_PERROR_EXIT(
+            infos.worker_locks = calloc(infos.nworkers, sizeof(pthread_mutex_t)),
+            NULL, "init_server_infos : calloc"
+    );
+    CHECK_BADVAL_PERROR_EXIT(
+            infos.worker_conds = calloc(infos.nworkers, sizeof(pthread_cond_t)),
+            NULL, "init_server_infos : calloc"
+    );
+    for (int i = 0; i < infos.nworkers; i++)
+    {
+        pthread_mutex_init(infos.worker_locks + i, NULL);
+        pthread_cond_init(infos.worker_conds + i, NULL);
+    }
+    infos.server_quit = (infos.server_hu = 0);
+    infos.pollarr = pu_initarr(setts->maxClientCount);
+    infos.storage = fu_init_file_storage(setts->maxFileCount, setts->avaiableMemory);
+
+    return infos;
 }
 void server_dispatcher(server_infos *infos)
 {
@@ -82,7 +171,7 @@ void *server_worker(void *worker_arg)
 	DEBUG(puts("Worker"));
 	ignore_signals();
 
-	struct _worker_arg *wa = (struct _worker_arg*) worker_arg;
+	struct worker_arg *wa = (struct worker_arg*) worker_arg;
 	int request = -1;
 	struct timespec condtime;
 	condtime.tv_sec = 0;
@@ -127,7 +216,7 @@ void *server_worker(void *worker_arg)
 
 	pthread_exit(NULL);
 }
-void *server_signalhandler(void *infos)
+void *server_signal_handler(void *infos)
 {
 	DEBUG(puts("Signal_handler"));
 
@@ -140,13 +229,13 @@ void *server_signalhandler(void *infos)
 	if (sigaddset(&set, SIGINT)
 		|| sigaddset(&set, SIGQUIT)
 		|| sigaddset(&set, SIGHUP) )
-		perror("server_signalhandler : sigaddset");
+		perror("server_signal_handler : sigaddset");
 
 	if (sigwait(&set, &sig))
-		perror("server_signalhandler : sigwait");
+		perror("server_signal_handler : sigwait");
 
 	DEBUG(
-		printf("\nserver_signalhandler received signal %d\n", sig)
+		printf("\nserver_signal_handler received signal %d\n", sig)
 	);
 
 	if (sig == SIGINT || sig == SIGQUIT)
@@ -156,12 +245,47 @@ void *server_signalhandler(void *infos)
 
 	pthread_exit(NULL);
 }
+int serve(int request, int client_socket, u_file_storage* storage)
+{
+    if (storage == NULL)
+    {
+        fprintf(stderr, "serve : param storage == NULL\n");
+        fflush(stderr);
+        return -1;
+    }
+    unsigned char op = request & SAPI_OPMASK;
+    switch(op)
+    {
+        case SAPI_OPENFILE:
+            return server_openFile(request, client_socket, storage);
+        case SAPI_CLOSEFILE:
+            return server_closeFile(request, client_socket, storage);
+        case SAPI_READFILE:
+            return server_readFile(request, client_socket, storage);
+        case SAPI_READNFILES:
+            return server_readNFiles(request, client_socket, storage);
+        case SAPI_WRITEFILE:
+            return server_writeFile(request, client_socket, storage);
+        case SAPI_APPENDFILE:
+            return server_appendToFile(request, client_socket, storage);
+        case SAPI_LOCKFILE:
+            return server_lockFile(request, client_socket, storage);
+        case SAPI_UNLOCKFILE:
+            return server_unlockFile(request, client_socket, storage);
+        case SAPI_REMOVEFILE:
+            return server_removeFile(request, client_socket, storage);
+        default:
+            fprintf(stderr, "serve : unrecognized operation\n");
+            fflush(stderr);
+            return -1;
+    }
+}
 int spawn_workers(server_infos* infos)
 {
-	struct _worker_arg *arg;
+	struct worker_arg *arg;
 	for (int i = 0; i < infos->nworkers; i++)
 	{
-		arg = (struct _worker_arg *)malloc(sizeof(struct _worker_arg));
+		arg = (struct worker_arg *)malloc(sizeof(struct worker_arg));
 		arg->worker_id = i;
 		arg->infos = infos;
 		(infos->workers)[i] = thread_spawn(
@@ -207,814 +331,6 @@ int ignore_signals()
 
     return pthread_sigmask(SIG_BLOCK, &set, NULL);
 }
-int serve(int request, int client_socket, u_file_storage* storage)
-{
-	if (storage == NULL)
-	{
-		fprintf(stderr, "serve : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	unsigned char op = request & SAPI_OPMASK;
-	switch(op)
-	{
-		case SAPI_OPENFILE:
-			return server_openFile(request, client_socket, storage);
-		case SAPI_CLOSEFILE:
-			return server_closeFile(request, client_socket, storage);
-		case SAPI_READFILE:
-			return server_readFile(request, client_socket, storage);
-		case SAPI_READNFILES:
-			return server_readNFiles(request, client_socket, storage);
-		case SAPI_WRITEFILE:
-			return server_writeFile(request, client_socket, storage);
-		case SAPI_APPENDFILE:
-			return server_appendToFile(request, client_socket, storage);
-		case SAPI_LOCKFILE:
-			return server_lockFile(request, client_socket, storage);
-		case SAPI_UNLOCKFILE:
-			return server_unlockFile(request, client_socket, storage);
-		case SAPI_REMOVEFILE:
-			return server_removeFile(request, client_socket, storage);
-		default:
-			fprintf(stderr, "serve : unrecognized operation\n");
-			fflush(stderr);
-			return -1;
-	}
-}
-int server_openFile(int request, int client_socket, u_file_storage* storage)
-{
-	fprintf(stderr, "----OPENFILE----\n");
-	fflush(stderr);
-	if (request == 0)
-	{
-		fprintf(stderr, "server_openFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_openFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_openFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	unsigned char flags = request & SAPI_FLAGMASK;
-	if (read(client_socket, filename, filename_len - 1) == -1)
-	{
-		perror("server_openFile : read");
-		fprintf(stderr, "server_openFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *fdata = fu_getfile(storage, filename);
-	if ((fdata != NULL && (flags & O_CREATE)) || (fdata == NULL && !(flags & O_CREATE)))
-	{
-		fprintf(stderr, "server_openFile : file %s in storage\n",
-			(flags & O_CREATE) ? "already" : "not");
-		fflush(stderr);
-		return -1;
-	}
-	if (fdata == NULL) // create and open new file
-	{
-		u_file file = fu_allocfile_empty(filename);
-		file.data->client = client_socket;
-		if (flags & O_LOCK) file.data->datainfo |= O_LOCK;
-		if (!fu_storage_avFiles(storage))
-		{
-			fprintf(stderr, "server_openFile : storage is full of files\n");
-			fflush(stderr);
-			server_sendresponse(SAPI_FAILURE, client_socket);
-			return -1;
-		}
-		if (fu_add_file(storage, file.data, file.path) == -1)
-		{
-			fprintf(stderr, "server_openFile : fu_addfile returned an error\n");
-			fflush(stderr);
-			server_sendresponse(SAPI_FAILURE, client_socket);
-			return -1;
-		}
-		fprintf(stderr, "file %s added\n", filename);
-		fflush(stderr);
-		fu_storage_print(storage);
-	}
-	else // open existing file
-	{
-		pthread_mutex_lock(&(fdata->mutex));
-		if (fdata->datainfo & O_LOCK)
-		{
-			fprintf(stderr, "server_openFile : %s is already locked\n", filename);
-			fflush(stderr);
-			pthread_mutex_unlock(&(fdata->mutex));
-			server_sendresponse(SAPI_FAILURE, client_socket);
-			return -1;
-		}
-		if (fdata->client != 0)
-		{
-			fprintf(stderr,
-				"server_openFile : %s is already opened by another client(%d)\n",
-				filename, fdata->client);
-			fflush(stderr);
-			pthread_mutex_unlock(&(fdata->mutex));
-			server_sendresponse(SAPI_FAILURE, client_socket);
-			return -1;
-		}
-		fdata->client = client_socket;
-		if (flags & O_LOCK) fdata->datainfo |= O_LOCK;
-		pthread_mutex_unlock(&(fdata->mutex));
-	}
-	server_sendresponse(SAPI_SUCCESS, client_socket);
-	return 0;
-}
-int server_readFile(int request, int client_socket, u_file_storage* storage)
-{
-	fprintf(stderr, "----READFILE----\n");
-	fflush(stderr);
-	if (request == 0)
-	{
-		fprintf(stderr, "server_readFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_readFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_readFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, filename, filename_len - 1) == -1)
-	{
-		perror("server_readFile : read");
-		fprintf(stderr, "server_readFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *fdata = fu_getfile(storage, filename);
-	if (fdata == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_readFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		fprintf(stderr, "server_readFile : file %s not in storage\n", filename);
-		fflush(stderr);
-		return -1;
-	}
-	else
-	{
-		pthread_mutex_lock(&(fdata->mutex));
-		if (fdata->client)
-		{
-			if (server_sendresponse(SAPI_ALREADY, client_socket) == -1)
-			{
-				fprintf(stderr, "server_readFile : server_sendresponse returned an error\n");
-				fflush(stderr);
-			}
-			pthread_mutex_unlock(&(fdata->mutex));
-			return -1;
-		}
-		else if (fdata->datainfo & O_LOCK)
-		{
-			if (server_sendresponse(SAPI_LOCKED, client_socket) == -1)
-			{
-				fprintf(stderr, "server_readFile : server_sendresponse returned an error\n");
-				fflush(stderr);
-			}
-			pthread_mutex_unlock(&(fdata->mutex));
-			return -1;
-		}
-		else
-		{
-			if (server_sendresponse(SAPI_SUCCESS, client_socket) == -1)
-			{
-				fprintf(stderr, "server_readFile : server_sendresponse returned an error\n");
-				fflush(stderr);
-				pthread_mutex_unlock(&(fdata->mutex));
-				return -1;
-			}
-			if (server_senddata(fdata->data, fdata->datalen, client_socket) == -1)
-			{
-				fprintf(stderr, "server_readFile : server_senddata returned an error\n");
-				fflush(stderr);
-				pthread_mutex_unlock(&(fdata->mutex));
-				return -1;
-			}
-		}
-		pthread_mutex_unlock(&(fdata->mutex));
-	}
-	return 0;
-}
-int server_readNFiles(int request, int client_socket, u_file_storage* storage)
-{
-	if (request == 0)
-	{
-		fprintf(stderr, "server_readNFiles : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_readNFiles : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_readNFiles : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	return 0;
-}
-int server_writeFile(int request, int client_socket, u_file_storage* storage)
-{
-	fprintf(stderr, "----WRITEFILE----\n");
-	fflush(stderr);
-	if (request == 0)
-	{
-		fprintf(stderr, "server_writeFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_writeFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_writeFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, &filename, filename_len - 1) == -1)
-	{
-		perror("server_writeFile : read");
-		fprintf(stderr, "server_writeFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	fprintf(stderr, "----WRITEFILE----0\n");
-	u_file_data *file = fu_getfile(storage, filename);
-	if (file == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_writeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		return -1;
-	}
-	fprintf(stderr, "----WRITEFILE----1\n");
-	size_t datalen = 0;
-	if (read(client_socket, &datalen, sizeof(size_t)) == -1)
-	{
-		perror("server_writeFile : read");
-		fprintf(stderr, "server_writeFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	fprintf(stderr, "----WRITEFILE----2\n");
-	if (fu_storage_avBytes(storage) < datalen)
-	{
-		if (server_sendresponse(SAPI_EVICT, client_socket))
-		{
-			fprintf(stderr, "server_writeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		int res;
-		if ((res =  server_getresponse(client_socket)) == -1)
-		{
-			fprintf(stderr, "server_writeFile : server_getresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		u_list files_to_evict;
-		u_list_node *currnode;
-		server_evictlist(&files_to_evict, datalen);
-		if (res)
-		{
-			u_file_data *filedata;
-			lu_foreach(files_to_evict, currnode,
-				server_sendresponse(SAPI_SUCCESS, client_socket);
-				server_senddata(currnode->data, strlen((char *)(currnode->data)) + 1, client_socket);
-				filedata = fu_getfile(storage, currnode->data);
-				if (filedata != NULL)
-				{
-					server_senddata(filedata->data, filedata->datalen, client_socket);
-				}
-			)
-			server_sendresponse(SAPI_FAILURE, client_socket);
-		}
-		lu_foreach(files_to_evict, currnode,
-			fu_removefile(storage, currnode->data)
-		)
-		lu_free(&files_to_evict, mu_free);
-	}
-	char data[datalen];
-	if (read(client_socket, data, datalen) == -1)
-	{
-		perror("server_writeFile : read");
-		fprintf(stderr, "server_writeFile : read returned an error\n");
-		fflush(stderr);
-		if (server_sendresponse(SAPI_FAILURE, client_socket))
-		{
-			fprintf(stderr, "server_writeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		return -1;
-	}
-	pthread_mutex_lock(&(file->mutex));
-	if ((file->datainfo & O_LOCK) && file->client == 0)
-	{
-		fprintf(stderr, "server_writeFile : file %s is already locked\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (file->client != client_socket)
-	{
-		fprintf(stderr, "server_writeFile : file %s is open by another client\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (fu_writefile(file, 0, data, datalen) == -1)
-	{
-		if (server_sendresponse(SAPI_FAILURE, client_socket))
-		{
-			fprintf(stderr, "server_writeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		fprintf(stderr, "server_writeFile : fu_allocfile_oncopy returned an error\n");
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	pthread_mutex_unlock(&(file->mutex));
-	if (server_sendresponse(SAPI_SUCCESS, client_socket))
-	{
-		fprintf(stderr, "server_writeFile : server_sendresponse returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	return 0;
-}
-int server_appendToFile(int request, int client_socket, u_file_storage* storage)
-{
-	if (request == 0)
-	{
-		fprintf(stderr, "server_appendToFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_appendToFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_appendToFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, &filename, filename_len - 1) == -1)
-	{
-		perror("server_appendToFile : read");
-		fprintf(stderr, "server_appendToFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *file = fu_getfile(storage, filename);
-	if (file == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_appendToFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		return -1;
-	}
-	size_t datalen = 0;
-	if (read(client_socket, &datalen, sizeof(size_t)) == -1)
-	{
-		perror("server_appendToFile : read");
-		fprintf(stderr, "server_appendToFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (fu_storage_avBytes(storage) < datalen)
-	{
-		if (server_sendresponse(SAPI_EVICT, client_socket))
-		{
-			fprintf(stderr, "server_writeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		int res;
-		if ((res =  server_getresponse(client_socket)) == -1)
-		{
-			fprintf(stderr, "server_writeFile : server_getresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		u_list files_to_evict;
-		u_list_node *currnode;
-		server_evictlist(&files_to_evict, datalen);
-		if (res)
-		{
-			u_file_data *filedata;
-			lu_foreach(files_to_evict, currnode,
-				server_sendresponse(SAPI_SUCCESS, client_socket);
-				server_senddata(currnode->data, strlen((char *)(currnode->data)) + 1, client_socket);
-				filedata = fu_getfile(storage, currnode->data);
-				if (filedata != NULL)
-				{
-					server_senddata(filedata->data, filedata->datalen, client_socket);
-				}
-			)
-			server_sendresponse(SAPI_FAILURE, client_socket);
-		}
-		lu_foreach(files_to_evict, currnode,
-			fu_removefile(storage, currnode->data)
-		)
-		lu_free(&files_to_evict, mu_free);
-	}
-	char data[datalen];
-	if (read(client_socket, data, datalen) == -1)
-	{
-		perror("server_appendToFile : read");
-		fprintf(stderr, "server_appendToFile : read returned an error\n");
-		fflush(stderr);
-		if (server_sendresponse(SAPI_FAILURE, client_socket))
-		{
-			fprintf(stderr, "server_appendToFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-			return -1;
-		}
-		return -1;
-	}
-	pthread_mutex_lock(&(file->mutex));
-	if ((file->datainfo & O_LOCK) && file->client == 0)
-	{
-		fprintf(stderr, "server_appendToFile : file %s is already locked\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (file->client != client_socket)
-	{
-		fprintf(stderr, "server_appendToFile : file %s is open by another client\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (fu_writefile(file, file->datalen, data, datalen) == -1)
-	{
-		if (server_sendresponse(SAPI_FAILURE, client_socket))
-		{
-			fprintf(stderr, "server_appendToFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		fprintf(stderr, "server_appendToFile : fu_allocfile_oncopy returned an error\n");
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	pthread_mutex_unlock(&(file->mutex));
-	if (server_sendresponse(SAPI_SUCCESS, client_socket))
-	{
-		fprintf(stderr, "server_appendToFile : server_sendresponse returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	return 0;
-}
-int server_lockFile(int request, int client_socket, u_file_storage* storage)
-{
-	if (request == 0)
-	{
-		fprintf(stderr, "server_lockFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_lockFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_lockFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, &filename, filename_len - 1) == -1)
-	{
-		perror("server_lockFile : read");
-		fprintf(stderr, "server_lockFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *file = fu_getfile(storage, filename);
-	if (file == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_lockFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		return -1;
-	}
-	pthread_mutex_lock(&(file->mutex));
-	if ((file->datainfo & O_LOCK))
-	{
-		fprintf(stderr, "server_lockFile : file %s is already locked\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (file->client != client_socket)
-	{
-		fprintf(stderr, "server_lockFile : file %s is open by another client\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	file->datainfo |= O_LOCK;
-	file->client = client_socket;
-	pthread_mutex_unlock(&(file->mutex));
-	return 0;
-}
-int server_unlockFile(int request, int client_socket, u_file_storage* storage)
-{
-	if (request == 0)
-	{
-		fprintf(stderr, "server_unlockFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_unlockFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_unlockFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, &filename, filename_len - 1) == -1)
-	{
-		perror("server_unlockFile : read");
-		fprintf(stderr, "server_unlockFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *file = fu_getfile(storage, filename);
-	if (file == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_unlockFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		return -1;
-	}
-	pthread_mutex_lock(&(file->mutex));
-	if ((file->datainfo & O_LOCK) && file->client == 0)
-	{
-		fprintf(stderr, "server_unlockFile : file %s is already locked\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (file->client != client_socket)
-	{
-		fprintf(stderr, "server_unlockFile : file %s is open by another client\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	file->datainfo &= ~((unsigned int)0 | O_LOCK);
-	pthread_mutex_unlock(&(file->mutex));
-	return 0;
-}
-int server_closeFile(int request, int client_socket, u_file_storage* storage)
-{
-	fprintf(stderr, "----CLOSEFILE----\n");
-	fflush(stderr);
-	if (request == 0)
-	{
-		fprintf(stderr, "server_closeFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_closeFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_closeFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, &filename, filename_len - 1) == -1)
-	{
-		perror("server_closeFile : read");
-		fprintf(stderr, "server_closeFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *file = fu_getfile(storage, filename);
-	if (file == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_closeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		return -1;
-	}
-	pthread_mutex_lock(&(file->mutex));
-	if ((file->datainfo & O_LOCK) && file->client == 0)
-	{
-		fprintf(stderr, "server_closeFile : file %s is already locked\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (file->client != client_socket)
-	{
-		fprintf(stderr, "server_closeFile : file %s is open by another client\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	file->client = 0;
-	pthread_mutex_unlock(&(file->mutex));
-	return 0;
-}
-int server_removeFile(int request, int client_socket, u_file_storage* storage)
-{
-	if (request == 0)
-	{
-		fprintf(stderr, "server_removeFile : param request == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_removeFile : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (storage == NULL)
-	{
-		fprintf(stderr, "server_removeFile : param storage == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	const size_t filename_len = (request >> SAPI_MSSLEN_SHFT) + 1;
-	char filename[filename_len];
-	memset(filename, 0, filename_len);
-	if (read(client_socket, &filename, filename_len - 1) == -1)
-	{
-		perror("server_removeFile : read");
-		fprintf(stderr, "server_removeFile : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	u_file_data *file = fu_getfile(storage, filename);
-	if (file == NULL)
-	{
-		if (server_sendresponse(SAPI_FNF, client_socket) == -1)
-		{
-			fprintf(stderr, "server_removeFile : server_sendresponse returned an error\n");
-			fflush(stderr);
-		}
-		return -1;
-	}
-	pthread_mutex_lock(&(file->mutex));
-	if ((file->datainfo & O_LOCK) && file->client == 0)
-	{
-		fprintf(stderr, "server_removeFile : file %s is already locked\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (file->client != client_socket)
-	{
-		fprintf(stderr, "server_removeFile : file %s is open by another client\n", filename);
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	if (fu_removefile(storage, filename) == -1)
-	{
-		fprintf(stderr, "server_removeFile : fu_removefile returned an error\n");
-		fflush(stderr);
-		pthread_mutex_unlock(&(file->mutex));
-		return -1;
-	}
-	pthread_mutex_unlock(&(file->mutex));
-	return 0;
-}
-int server_evictlist(u_list *savelist, size_t bytes_to_free)
-{
-
-	return 0;
-}
-server_settings init_server_settings()
-{
-	return parse_settings();
-}
-server_stats init_server_stats(server_settings *setts)
-{
-	server_stats stats = {0};
-	return stats;
-}
-server_infos init_server_infos(server_settings *setts)
-{
-	server_infos infos;
-
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.server_socket_fd = create_server_socket(setts),
-		-1, "init_server_infos : create_server_socket"
-	);
-	infos.nworkers = setts->nworkers;
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)),
-		NULL, "init_server_infos : calloc"
-	);
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.workers_clients = calloc(infos.nworkers, sizeof(int)),
-		NULL, "init_server_infos : calloc"
-	);
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.worker_locks = calloc(infos.nworkers, sizeof(pthread_mutex_t)),
-		NULL, "init_server_infos : calloc"
-	);
-	CHECK_BADVAL_PERROR_EXIT(
-		infos.worker_conds = calloc(infos.nworkers, sizeof(pthread_cond_t)),
-		NULL, "init_server_infos : calloc"
-	);
-	for (int i = 0; i < infos.nworkers; i++)
-	{
-		pthread_mutex_init(infos.worker_locks + i, NULL);
-		pthread_cond_init(infos.worker_conds + i, NULL);
-	}
-	infos.server_quit = (infos.server_hu = 0);
-	infos.pollarr = pu_initarr(setts->maxClientCount);
-	infos.storage = fu_init_file_storage(setts->maxFileCount, setts->avaiableMemory);
-
-	return infos;
-}
 int free_server_infos(server_infos *infos)
 {
 	if (infos == NULL)
@@ -1052,58 +368,6 @@ CLIENT_MAX = %d\n",
 		setts->maxClientCount
 	);
 	fflush(stdout);
-}
-server_settings parse_settings()
-{
-	server_settings settings = {0};
-
-	FILE* configFile = NULL;
-	CHECK_BADVAL_PERROR_RETURN(
-		(configFile = fopen(SERVER_CONFIGFILE_PATH, "r")), 
-		NULL, "fopen", settings
-	);
-
-	//size_t fstream_pos = 0;
-	char *tempRead = NULL;
-
-	while (!feof(configFile))
-	{
-		switch ((char)fgetc(configFile))
-		{
-		case '#': // comment
-			server_skipline(configFile);
-			break;
-		case '\n': // emptyline
-			break;
-		default:
-			CHECK_BADVAL_PERROR_EXIT(
-				fseek(configFile, -1, SEEK_CUR),
-				-1, "parse_settings : fseek"
-			)
-			if (server_readword(configFile, &tempRead) != 0)
-			{
-				if (tempRead != NULL) free(tempRead);
-				fclose(configFile);
-				CHECK_ERRNO_EXIT(-1, "parse_settings : fclose");
-				return (server_settings) {0};
-			}
-			get_setting(&tempRead, configFile, &settings);
-			server_skipline(configFile);
-			break;
-		}
-		if (tempRead != NULL)
-		{
-			free(tempRead);
-			tempRead = NULL;
-		}
-	}
-	fclose(configFile);
-	CHECK_ERRNO_EXIT(-1, "parse_settings : fclose");
-	return settings;
-}
-int write_settings(server_settings* setts)
-{
-	return 0;
 }
 int write_log(const char* op, server_settings *setts)
 {
@@ -1226,143 +490,47 @@ int create_server_socket(server_settings *setts)
 
 	return socket_res;
 }
-int thread_spawn_detached(void *(*fun)(void*), void *arg)
-{
-	pthread_t thread;
-	pthread_attr_t thread_attr;
-	pthread_attr_init(&thread_attr);
-	pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&thread, &thread_attr, fun, arg);
-
-	return 0;
-}
-pthread_t thread_spawn(void *(*fun)(void*), void *arg)
-{
-	pthread_t thread;
-	pthread_create(&thread, NULL, fun, arg);
-
-	return thread;
-}
-int server_sendresponse(s_message response, int client_socket)
-{
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_sendresponse : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (write(client_socket, &response, sizeof(s_message)) == -1)
-	{
-		perror("server_sendresponse : write");
-		fprintf(stderr, "server_sendresponse : write returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	return 0;
-}
-int server_senddata(void *data, size_t datalen, int client_socket)
-{
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_senddata : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (data == NULL)
-	{
-		fprintf(stderr, "server_sendresponse : param data == NULL\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (datalen == 0)
-	{
-		fprintf(stderr, "server_sendresponse : param datalen == 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (write(client_socket, &datalen, sizeof(size_t)) == -1)
-	{
-		perror("server_senddata : write");
-		fprintf(stderr, "server_senddata : write returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	if (write(client_socket, data, datalen) == -1)
-	{
-		perror("server_senddata : write");
-		fprintf(stderr, "server_senddata : write returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	return 0;
-}
-int server_getresponse(int client_socket)
-{
-	if (client_socket < 0)
-	{
-		fprintf(stderr, "server_getresponse : param client_socket < 0\n");
-		fflush(stderr);
-		return -1;
-	}
-	size_t response;
-	if (read(client_socket, &response, sizeof(size_t)) == -1)
-	{
-		perror("server_getresponse : read");
-		fprintf(stderr, "server_getresponse : read returned an error\n");
-		fflush(stderr);
-		return -1;
-	}
-	return (int) response;
-}
-int server_skipline(FILE *fstream)
+void server_skipline(FILE *fstream)
 {
     fscanf(fstream, "%*[^\n]");
     fscanf(fstream, "%*c");
-    CHECK_ERRNO_RETURN(-1, "f_skipline");
-
-    return 0;
 }
 int server_readline(FILE *fstream, char **str)
 {
     int lineLen = 0;
-    
-    CHECK_BADVAL_PERROR_RETURN(
-        (lineLen = fscanf(fstream, "%*[^\n]")), 
-        -1, "fscanf", -1
+    CHECK_PERROR_RETURN(
+            (lineLen = fscanf(fstream, "%*[^\n]")) == -1,
+            "fscanf at server_readline", -1
     );
-    CHECK_BADVAL_PERROR_RETURN(
-        (0 != fseek(fstream, -lineLen, SEEK_CUR)), 
-        1, "fseek", -1
+    CHECK_PERROR_RETURN(
+            (0 != fseek(fstream, -lineLen, SEEK_CUR)),
+            "fseek at server_readline", -1
     );
-    CHECK_BADVAL_PERROR_EXIT(
-        (*str = (char *)malloc((lineLen + 1) * sizeof(char))),
-        NULL, "malloc"
+
+    *str = (char *)mu_malloc((lineLen + 1) * sizeof(char));
+
+    CHECK_PERROR_EXIT(
+            fread((void *)*str, sizeof(char), lineLen, fstream) < lineLen,
+            "fread at server_readline"
     );
-    CHECK_COND_RETURN(
-        fread((void *)*str, sizeof(char), lineLen, fstream) < lineLen, 
-        -1, "fread"
-    );
+    (*str)[lineLen] = (char) 0;
+
     return 0;
 }
 int server_readword(FILE *fstream, char **str)
 {
     int wordLen = 0;
-    
-    CHECK_BADVAL_PERROR_RETURN(
-        fscanf(fstream, "%*[^ ,;=\r\n]%n", &wordLen), 
-        -1, "fscanf", -1
-    );
-    CHECK_BADVAL_PERROR_RETURN(
-        (0 != fseek(fstream, -wordLen, SEEK_CUR)), 
-        1, "fseek", -1
-    );
-    CHECK_BADVAL_PERROR_EXIT(
-        (*str = (char *)malloc((wordLen + 1) * sizeof(char))),
-        NULL, "malloc"
-    );
-    CHECK_COND_RETURN(
-        fread((void *)*str, sizeof(char), wordLen, fstream) < wordLen, 
-        -1, "fread"
+
+    CHECK_PERROR_RETURN(
+            fscanf(fstream, "%*[^ ,;=\r\n]%n", &wordLen) == -1,
+            "fscanf at server_readword", -1);
+    CHECK_PERROR_RETURN(
+            (0 != fseek(fstream, -wordLen, SEEK_CUR)),
+            "fseek at server_readword", -1);
+    *str = (char *)mu_malloc((wordLen + 1) * sizeof(char));
+    CHECK_PERROR_RETURN(
+            fread((void *)*str, sizeof(char), wordLen, fstream) < wordLen,
+            "fread at server_readword", -1
     );
     (*str)[wordLen] = (char) 0;
 
