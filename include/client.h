@@ -3,14 +3,7 @@
 
 #pragma once
 #include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include "mem_utils.h"
-#include "list_utils.h"
-#include "dir_utils.h"
-#include "string_utils.h"
-#include "serverapi.h"
-#include "server_message.h"
+#include <list_utils.h>
 
 typedef struct _client_conf
 {

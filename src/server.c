@@ -1,4 +1,12 @@
-#include "../include/server.h"
+#include <server.h>
+#include <unistd.h>
+#include <poll_utils.h>
+#include <poll.h>
+#include <sys/socket.h>
+#include <sys/signal.h>
+#include <string.h>
+#include <file_utils.h>
+
 
 int main(int argc, char** argv)
 {
@@ -6,7 +14,7 @@ int main(int argc, char** argv)
 	static server_infos infos;
 	settings = init_server_settings();
 	infos = init_server_infos(&settings);
-	
+
 	thread_spawn_detached(&server_signalhandler, (void *) &infos);
 	ignore_signals();
 
@@ -21,9 +29,9 @@ int main(int argc, char** argv)
 void server_dispatcher(server_infos *infos)
 {
 	DEBUG(puts("Dispatcher"));
-	
+
 	spawn_workers(infos);
-	
+
 	pu_add(&(infos->pollarr), infos->server_socket_fd, POLL_IN);
 
 	int poll_ready = 0;
@@ -36,19 +44,19 @@ void server_dispatcher(server_infos *infos)
 		for (int i = 0; poll_ready && i < infos->pollarr.len; i++)
 		{
 			if (infos->pollarr.arr[i].revents & POLLIN)
-			{	
-				if (infos->pollarr.arr[i].fd != infos->server_socket_fd) 
+			{
+				if (infos->pollarr.arr[i].fd != infos->server_socket_fd)
 				{
 					assign_client(infos, infos->pollarr.arr[i].fd);
 				}
-				else 
+				else
 				{
 					if (!pu_isfull(&(infos->pollarr)))
 					{
 						fprintf(stderr, "not full\n");
 						fflush(stderr);
-						pu_add(&(infos->pollarr), 
-							accept(infos->server_socket_fd, NULL, 0), 
+						pu_add(&(infos->pollarr),
+							accept(infos->server_socket_fd, NULL, 0),
 							POLL_IN | POLL_HUP
 						);
 					}
@@ -85,27 +93,27 @@ void *server_worker(void *worker_arg)
 		pthread_mutex_lock(wa->infos->worker_locks + wa->worker_id);
 		while ((wa->infos->workers_clients)[wa->worker_id] == 0)
 		{
-			if (wa->infos->server_quit) 
+			if (wa->infos->server_quit)
 			{
 				free(worker_arg);
 				pthread_exit(NULL);
 			}
 			pthread_cond_timedwait(
-				wa->infos->worker_conds + wa->worker_id, 
-				wa->infos->worker_locks + wa->worker_id, 
+				wa->infos->worker_conds + wa->worker_id,
+				wa->infos->worker_locks + wa->worker_id,
 				&condtime
 			);
 		}
 		request = 0;
-		read((wa->infos->workers_clients)[wa->worker_id], 
+		read((wa->infos->workers_clients)[wa->worker_id],
 			&request, sizeof(int)
 		);
 		printf("received request %X from %d\n", request, (wa->infos->workers_clients)[wa->worker_id]);
 		if (request)
 		{
 			pu_remove(&(wa->infos->pollarr), (wa->infos->workers_clients)[wa->worker_id]);
-			serve(request, 
-				(wa->infos->workers_clients)[wa->worker_id], 
+			serve(request,
+				(wa->infos->workers_clients)[wa->worker_id],
 				&(wa->infos->storage)
 			);
 			pu_add(&(wa->infos->pollarr), (wa->infos->workers_clients)[wa->worker_id], POLLIN | POLLHUP);
@@ -129,8 +137,8 @@ void *server_signalhandler(void *infos)
 	sigset_t set;
 	sigemptyset(&set);
 
-	if ( sigaddset(&set, SIGINT) 
-		|| sigaddset(&set, SIGQUIT) 
+	if (sigaddset(&set, SIGINT)
+		|| sigaddset(&set, SIGQUIT)
 		|| sigaddset(&set, SIGHUP) )
 		perror("server_signalhandler : sigaddset");
 
@@ -141,9 +149,9 @@ void *server_signalhandler(void *infos)
 		printf("\nserver_signalhandler received signal %d\n", sig)
 	);
 
-	if (sig == SIGINT || sig == SIGQUIT) 
+	if (sig == SIGINT || sig == SIGQUIT)
 		s_infos->server_quit = 1;
-	else 
+	else
 		s_infos->server_hu = 1;
 
 	pthread_exit(NULL);
@@ -157,7 +165,7 @@ int spawn_workers(server_infos* infos)
 		arg->worker_id = i;
 		arg->infos = infos;
 		(infos->workers)[i] = thread_spawn(
-			&server_worker, 
+			&server_worker,
 			(void *)(arg)
 			);
 	}
@@ -270,7 +278,7 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 	u_file_data *fdata = fu_getfile(storage, filename);
 	if ((fdata != NULL && (flags & O_CREATE)) || (fdata == NULL && !(flags & O_CREATE)))
 	{
-		fprintf(stderr, "server_openFile : file %s in storage\n", 
+		fprintf(stderr, "server_openFile : file %s in storage\n",
 			(flags & O_CREATE) ? "already" : "not");
 		fflush(stderr);
 		return -1;
@@ -287,8 +295,8 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 			server_sendresponse(SAPI_FAILURE, client_socket);
 			return -1;
 		}
-		if (fu_addfile(storage, file.data, file.path) == -1)
-		{	
+		if (fu_add_file(storage, file.data, file.path) == -1)
+		{
 			fprintf(stderr, "server_openFile : fu_addfile returned an error\n");
 			fflush(stderr);
 			server_sendresponse(SAPI_FAILURE, client_socket);
@@ -311,8 +319,8 @@ int server_openFile(int request, int client_socket, u_file_storage* storage)
 		}
 		if (fdata->client != 0)
 		{
-			fprintf(stderr, 
-				"server_openFile : %s is already opened by another client(%d)\n", 
+			fprintf(stderr,
+				"server_openFile : %s is already opened by another client(%d)\n",
 				filename, fdata->client);
 			fflush(stderr);
 			pthread_mutex_unlock(&(fdata->mutex));
@@ -371,7 +379,7 @@ int server_readFile(int request, int client_socket, u_file_storage* storage)
 		fflush(stderr);
 		return -1;
 	}
-	else 
+	else
 	{
 		pthread_mutex_lock(&(fdata->mutex));
 		if (fdata->client)
@@ -394,7 +402,7 @@ int server_readFile(int request, int client_socket, u_file_storage* storage)
 			pthread_mutex_unlock(&(fdata->mutex));
 			return -1;
 		}
-		else 
+		else
 		{
 			if (server_sendresponse(SAPI_SUCCESS, client_socket) == -1)
 			{
@@ -410,7 +418,7 @@ int server_readFile(int request, int client_socket, u_file_storage* storage)
 				pthread_mutex_unlock(&(fdata->mutex));
 				return -1;
 			}
-		}	
+		}
 		pthread_mutex_unlock(&(fdata->mutex));
 	}
 	return 0;
@@ -511,7 +519,7 @@ int server_writeFile(int request, int client_socket, u_file_storage* storage)
 		if (res)
 		{
 			u_file_data *filedata;
-			lu_foreach(files_to_evict, currnode, 
+			lu_foreach(files_to_evict, currnode,
 				server_sendresponse(SAPI_SUCCESS, client_socket);
 				server_senddata(currnode->data, strlen((char *)(currnode->data)) + 1, client_socket);
 				filedata = fu_getfile(storage, currnode->data);
@@ -522,7 +530,7 @@ int server_writeFile(int request, int client_socket, u_file_storage* storage)
 			)
 			server_sendresponse(SAPI_FAILURE, client_socket);
 		}
-		lu_foreach(files_to_evict, currnode, 
+		lu_foreach(files_to_evict, currnode,
 			fu_removefile(storage, currnode->data)
 		)
 		lu_free(&files_to_evict, mu_free);
@@ -646,7 +654,7 @@ int server_appendToFile(int request, int client_socket, u_file_storage* storage)
 		if (res)
 		{
 			u_file_data *filedata;
-			lu_foreach(files_to_evict, currnode, 
+			lu_foreach(files_to_evict, currnode,
 				server_sendresponse(SAPI_SUCCESS, client_socket);
 				server_senddata(currnode->data, strlen((char *)(currnode->data)) + 1, client_socket);
 				filedata = fu_getfile(storage, currnode->data);
@@ -657,7 +665,7 @@ int server_appendToFile(int request, int client_socket, u_file_storage* storage)
 			)
 			server_sendresponse(SAPI_FAILURE, client_socket);
 		}
-		lu_foreach(files_to_evict, currnode, 
+		lu_foreach(files_to_evict, currnode,
 			fu_removefile(storage, currnode->data)
 		)
 		lu_free(&files_to_evict, mu_free);
@@ -959,7 +967,7 @@ int server_removeFile(int request, int client_socket, u_file_storage* storage)
 }
 int server_evictlist(u_list *savelist, size_t bytes_to_free)
 {
-	
+
 	return 0;
 }
 server_settings init_server_settings()
@@ -976,24 +984,24 @@ server_infos init_server_infos(server_settings *setts)
 	server_infos infos;
 
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.server_socket_fd = create_server_socket(setts), 
+		infos.server_socket_fd = create_server_socket(setts),
 		-1, "init_server_infos : create_server_socket"
 	);
 	infos.nworkers = setts->nworkers;
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)), 
+		infos.workers = calloc(infos.nworkers, sizeof(pthread_t)),
 		NULL, "init_server_infos : calloc"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.workers_clients = calloc(infos.nworkers, sizeof(int)), 
+		infos.workers_clients = calloc(infos.nworkers, sizeof(int)),
 		NULL, "init_server_infos : calloc"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.worker_locks = calloc(infos.nworkers, sizeof(pthread_mutex_t)), 
+		infos.worker_locks = calloc(infos.nworkers, sizeof(pthread_mutex_t)),
 		NULL, "init_server_infos : calloc"
 	);
 	CHECK_BADVAL_PERROR_EXIT(
-		infos.worker_conds = calloc(infos.nworkers, sizeof(pthread_cond_t)), 
+		infos.worker_conds = calloc(infos.nworkers, sizeof(pthread_cond_t)),
 		NULL, "init_server_infos : calloc"
 	);
 	for (int i = 0; i < infos.nworkers; i++)
@@ -1015,7 +1023,7 @@ int free_server_infos(server_infos *infos)
 	if (infos->workers != NULL) free(infos->workers);
 	if (infos->workers_clients != NULL) free(infos->workers_clients);
 	for (int i = 0; i < infos->nworkers; i++)
-	{ 
+	{
 		pthread_cond_destroy(infos->worker_conds + i);
 		pthread_mutex_destroy(infos->worker_locks + i);
 	}

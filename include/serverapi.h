@@ -15,8 +15,8 @@ extern int server_socket_fd;
 #include <errno.h>
 
 #include "server_message.h"
-#include "mem_utils.h"
-#include "file_utils.h"
+#include <mem_utils.h>
+#include <file_utils.h>
 
 int sapi_evict(const char *dirname);
 void sapi_printerror(FILE *fstream, s_message message);

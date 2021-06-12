@@ -3,25 +3,12 @@
 
 #pragma once
 
+#include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
-#include <string.h>
-#include <sys/signal.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/un.h>
-#include <sys/poll.h>
-#include <pthread.h>
-#include <unistd.h>
-
-#include "file_utils.h"
-#include "list_utils.h"
-#include "server_message.h"
-#include "error_utils.h"
-#include "string_utils.h"
-#include "mem_utils.h"
+#include <file_utils.h>
+#include <list_utils.h>
 #include "poll_utils.h"
-
+#include "server_message.h"
 #define UNIX_PATH_MAX 108
 
 #define CONFIG_NWORKERS "NWORKERS"

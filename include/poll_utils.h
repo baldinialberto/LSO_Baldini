@@ -3,10 +3,8 @@
 
 #pragma once
 
-#include "mem_utils.h"
 #include <sys/poll.h>
 #include <stdlib.h>
-#include <stdio.h>
 
 typedef struct _pollarr
 {
@@ -14,8 +12,6 @@ typedef struct _pollarr
     size_t len;
     size_t maxlen;
 } u_pollarr;
-
-
 
 u_pollarr pu_initarr(size_t maxlen);
 int pu_isempty(u_pollarr *arr);

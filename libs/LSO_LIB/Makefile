@@ -1,22 +1,18 @@
 CC:=gcc
 CFLAGS:=-Wall -pedantic -g
 LIB_OBJS:=mem_utils.o string_utils.o thread_utils.o hash_utils.o array_utils.o list_utils.o file_utils.o
-EXEC_OBJ:=tester.o
-EXEC_LIST:=tester.exe
 
-.PHONY : all clean debug
+.PHONY : lib clean clean_lib
 
-debug : all clean
-
-all : $(EXEC_LIST)
-
-$(EXEC_LIST): $(LIB_OBJS) $(EXEC_OBJ)
-
-%.exe : %.o
-	$(CC) $(CFLAGS) -o $@  $^ -lpthread
+lib : $(LIB_OBJS)
+	$(CC) -shared -o libso.so $^
+	-rm *.o
 
 %.o : %.c
-	$(CC) $(CFLAGS) $< -c
+	$(CC) $(CFLAGS) $< -c -fPIC
 
 clean :
 	-rm *.o
+
+clean_lib :
+	-rm *.so
