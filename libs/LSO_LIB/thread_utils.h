@@ -9,11 +9,13 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+#define mutex_t                 pthread_mutex_t
 #define mutex_lock(mutex)       pthread_mutex_lock(&(mutex))
 #define mutex_unlock(mutex)     pthread_mutex_unlock(&(mutex))
 #define mutex_init(mutex)       pthread_mutex_init(&(mutex), NULL)
 #define mutex_destroy(mutex)    pthread_mutex_destroy(&(mutex))
 
+#define cond_t                  pthread_cond_t
 #define cond_wait(cond, mutex)  pthread_cond_wait(&(cond), &(mutex))
 #define cond_signal(cond)       pthread_cond_signal(&(cond))
 #define cond_broadcast(cond)    pthread_cond_broadcast(&(cond))

@@ -12,4 +12,4 @@ add_library(LSO_LIB SHARED
         error_utils.h
         thread_utils.c thread_utils.h
         array_utils.c array_utils.h
-        tester.c)
+        tester.c common_utils.h)

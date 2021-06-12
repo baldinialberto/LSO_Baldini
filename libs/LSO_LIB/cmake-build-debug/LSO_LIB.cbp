@@ -82,6 +82,9 @@
 		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.h">
 			<Option target="LSO_LIB"/>
 		</Unit>
+		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/common_utils.h">
+			<Option target="LSO_LIB"/>
+		</Unit>
 		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/error_utils.h">
 			<Option target="LSO_LIB"/>
 		</Unit>

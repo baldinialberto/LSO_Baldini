@@ -81,7 +81,7 @@ int lu_remove(u_list *list, const void *data)
     lu_navigate(list, &curr, &prev, data);
     if (curr == NULL || list->compare(data, curr->data))
     {
-        fprintf(stderr, "lu_remove : data not in list\n");
+        fprintf(stderr, "lu_remove : file_data not in list\n");
         fflush(stderr);
         return -1;
     } else

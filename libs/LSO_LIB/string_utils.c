@@ -3,6 +3,7 @@
 //
 
 #include "string_utils.h"
+#include "common_utils.h"
 #include "mem_utils.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -100,4 +101,26 @@ size_t su_strlen(u_string *string)
         return 0;
     }
     return (string->len = strlen(string->data));
+}
+int su_u_string_compare(const void *a, const void *b)
+{
+    if (a == NULL || b == NULL)
+    {
+        fprintf(stderr, "su_u_string_compare : wrong params\n");
+        fflush(stderr);
+        return 0;
+    }
+    return strncmp(((u_string *)a)->data, ((u_string *)b)->data,
+                   MIN(((u_string *)a)->len, ((u_string *)b)->len));
+}
+int su_string_compare(const void *a, const void *b)
+{
+    if (a == NULL || b == NULL)
+    {
+        fprintf(stderr, "su_u_string_compare : wrong params\n");
+        fflush(stderr);
+        return 0;
+    }
+    return strncmp((const char *)a, (const char *)b,
+                   MIN(strlen((char *)a), strlen((char *)b)));
 }

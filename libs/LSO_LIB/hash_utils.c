@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "list_utils.h"
-#include "string_utils.h"
 #include "mem_utils.h"
 #include "hash_utils.h"
 
@@ -102,9 +100,9 @@ int hu_remove(u_hash_table *table, const void *key)
     hu_navigate_list(*list, &curr, &prev, key, table->compare);
     if (curr == NULL || table->compare(key, curr->key))
     {
-        fprintf(stderr, "hu_remove : data not in list\n");
+        fprintf(stderr, "hu_remove : file_data not in list\n");
         fflush(stderr);
-        fprintf(stdout, "hu_remove : data not in list\n");
+        fprintf(stdout, "hu_remove : file_data not in list\n");
         fflush(stdout);
         return -1;
     } else
@@ -143,9 +141,9 @@ void *hu_get(u_hash_table *table, const void *key)
     hu_navigate_list(*list, &curr, &prev, key, table->compare);
     if (curr == NULL || table->compare(key, curr->key))
     {
-        fprintf(stderr, "hu_get : data not in list\n");
+        fprintf(stderr, "hu_get : file_data not in list\n");
         fflush(stderr);
-        fprintf(stdout, "hu_get : data not in list\n");
+        fprintf(stdout, "hu_get : file_data not in list\n");
         fflush(stdout);
         return NULL;
     }
@@ -181,22 +179,19 @@ void hu_free(u_hash_table *table)
         fflush(stderr);
         return;
     }
-    if (hu_is_empty(table))
+    if (!hu_is_empty(table))
     {
-        fprintf(stderr, "hu_free : hashtable is empty\n");
-        fflush(stderr);
-        return;
-    }
-    u_hash_item *temp;
-    for (size_t i = 0; i < table->n_entries; i++)
-    {
-        for (u_hash_item *hi = (table->table)[i]; hi != NULL;)
+        u_hash_item *temp;
+        for (size_t i = 0; i < table->n_entries; i++)
         {
-            temp = hi;
-            hi = hi->next;
-            table->free_data(temp->data);
-            table->free_key((void *)temp->key);
-            mu_free(temp);
+            for (u_hash_item *hi = (table->table)[i]; hi != NULL;)
+            {
+                temp = hi;
+                hi = hi->next;
+                table->free_data(temp->data);
+                table->free_key((void *)temp->key);
+                mu_free(temp);
+            }
         }
     }
     mu_free(table->table);

@@ -21,6 +21,7 @@ int su_realloc(u_string *string, size_t newsize);
 size_t su_strlen(u_string *string);
 int su_string_extend(u_string *sting, size_t delta);
 int su_string_shrinktofit(u_string *string);
-
+int su_u_string_compare(const void *a, const void *b);
+int su_string_compare(const void *a, const void *b);
 
 #endif //LSO_LIB_STRING_UTILS_H
