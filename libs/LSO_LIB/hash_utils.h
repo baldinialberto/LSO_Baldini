@@ -8,8 +8,8 @@
 #pragma once
 #include <stdlib.h>
 
-#define hu_foreach(table, n_entries, do)                                 \
-for (size_t i = 0; i < (n_entries); i++)                                 \
+#define hu_foreach(table, n_entries, do)                                \
+for (size_t i = 0; i < (n_entries); i++)                                \
 {                                                                       \
     for (u_hash_item *hi = (table)[i]; hi != NULL; hi = hi->next)       \
     {                                                                   \

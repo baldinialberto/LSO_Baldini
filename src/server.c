@@ -83,7 +83,7 @@ int init_server_infos(server_settings *setts, server_infos* infos)
 {
     CHECK_PERROR_EXIT(
             (infos->server_socket_fd = create_server_socket(setts)) == -1,
-            "init_server_infos : create_server_socket"
+            "create_server_socket at init_server_infos"
     );
     infos->nworkers = setts->nworkers;
 

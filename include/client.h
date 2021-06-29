@@ -2,10 +2,9 @@
 #define _CLIENT_H
 
 #pragma once
-#include <stdlib.h>
 #include <list_utils.h>
 
-typedef struct _client_conf
+typedef struct client_conf
 {
     char *server_socket_filename;
     char *writeback_foldername;
