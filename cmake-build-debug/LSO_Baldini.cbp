@@ -8,163 +8,165 @@
 		<Option virtualFolders="CMake Files\;"/>
 		<Build>
 			<Target title="all">
-				<Option working_dir="/home/alberto/LSO_Baldini/cmake-build-debug"/>
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-				</MakeCommands>
-			</Target>
-			<Target title="edit_cache">
-				<Option working_dir="/home/alberto/LSO_Baldini/cmake-build-debug"/>
-				<Option type="4"/>
-				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="rebuild_cache">
-				<Option working_dir="/home/alberto/LSO_Baldini/cmake-build-debug"/>
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="LSO_Baldini">
-				<Option output="/home/alberto/LSO_Baldini/cmake-build-debug/LSO_Baldini" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/alberto/LSO_Baldini/cmake-build-debug"/>
+				<Option output="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/LSO_Baldini" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/alberto/LSO_Baldini/./include"/>
-					<Add directory="/home/alberto/LSO_Baldini/./libs/LSO_LIB"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/Users/albertobaldini/source/repos/LSO_Baldini/./include"/>
+					<Add directory="/Users/albertobaldini/source/repos/LSO_Baldini/./libs/LSO_LIB"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 LSO_Baldini"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 LSO_Baldini"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="LSO_Baldini/fast">
-				<Option output="/home/alberto/LSO_Baldini/cmake-build-debug/LSO_Baldini" prefix_auto="0" extension_auto="0"/>
-				<Option working_dir="/home/alberto/LSO_Baldini/cmake-build-debug"/>
+				<Option output="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/LSO_Baldini" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug"/>
 				<Option object_output="./"/>
 				<Option type="1"/>
 				<Option compiler="gcc"/>
 				<Compiler>
-					<Add directory="/home/alberto/LSO_Baldini/./include"/>
-					<Add directory="/home/alberto/LSO_Baldini/./libs/LSO_LIB"/>
-					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/Users/albertobaldini/source/repos/LSO_Baldini/./include"/>
+					<Add directory="/Users/albertobaldini/source/repos/LSO_Baldini/./libs/LSO_LIB"/>
 					<Add directory="/usr/local/include"/>
-					<Add directory="/usr/include/x86_64-linux-gnu"/>
-					<Add directory="/usr/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/12.0.5/include"/>
+					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
+					<Add directory="/System/Library/Frameworks"/>
+					<Add directory="/Library/Frameworks"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 LSO_Baldini/fast"/>
-					<CompileFile command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/make -j4 -f &quot;/home/alberto/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 LSO_Baldini/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="/home/alberto/LSO_Baldini/include/client.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/include/client.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/include/dir_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/include/dir_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/include/poll_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/include/poll_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/include/server.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/include/server.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/include/server_message.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/include/server_message.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/include/serverapi.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/include/serverapi.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/common_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/common_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/error_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/error_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/file_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/file_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/file_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/file_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/hash_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/hash_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/hash_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/hash_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/list_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/list_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/mem_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/mem_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/string_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/string_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/thread_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/libs/LSO_LIB/thread_utils.h">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.h">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/src/client.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/src/client.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/src/dir_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/src/dir_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/src/poll_utils.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/src/poll_utils.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/src/server.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/src/server.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/src/serverapi.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/src/serverapi.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/src/tester.c">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/src/tester.c">
 			<Option target="LSO_Baldini"/>
 		</Unit>
-		<Unit filename="/home/alberto/LSO_Baldini/CMakeLists.txt">
+		<Unit filename="/Users/albertobaldini/source/repos/LSO_Baldini/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
 		</Unit>
 	</Project>

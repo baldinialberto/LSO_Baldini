@@ -53,19 +53,19 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /snap/clion/152/bin/cmake/linux/bin/cmake
+CMAKE_COMMAND = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake
 
 # The command to remove a file.
-RM = /snap/clion/152/bin/cmake/linux/bin/cmake -E rm -f
+RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/alberto/LSO_Baldini/libs/LSO_LIB
+CMAKE_SOURCE_DIR = /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug
+CMAKE_BINARY_DIR = /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug
 
 # Include any dependencies generated for this target.
 include CMakeFiles/LSO_LIB.dir/depend.make
@@ -78,107 +78,94 @@ include CMakeFiles/LSO_LIB.dir/flags.make
 
 CMakeFiles/LSO_LIB.dir/mem_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/mem_utils.c.o: ../mem_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/LSO_LIB.dir/mem_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/mem_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/mem_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/LSO_LIB.dir/mem_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/mem_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.c
 
 CMakeFiles/LSO_LIB.dir/mem_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/mem_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/mem_utils.c > CMakeFiles/LSO_LIB.dir/mem_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.c > CMakeFiles/LSO_LIB.dir/mem_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/mem_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/mem_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/mem_utils.c -o CMakeFiles/LSO_LIB.dir/mem_utils.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/mem_utils.c -o CMakeFiles/LSO_LIB.dir/mem_utils.c.s
 
 CMakeFiles/LSO_LIB.dir/file_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/file_utils.c.o: ../file_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/LSO_LIB.dir/file_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/file_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/file_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/LSO_LIB.dir/file_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/file_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/file_utils.c
 
 CMakeFiles/LSO_LIB.dir/file_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/file_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/file_utils.c > CMakeFiles/LSO_LIB.dir/file_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/file_utils.c > CMakeFiles/LSO_LIB.dir/file_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/file_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/file_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/file_utils.c -o CMakeFiles/LSO_LIB.dir/file_utils.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/file_utils.c -o CMakeFiles/LSO_LIB.dir/file_utils.c.s
 
 CMakeFiles/LSO_LIB.dir/hash_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/hash_utils.c.o: ../hash_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/LSO_LIB.dir/hash_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/hash_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/hash_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/LSO_LIB.dir/hash_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/hash_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/hash_utils.c
 
 CMakeFiles/LSO_LIB.dir/hash_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/hash_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/hash_utils.c > CMakeFiles/LSO_LIB.dir/hash_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/hash_utils.c > CMakeFiles/LSO_LIB.dir/hash_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/hash_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/hash_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/hash_utils.c -o CMakeFiles/LSO_LIB.dir/hash_utils.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/hash_utils.c -o CMakeFiles/LSO_LIB.dir/hash_utils.c.s
 
 CMakeFiles/LSO_LIB.dir/list_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/list_utils.c.o: ../list_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/LSO_LIB.dir/list_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/list_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/list_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/LSO_LIB.dir/list_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/list_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.c
 
 CMakeFiles/LSO_LIB.dir/list_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/list_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/list_utils.c > CMakeFiles/LSO_LIB.dir/list_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.c > CMakeFiles/LSO_LIB.dir/list_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/list_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/list_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/list_utils.c -o CMakeFiles/LSO_LIB.dir/list_utils.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/list_utils.c -o CMakeFiles/LSO_LIB.dir/list_utils.c.s
 
 CMakeFiles/LSO_LIB.dir/string_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/string_utils.c.o: ../string_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/LSO_LIB.dir/string_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/string_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/string_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/LSO_LIB.dir/string_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/string_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.c
 
 CMakeFiles/LSO_LIB.dir/string_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/string_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/string_utils.c > CMakeFiles/LSO_LIB.dir/string_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.c > CMakeFiles/LSO_LIB.dir/string_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/string_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/string_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/string_utils.c -o CMakeFiles/LSO_LIB.dir/string_utils.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/string_utils.c -o CMakeFiles/LSO_LIB.dir/string_utils.c.s
 
 CMakeFiles/LSO_LIB.dir/thread_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/thread_utils.c.o: ../thread_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/LSO_LIB.dir/thread_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/thread_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/thread_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/LSO_LIB.dir/thread_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/thread_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c
 
 CMakeFiles/LSO_LIB.dir/thread_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/thread_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/thread_utils.c > CMakeFiles/LSO_LIB.dir/thread_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c > CMakeFiles/LSO_LIB.dir/thread_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/thread_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/thread_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/thread_utils.c -o CMakeFiles/LSO_LIB.dir/thread_utils.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/thread_utils.c -o CMakeFiles/LSO_LIB.dir/thread_utils.c.s
 
 CMakeFiles/LSO_LIB.dir/array_utils.c.o: CMakeFiles/LSO_LIB.dir/flags.make
 CMakeFiles/LSO_LIB.dir/array_utils.c.o: ../array_utils.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/LSO_LIB.dir/array_utils.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/array_utils.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/LSO_LIB.dir/array_utils.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/array_utils.c.o -c /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.c
 
 CMakeFiles/LSO_LIB.dir/array_utils.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/array_utils.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.c > CMakeFiles/LSO_LIB.dir/array_utils.c.i
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.c > CMakeFiles/LSO_LIB.dir/array_utils.c.i
 
 CMakeFiles/LSO_LIB.dir/array_utils.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/array_utils.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/array_utils.c -o CMakeFiles/LSO_LIB.dir/array_utils.c.s
-
-CMakeFiles/LSO_LIB.dir/tester.c.o: CMakeFiles/LSO_LIB.dir/flags.make
-CMakeFiles/LSO_LIB.dir/tester.c.o: ../tester.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building C object CMakeFiles/LSO_LIB.dir/tester.c.o"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/LSO_LIB.dir/tester.c.o -c /home/alberto/LSO_Baldini/libs/LSO_LIB/tester.c
-
-CMakeFiles/LSO_LIB.dir/tester.c.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/LSO_LIB.dir/tester.c.i"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/alberto/LSO_Baldini/libs/LSO_LIB/tester.c > CMakeFiles/LSO_LIB.dir/tester.c.i
-
-CMakeFiles/LSO_LIB.dir/tester.c.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/LSO_LIB.dir/tester.c.s"
-	/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/alberto/LSO_Baldini/libs/LSO_LIB/tester.c -o CMakeFiles/LSO_LIB.dir/tester.c.s
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/array_utils.c -o CMakeFiles/LSO_LIB.dir/array_utils.c.s
 
 # Object files for target LSO_LIB
 LSO_LIB_OBJECTS = \
@@ -188,27 +175,25 @@ LSO_LIB_OBJECTS = \
 "CMakeFiles/LSO_LIB.dir/list_utils.c.o" \
 "CMakeFiles/LSO_LIB.dir/string_utils.c.o" \
 "CMakeFiles/LSO_LIB.dir/thread_utils.c.o" \
-"CMakeFiles/LSO_LIB.dir/array_utils.c.o" \
-"CMakeFiles/LSO_LIB.dir/tester.c.o"
+"CMakeFiles/LSO_LIB.dir/array_utils.c.o"
 
 # External object files for target LSO_LIB
 LSO_LIB_EXTERNAL_OBJECTS =
 
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/mem_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/file_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/hash_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/list_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/string_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/thread_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/array_utils.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/tester.c.o
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/build.make
-libLSO_LIB.so: CMakeFiles/LSO_LIB.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking C shared library libLSO_LIB.so"
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/mem_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/file_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/hash_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/list_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/string_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/thread_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/array_utils.c.o
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/build.make
+libLSO_LIB.dylib: CMakeFiles/LSO_LIB.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C shared library libLSO_LIB.dylib"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/LSO_LIB.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-CMakeFiles/LSO_LIB.dir/build: libLSO_LIB.so
+CMakeFiles/LSO_LIB.dir/build: libLSO_LIB.dylib
 
 .PHONY : CMakeFiles/LSO_LIB.dir/build
 
@@ -217,6 +202,6 @@ CMakeFiles/LSO_LIB.dir/clean:
 .PHONY : CMakeFiles/LSO_LIB.dir/clean
 
 CMakeFiles/LSO_LIB.dir/depend:
-	cd /home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/alberto/LSO_Baldini/libs/LSO_LIB /home/alberto/LSO_Baldini/libs/LSO_LIB /home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug /home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug /home/alberto/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/DependInfo.cmake --color=$(COLOR)
+	cd /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug /Users/albertobaldini/source/repos/LSO_Baldini/libs/LSO_LIB/cmake-build-debug/CMakeFiles/LSO_LIB.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/LSO_LIB.dir/depend
 

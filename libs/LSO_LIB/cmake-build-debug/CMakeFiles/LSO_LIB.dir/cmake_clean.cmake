@@ -5,10 +5,9 @@ file(REMOVE_RECURSE
   "CMakeFiles/LSO_LIB.dir/list_utils.c.o"
   "CMakeFiles/LSO_LIB.dir/mem_utils.c.o"
   "CMakeFiles/LSO_LIB.dir/string_utils.c.o"
-  "CMakeFiles/LSO_LIB.dir/tester.c.o"
   "CMakeFiles/LSO_LIB.dir/thread_utils.c.o"
+  "libLSO_LIB.dylib"
   "libLSO_LIB.pdb"
-  "libLSO_LIB.so"
 )
 
 # Per-language clean rules from dependency scanning.
