@@ -81,39 +81,28 @@ int init_server_settings(server_settings *setts)
 }
 int init_server_infos(server_settings *setts, server_infos* infos)
 {
-    server_infos infos;
+    CHECK_PERROR_EXIT(
+            (infos->server_socket_fd = create_server_socket(setts)) == -1,
+            "create_server_socket at init_server_infos"
+    );
+    infos->nworkers = setts->nworkers;
 
-    CHECK_BADVAL_PERROR_EXIT(
-            infos.server_socket_fd = create_server_socket(setts),
-            -1, "init_server_infos : create_server_socket"
-    );
-    infos.nworkers = setts->nworkers;
-    CHECK_BADVAL_PERROR_EXIT(
-            infos.workers = calloc(infos.nworkers, sizeof(pthread_t)),
-            NULL, "init_server_infos : calloc"
-    );
-    CHECK_BADVAL_PERROR_EXIT(
-            infos.workers_clients = calloc(infos.nworkers, sizeof(int)),
-            NULL, "init_server_infos : calloc"
-    );
-    CHECK_BADVAL_PERROR_EXIT(
-            infos.worker_locks = calloc(infos.nworkers, sizeof(pthread_mutex_t)),
-            NULL, "init_server_infos : calloc"
-    );
-    CHECK_BADVAL_PERROR_EXIT(
-            infos.worker_conds = calloc(infos.nworkers, sizeof(pthread_cond_t)),
-            NULL, "init_server_infos : calloc"
-    );
-    for (int i = 0; i < infos.nworkers; i++)
+    infos->workers = mu_calloc(infos->nworkers * sizeof(pthread_t));
+    infos->workers_clients = mu_calloc(infos->nworkers * sizeof(int));
+    infos->worker_locks = mu_calloc(infos->nworkers * sizeof(pthread_mutex_t));
+    infos->worker_conds = mu_calloc(infos->nworkers * sizeof(pthread_cond_t));
+
+    for (int i = 0; i < infos->nworkers; i++)
     {
-        pthread_mutex_init(infos.worker_locks + i, NULL);
-        pthread_cond_init(infos.worker_conds + i, NULL);
+        pthread_mutex_init(infos->worker_locks + i, NULL);
+        pthread_cond_init(infos->worker_conds + i, NULL);
     }
-    infos.server_quit = (infos.server_hu = 0);
-    infos.pollarr = pu_initarr(setts->maxClientCount);
-    infos.storage = fu_init_file_storage(setts->maxFileCount, setts->avaiableMemory);
 
-    return infos;
+    infos->server_quit = (infos->server_hu = 0);
+    infos->pollarr = pu_initarr(setts->maxClientCount);
+    infos->storage = fu_init_file_storage(setts->maxFileCount, setts->avaiableMemory);
+
+    return 0;
 }
 void server_dispatcher(server_infos *infos)
 {

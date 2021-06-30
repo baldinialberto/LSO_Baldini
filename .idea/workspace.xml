@@ -12,6 +12,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d4aabd7-e46e-4186-97cf-755c3340648c" name="Default Changelist" comment="">
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeCache.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.19.2/CMakeCCompiler.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.19.2/CMakeCCompiler.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.19.2/CMakeDetermineCompilerABI_C.bin" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.19.2/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
@@ -56,6 +57,12 @@
       <change beforePath="$PROJECT_DIR$/libs/LSO_LIB/cmake-build-debug/LSO_LIB.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/libs/LSO_LIB/cmake-build-debug/LSO_LIB.cbp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libs/LSO_LIB/cmake-build-debug/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/libs/LSO_LIB/cmake-build-debug/Makefile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/libs/LSO_LIB/cmake-build-debug/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/libs/LSO_LIB/cmake-build-debug/cmake_install.cmake" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/client.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/client.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/libs/LSO_LIB/hash_utils.h" beforeDir="false" afterPath="$PROJECT_DIR$/libs/LSO_LIB/hash_utils.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server.c" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.c" afterDir="false" />
+>>>>>>> 993f1d7922efeb6b2a7d5ed506fc53776cddbe1b
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,7 +72,6 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -89,22 +95,41 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
+<<<<<<< HEAD
   <component name="RunManager">
     <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+=======
+  <component name="RunManager" selected="Makefile Target.no_obj">
+    <configuration name="LSO_Baldini" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LSO_Baldini" TARGET_NAME="LSO_Baldini" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="LSO_Baldini" RUN_TARGET_NAME="LSO_Baldini">
+>>>>>>> 993f1d7922efeb6b2a7d5ed506fc53776cddbe1b
       <method v="2">
         <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
+<<<<<<< HEAD
     <configuration name="LSO_Baldini" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="LSO_Baldini" TARGET_NAME="LSO_Baldini" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="LSO_Baldini" RUN_TARGET_NAME="LSO_Baldini">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+=======
+>>>>>>> 993f1d7922efeb6b2a7d5ed506fc53776cddbe1b
     <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="no_obj" type="MAKEFILE_TARGET_RUN_CONFIGURATION" factoryName="Makefile" temporary="true">
+      <makefile filename="$PROJECT_DIR$/Makefile" target="no_obj" workingDirectory="" arguments="">
+        <envs />
+      </makefile>
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Makefile Target.no_obj" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -115,8 +140,13 @@
       <option name="presentableId" value="Default" />
       <updated>1623505019450</updated>
       <workItem from="1623505020899" duration="1008000" />
+<<<<<<< HEAD
       <workItem from="1623513991801" duration="3911000" />
       <workItem from="1623599172165" duration="31000" />
+=======
+      <workItem from="1623513991801" duration="4511000" />
+      <workItem from="1624951510899" duration="4138000" />
+>>>>>>> 993f1d7922efeb6b2a7d5ed506fc53776cddbe1b
     </task>
     <servers />
   </component>
