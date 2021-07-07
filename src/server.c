@@ -30,6 +30,8 @@ int main(int argc, char **argv)
 
 	server_dispatcher(&infos);
 
+	join_workers(&infos);
+
 	CHECK_PERROR_EXIT(close(infos.server_socket_fd),
 					  "close at main");
 	CHECK_PERROR_EXIT(unlink(settings.socket_name),
@@ -152,7 +154,7 @@ void server_dispatcher(server_infos *infos)
 	}
 	if (!infos->server_quit) { infos->server_quit = 1; }
 
-	join_workers(infos);
+	//join_workers(infos);
 }
 
 void *server_worker(void *worker_arg)
@@ -282,8 +284,22 @@ int join_workers(server_infos *infos)
 {
 	DEBUG(puts("join_workers"));
 
+	int ret;
+
 	for (int i = 0; i < infos->n_workers; i++) {
-		pthread_join((infos->workers)[i], NULL);
+		if ((ret = pthread_join((infos->workers)[i], NULL)))
+		{
+			switch(ret)
+			{
+				case EDEADLK:puts(" A  deadlock  was  detected (e.g., two threads tried to join with "
+								  "each other); or thread specifies the calling thread."); break;
+				case EINVAL: puts("thread is not a joinable thread."); break;
+				case ESRCH: puts("No thread with the ID thread could be found"); break;
+				default : break;
+			}
+			perror("pthread_join at join_workers");
+			errno = 0;
+		}
 	}
 	return 0;
 }
