@@ -9,6 +9,12 @@
 
 #include <stdlib.h>
 
+#define lu_foreach(list, to_do)        \
+for (u_list_node *i = list->head; i != NULL; i = i->next)	\
+{                                      \
+    to_do;                             \
+}
+
 typedef struct utils_list_node {
     void *data;
     struct utils_list_node *next;

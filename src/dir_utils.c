@@ -1,4 +1,11 @@
-#include "../include/dir_utils.h"
+#include <dir_utils.h>
+#include <string_utils.h>
+#include <list_utils.h>
+#include <mem_utils.h>
+#include <string.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <dirent.h>
 
 int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *filelist, u_list *dirlist)
 {
@@ -49,12 +56,12 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *fileli
         stat(file->d_name, &filestat);
 		filetype = du_filenodetype(&filestat);
 
-		if (filetype == 'd' && strcmp(file->d_name, ".") && strcmp(file->d_name, ".."))
+		if (filetype == 'd' && strcmp(file->d_name, ".") != 0 && strcmp(file->d_name, "..") != 0)
 		{
             su_append_chars(&tempstring, dirpath);
             su_append_chars(&tempstring, "/");
             su_append_chars(&tempstring, file->d_name);
-            lu_insert_oncopy(dirlist, tempstring.data, tempstring.len + 1, lu_string_compare);
+            lu_insert(dirlist, mu_clone(tempstring.data, tempstring.len + 1));
             su_realloc(&tempstring, 0);
 		}
 		else if (filetype == '-')
@@ -62,7 +69,7 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *fileli
             su_append_chars(&tempstring, dirpath);
             su_append_chars(&tempstring, "/");
             su_append_chars(&tempstring, file->d_name);
-			if (lu_insert_oncopy(filelist, tempstring.data, tempstring.len + 1, lu_string_compare) != -1)
+			if (lu_insert(filelist, mu_clone(tempstring.data, tempstring.len + 1)) != -1)
                 nfilepaths--;
             su_realloc(&tempstring, 0);
 		}

@@ -1,4 +1,18 @@
-#include "../include/serverapi.h"
+#include <serverapi.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/un.h>
+#include <unistd.h>
+#include <time.h>
+#include <errno.h>
+
+#include <server_message.h>
+#include <mem_utils.h>
+#include <file_utils.h>
+#include <string_utils.h>
+
 
 int server_socket_fd;
 
@@ -47,7 +61,7 @@ int sapi_evict(const char *dirname)
         else
         {
             // write down filedata to destpath
-            if (fu_writepath(destpath.data, tempdata, tempdatalen) == -1)
+            if (fu_write_to_path(destpath.data, tempdata, tempdatalen) == -1)
             {
                 fprintf(stderr, "writeFile : sapi_senddata returned an error\n");
                 fflush(stderr);
@@ -421,7 +435,7 @@ int readNFiles(int N, const char *dirname)
         else
         {
             // write down filedata to destpath
-            if (fu_writepath(destpath.data, buff, size) == -1)
+            if (fu_write_to_path(destpath.data, buff, size) == -1)
             {
                 fprintf(stderr, "readNFiles : sapi_senddata returned an error\n");
                 fflush(stderr);
@@ -456,7 +470,7 @@ int writeFile(const char* pathname, const char* dirname)
         fflush(stderr);
         return -1;
     }
-    if (fu_readpath(pathname, &data, &datalen) == -1)
+    if (fu_read_from_path(pathname, &data, &datalen) == -1)
     {
         fprintf(stderr, "writeFile : fu_readpath returned an error\n");
         fflush(stderr);

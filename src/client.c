@@ -1,7 +1,10 @@
 #include <client.h>
 #include <serverapi.h>
 #include <list_utils.h>
+#include <file_utils.h>
 #include <mem_utils.h>
+#include <dir_utils.h>
+#include <string_utils.h>
 
 int main(int argc, char** argv)
 {	
@@ -18,9 +21,9 @@ int main(int argc, char** argv)
 	}
 	
 	sleep(1);
-	write_files_list(conf.files_to_write, conf.writeback_foldername, conf.connection_timer);
+	write_files_list(&(conf.files_to_write), conf.writeback_foldername, conf.connection_timer);
 	sleep(1);
-	read_files_list(conf.files_to_read, conf.folder_destination, conf.connection_timer);
+	read_files_list(&(conf.files_to_read), conf.folder_destination, conf.connection_timer);
 	sleep(1);
 
 	if (connected && closeConnection(conf.server_socket_filename))
@@ -174,106 +177,97 @@ int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir, si
 		return 0;
 	}
 	
-	u_list *filelist = NULL;
-	u_list *dirlist = NULL;
-	u_list_node *currnode;
+	u_list filelist = lu_init_list(sizeof(char *), su_string_compare, mu_free, NULL);
+	u_list dirlist = lu_init_list(sizeof(char *), su_string_compare, mu_free, NULL);
 	char *currdir;
 	int nfilesfound = 0;
 
 	lu_insert(&dirlist, mu_clone((void *)dirname, strlen(dirname) + 1));
 	
-	while (lu_length(dirlist) != 0 && nfiles > 0)
+	while (dirlist.len != 0 && nfiles > 0)
 	{
-		currdir = lu_get_byindex(dirlist, 0);
+		currdir = lu_get(&dirlist, 0);
 		if ((nfilesfound = du_getfilepaths_from_dir(currdir, nfiles, &filelist, &dirlist)) == -1)
 		{
 			fprintf(stderr, "write_nfiles_from_dir : du_getfilepaths_from_dir returned an error\n");
 			fflush(stderr);
-			lu_free(&filelist, mu_free);
-			lu_free(&dirlist, mu_free);
+			lu_free(&filelist);
+			lu_free(&dirlist);
 			return -1;
 		}
 		nfiles -= nfilesfound;
-		lu_foreach(filelist, currnode, 
-			printf("file %s\n", (char *)currnode->data);
-		);
-		write_files_list(filelist, wbdir, msec);
-		lu_free(&filelist, mu_free);
-		lu_remove(&dirlist, currdir, lu_string_compare, mu_free);
+		write_files_list(&filelist, wbdir, msec);
+		lu_free(&filelist);
+		lu_remove(&dirlist, currdir);
 	}
-	lu_free(&dirlist, mu_free);
+	lu_free(&dirlist);
 	return 0;
 }
-int write_files_list(u_list filelist, const char *wbdir, size_t msec)
+int write_files_list(u_list *filelist, const char *wbdir, long int msec)
 {
 	int res = 0;
-	u_list_node *currnode;
 	struct timespec t;
 	t.tv_sec = msec / 1000;
 	t.tv_nsec = msec % 1000 * 1000000;
-	lu_foreach(filelist, currnode, 
+	lu_foreach(filelist,
 		nanosleep(&t, NULL);
-		res += openFile(currnode->data, O_CREATE | O_LOCK);
+		res += openFile(i->data, O_CREATE | O_LOCK);
 		nanosleep(&t, NULL);
-		res += writeFile(currnode->data, wbdir);
+		res += writeFile(i->data, wbdir);
 		nanosleep(&t, NULL);
-		res += closeFile(currnode->data);
+		res += closeFile(i->data);
 	);
 	return res ? -1 : 0;
 }
-int read_files_list(u_list filelist, const char *destdir, size_t msec)
+int read_files_list(u_list *filelist, const char *destdir, long int msec)
 {
 	struct timespec t;
 	t.tv_sec = msec / 1000;
 	t.tv_nsec = msec % 1000 * 1000000;
 	int res = 0;
-	u_list_node *currnode;
 	void *buff;
 	size_t size;
 	u_string temp = su_string_from_literal("");
-	lu_foreach(filelist, currnode, 
+	lu_foreach(filelist,
 		nanosleep(&t, NULL);
-		res += openFile(currnode->data, O_LOCK);
+		res += openFile(i->data, O_LOCK);
 		nanosleep(&t, NULL);
-		if (readFile((char *)currnode->data, &buff, &size))
+		if (readFile((char *)i->data, &buff, &size))
 		{
 			fprintf(stderr, "\n");
 			fflush(stderr);
 			res++;
 		} else {
 			su_append_chars(&temp, destdir);
-			su_append_chars(&temp, currnode->data);
-			res += fu_writepath(temp.data, buff, size);
+			su_append_chars(&temp, i->data);
+			res += fu_write_to_path(temp.data, buff, size);
 		}
 		nanosleep(&t, NULL);
-		res += closeFile(currnode->data);
+		res += closeFile(i->data);
 	);
 	return res ? -1 : 0;
 }
-int lock_files_list(u_list filelist)
+int lock_files_list(u_list *filelist)
 {
 	int res = 0;
-	u_list_node *currnode;
-	lu_foreach(filelist, currnode, 
-		res += lockFile((char *)currnode->data);
+	lu_foreach(filelist,
+		res += lockFile((char *)i->data);
 	);
 	return res ? -1 : 0;
 }
-int unlock_files_list(u_list filelist)
+int unlock_files_list(u_list *filelist)
 {
 	int res = 0;
-	u_list_node *currnode;
-	lu_foreach(filelist, currnode, 
-		res += unlockFile((char *)currnode->data);
+	lu_foreach(filelist,
+		res += unlockFile((char *)i->data);
 	);
 	return res ? -1 : 0;
 }
-int remove_files_list(u_list filelist)
+int remove_files_list(u_list *filelist)
 {
 	int res = 0;
-	u_list_node *currnode;
-	lu_foreach(filelist, currnode, 
-		res += removeFile((char *)currnode->data);
+	lu_foreach(filelist,
+		res += removeFile((char *)i->data);
 	);
 	return res ? -1 : 0;
 }

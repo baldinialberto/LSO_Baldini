@@ -12,7 +12,7 @@ lib : $(LIB_OBJS)
 	$(CC) $(CFLAGS) $< -c -fPIC
 
 clean :
-	-rm *.o
+	-rm -f *.o
 
 clean_lib :
-	-rm *.so
+	-rm -f *.so
