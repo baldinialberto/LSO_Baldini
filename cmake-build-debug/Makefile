@@ -58,38 +58,27 @@ cmake_force:
 SHELL = /bin/sh
 
 # The CMake executable.
-CMAKE_COMMAND = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake
+CMAKE_COMMAND = /snap/clion/152/bin/cmake/linux/bin/cmake
 
 # The command to remove a file.
-RM = /Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E rm -f
+RM = /snap/clion/152/bin/cmake/linux/bin/cmake -E rm -f
 
 # Escaping for special characters.
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /Users/albertobaldini/source/repos/LSO_Baldini
+CMAKE_SOURCE_DIR = /home/alberto/LSO_Baldini
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug
+CMAKE_BINARY_DIR = /home/alberto/LSO_Baldini/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
 
-# Special rule for the target rebuild_cache
-rebuild_cache:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
-	/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
-.PHONY : rebuild_cache
-
-# Special rule for the target rebuild_cache
-rebuild_cache/fast: rebuild_cache
-
-.PHONY : rebuild_cache/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
-	/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
+	/snap/clion/152/bin/cmake/linux/bin/cmake -E echo No\ interactive\ CMake\ dialog\ available.
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -97,11 +86,22 @@ edit_cache/fast: edit_cache
 
 .PHONY : edit_cache/fast
 
+# Special rule for the target rebuild_cache
+rebuild_cache:
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake to regenerate build system..."
+	/snap/clion/152/bin/cmake/linux/bin/cmake --regenerate-during-build -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+.PHONY : rebuild_cache
+
+# Special rule for the target rebuild_cache
+rebuild_cache/fast: rebuild_cache
+
+.PHONY : rebuild_cache/fast
+
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/CMakeFiles /Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alberto/LSO_Baldini/cmake-build-debug/CMakeFiles /home/alberto/LSO_Baldini/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/albertobaldini/source/repos/LSO_Baldini/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/alberto/LSO_Baldini/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -385,32 +385,32 @@ src/dir_utils.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/dir_utils.c.s
 .PHONY : src/dir_utils.c.s
 
-src/poll_utils.o: src/poll_utils.c.o
+src/poll_utils.h.o: src/poll_utils.h.c.o
 
-.PHONY : src/poll_utils.o
+.PHONY : src/poll_utils.h.o
 
 # target to build an object file
-src/poll_utils.c.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/poll_utils.c.o
-.PHONY : src/poll_utils.c.o
+src/poll_utils.h.c.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/poll_utils.h.c.o
+.PHONY : src/poll_utils.h.c.o
 
-src/poll_utils.i: src/poll_utils.c.i
+src/poll_utils.h.i: src/poll_utils.h.c.i
 
-.PHONY : src/poll_utils.i
+.PHONY : src/poll_utils.h.i
 
 # target to preprocess a source file
-src/poll_utils.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/poll_utils.c.i
-.PHONY : src/poll_utils.c.i
+src/poll_utils.h.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/poll_utils.h.c.i
+.PHONY : src/poll_utils.h.c.i
 
-src/poll_utils.s: src/poll_utils.c.s
+src/poll_utils.h.s: src/poll_utils.h.c.s
 
-.PHONY : src/poll_utils.s
+.PHONY : src/poll_utils.h.s
 
 # target to generate assembly for a file
-src/poll_utils.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/poll_utils.c.s
-.PHONY : src/poll_utils.c.s
+src/poll_utils.h.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/LSO_Baldini.dir/build.make CMakeFiles/LSO_Baldini.dir/src/poll_utils.h.c.s
+.PHONY : src/poll_utils.h.c.s
 
 src/server.o: src/server.c.o
 
@@ -529,9 +529,9 @@ help:
 	@echo "... src/dir_utils.o"
 	@echo "... src/dir_utils.i"
 	@echo "... src/dir_utils.s"
-	@echo "... src/poll_utils.o"
-	@echo "... src/poll_utils.i"
-	@echo "... src/poll_utils.s"
+	@echo "... src/poll_utils.h.o"
+	@echo "... src/poll_utils.h.i"
+	@echo "... src/poll_utils.h.s"
 	@echo "... src/server.o"
 	@echo "... src/server.i"
 	@echo "... src/server.s"

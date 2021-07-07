@@ -1,7 +1,3 @@
-//
-// Created by alberto on 12/06/21.
-//
-
 #ifndef LSO_LIB_COMMON_UTILS_H
 #define LSO_LIB_COMMON_UTILS_H
 

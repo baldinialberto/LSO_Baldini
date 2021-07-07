@@ -154,6 +154,16 @@ long int au_index_of_obj(u_arr *arr, const void *obj)
     }
     return ret_ptr != NULL ? ((long)ret_ptr - (long)arr->data) / (long)arr->element_size : -1;
 }
+void *au_find(u_arr *arr, const void *obj)
+{
+    if (arr == NULL || obj == NULL)
+    {
+        fprintf(stderr, "au_get : wrong params\n");
+        fflush(stderr);
+        return NULL;
+    }
+    return au_get(arr, au_index_of_obj(arr, obj));
+}
 void au_sort(u_arr *arr)
 {
     if (arr == NULL || arr->compare == NULL)

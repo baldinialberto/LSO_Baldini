@@ -1,4 +1,6 @@
-#include "../include/poll_utils.h"
+#include <poll_utils.h>
+#include <mem_utils.h>
+#include <string.h>
 
 u_pollarr pu_initarr(size_t maxlen)
 {
@@ -90,8 +92,8 @@ int pu_remove(u_pollarr *arr, int oldfd)
     {
         if (i != (arr->len - 1))
         {
-            memcpy(arr->arr + i, arr->arr + arr->len - 1, 
-                sizeof(struct pollfd));
+            memcpy(arr->arr + i, arr->arr + arr->len - 1,
+                   sizeof(struct pollfd));
         }
         memset(arr->arr + arr->len - 1, 0, sizeof(struct pollfd));
         (arr->len)--;

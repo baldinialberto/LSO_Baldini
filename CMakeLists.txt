@@ -10,7 +10,6 @@ add_executable(LSO_Baldini
         src/client.c include/client.h
         src/tester.c include/server_message.h
         src/serverapi.c include/serverapi.h
-        src/poll_utils.c include/poll_utils.h
         src/dir_utils.c include/dir_utils.h
         libs/LSO_LIB/array_utils.c
         libs/LSO_LIB/common_utils.h libs/LSO_LIB/error_utils.h
@@ -20,4 +19,4 @@ add_executable(LSO_Baldini
         libs/LSO_LIB/mem_utils.h libs/LSO_LIB/mem_utils.c
         libs/LSO_LIB/string_utils.h libs/LSO_LIB/string_utils.c
         libs/LSO_LIB/thread_utils.h libs/LSO_LIB/thread_utils.c
-        )
+        src/poll_utils.c include/poll_utils.h)

@@ -8,7 +8,7 @@ file(REMOVE_RECURSE
   "CMakeFiles/LSO_Baldini.dir/libs/LSO_LIB/thread_utils.c.o"
   "CMakeFiles/LSO_Baldini.dir/src/client.c.o"
   "CMakeFiles/LSO_Baldini.dir/src/dir_utils.c.o"
-  "CMakeFiles/LSO_Baldini.dir/src/poll_utils.c.o"
+  "CMakeFiles/LSO_Baldini.dir/src/poll_utils.h.c.o"
   "CMakeFiles/LSO_Baldini.dir/src/server.c.o"
   "CMakeFiles/LSO_Baldini.dir/src/serverapi.c.o"
   "CMakeFiles/LSO_Baldini.dir/src/tester.c.o"

@@ -7,9 +7,7 @@
 #include <stdio.h>
 #include <file_utils.h>
 #include <list_utils.h>
-#include "poll_utils.h"
-#include "server_message.h"
-#define UNIX_PATH_MAX 108
+#include <poll_utils.h>
 
 #define CONFIG_NWORKERS "NWORKERS"
 #define CONFIG_CAPACITY "CAPACITY"
@@ -23,8 +21,8 @@
 
 typedef struct server_settings
 {
-	unsigned short nworkers;		// 
-	unsigned int avaiableMemory;
+	unsigned short n_workers;
+	unsigned int available_Memory;
 	unsigned int maxFileCount;
 	char socket_name[64];
 	char logfile_name[64];
@@ -37,19 +35,19 @@ typedef struct server_stats
 	unsigned int MB_max;			// max memory load in server
 	unsigned int nfile;				// number of files in server at exit
 	unsigned int MB;				// server capacity
-	unsigned int ncache_replace;	// number of chache replaces
+	unsigned int ncache_replace;	// number of cache replaces
 } server_stats;
 
 typedef struct server_infos
 {
 	u_file_storage storage;
-	int server_socket_fd;		// file descriptor of sever_socket
-	unsigned short nworkers;	// number of workers of the server
-	pthread_t *workers;			// array of workers
-	int *workers_clients;		// number of clients served by each worker
+	int server_socket_fd;		    // file descriptor of sever_socket
+	unsigned short n_workers;	    // number of workers of the server
+	pthread_t *workers;			    // array of workers
+	int *workers_clients;		    // number of clients served by each worker
 	int server_quit;
 	int server_hu;
-	u_pollarr pollarr;
+	u_pollarr poll_arr;
 	pthread_cond_t *worker_conds;
 	pthread_mutex_t *worker_locks;
 } server_infos;
@@ -64,7 +62,6 @@ int init_server_settings(server_settings *setts);
 int init_server_infos(server_settings *setts, server_infos* infos);
 int free_server_infos(server_infos *infos);
 void print_server_settings(server_settings *setts);
-server_settings parse_settings();
 int write_log(const char* op, server_settings* setts);
 void get_setting(char** str, FILE *fstream, server_settings *setts);
 int create_server_socket(server_settings *setts);
