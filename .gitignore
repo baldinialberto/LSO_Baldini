@@ -6,6 +6,6 @@
 *.so
 cmake-build-debug/
 .vscode/
-towrite/
+to_write/*.txt
 evicted/
 readen/
