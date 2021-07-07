@@ -1,3 +1,0 @@
-/home/alberto/LSO_Baldini/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/alberto/LSO_Baldini/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/alberto/LSO_Baldini/cmake-build-debug/CMakeFiles/LSO_Baldini.dir
