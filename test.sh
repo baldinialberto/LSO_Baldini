@@ -1,1 +1,1 @@
-valgrind "$1" --leak-check=full &> test_errors.txt
+valgrind --leak-check=full --show-leak-kinds=all -s &> test_errors.txt "$1"

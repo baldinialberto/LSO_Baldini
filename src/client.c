@@ -5,6 +5,8 @@
 #include <mem_utils.h>
 #include <dir_utils.h>
 #include <string_utils.h>
+#include <unistd.h>
+#include <string.h>
 
 int main(int argc, char** argv)
 {	
@@ -16,7 +18,7 @@ int main(int argc, char** argv)
 	if (openConnection(conf.server_socket_filename, conf.connection_timer, 
 		(struct timespec){0, 500000000L}))
 	{
-		perror("openConnection");
+		if (errno) perror("openConnection");
 		connected = 0;
 	}
 	
@@ -245,6 +247,7 @@ int read_files_list(u_list *filelist, const char *destdir, long int msec)
 		nanosleep(&t, NULL);
 		res += closeFile(i->data);
 	);
+	su_free_string(&temp);
 	return res ? -1 : 0;
 }
 int lock_files_list(u_list *filelist)

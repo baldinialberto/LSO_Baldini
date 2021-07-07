@@ -8,6 +8,8 @@ TARGETS:= client.exe server.exe
 
 
 all : lib $(TARGETS)
+	-rm -f *.o
+	cd libs/LSO_LIB && make clean && cd ../../
 
 lib :
 	cd libs/LSO_LIB && make lib && cd ../../
