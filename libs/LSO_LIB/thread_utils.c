@@ -3,6 +3,7 @@
 //
 
 #include "thread_utils.h"
+#include <stdio.h>
 
 int mutex_timed_lock(pthread_mutex_t *mutex, size_t nsec)
 {
@@ -14,9 +15,29 @@ int condvar_timed_wait(pthread_cond_t *condvar, pthread_mutex_t *mutex, size_t n
 }
 int tu_create_thread_detached(void *(*proc)(void *), void *arg)
 {
+	if (proc == NULL)
+	{
+		fprintf(stderr, "tu_create_thread_detached : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	pthread_t pt;
+	pthread_attr_t tattr;
+	pthread_attr_init(&tattr);
+	pthread_attr_setdetachstate(&tattr, PTHREAD_CREATE_DETACHED);
+	pthread_create(&pt, &tattr, proc, arg);
+
     return 0;
 }
 pthread_t tu_create_thread(void *(*proc)(void *), void *arg)
 {
-    return (pthread_t) 0;
+	if (proc == NULL)
+	{
+		fprintf(stderr, "tu_create_thread : wrong params\n");
+		fflush(stderr);
+		return (pthread_t)0;
+	}
+	pthread_t pt;
+	pthread_create(&pt, NULL, proc, arg);
+    return pt;
 }

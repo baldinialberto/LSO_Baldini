@@ -1,6 +1,6 @@
 CC:=gcc
-CFLAGS:= -Wall -pedantic -I ./include ./libs/LSO_LIB
-LIBS:= -lpthread L ./libs/LSO_LIB
+CFLAGS:= -Wall -pedantic -I ./include -I ./libs/LSO_LIB
+LIBS:= -lpthread -L ./libs/LSO_LIB -lso -Wl,-rpath,./libs/LSO_LIB
 
 .PHONY: all clean no_obj test
 
@@ -12,13 +12,13 @@ no_obj : all $(LIB_OBJS)
 
 all: $(TARGETS)
 
-server.exe : server.o poll_utiils.o
+server.exe : server.o poll_utils.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 	
 client.exe : client.o dir_utils.o serverapi.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-%.o : src/%.c include/%.h
+%.o : src/%.c
 	$(CC) $(CFLAGS) $< -c 
 
 clean : 

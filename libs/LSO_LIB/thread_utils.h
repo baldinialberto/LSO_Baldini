@@ -8,6 +8,7 @@
 #pragma once
 #include <pthread.h>
 #include <stdlib.h>
+#include "error_utils.h"
 
 #define mutex_t                 pthread_mutex_t
 #define mutex_lock(mutex)       pthread_mutex_lock(&(mutex))

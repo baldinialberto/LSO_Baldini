@@ -5,9 +5,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <file_utils.h>
-#include <list_utils.h>
-#include <poll_utils.h>
+#include "poll_utils.h"
+#include "../libs/LSO_LIB/file_utils.h"
 
 #define CONFIG_NWORKERS "NWORKERS"
 #define CONFIG_CAPACITY "CAPACITY"
