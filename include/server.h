@@ -85,5 +85,7 @@ int server_appendToFile(s_message message, int client, u_file_storage *storage);
 int server_lockFile(s_message message, int client, u_file_storage *storage);
 int server_unlockFile(s_message message, int client, u_file_storage *storage);
 int server_removeFile(s_message message, int client, u_file_storage *storage);
+char *sapi_getpath(s_message message, int client);
+int sapi_respond(s_message message, int client);
 
 #endif
