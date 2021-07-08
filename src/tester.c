@@ -16,10 +16,10 @@ int main(int argc, char **argv)
         sprintf(temp, "/home/alberto/LSO_Baldini/readen/meta_%d.txt", i);
         fu_fwrite(fu_getfile(&fstorage, file.path), temp);
     }
-    // u_file file = fu_allocfile_empty("test.sh");
-    // fu_fread("test.sh", file.data);
+    // u_file file = fu_allocfile_empty("valgrind.sh");
+    // fu_fread("valgrind.sh", file.data);
     // fu_addfile(&fstorage, file.data, file.path);
-    // fu_fwrite(fu_getfile(&fstorage, "test.sh"), "test4.sh");
+    // fu_fwrite(fu_getfile(&fstorage, "valgrind.sh"), "test4.sh");
     fu_storage_free(&fstorage);
     return 0;
 }

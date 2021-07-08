@@ -23,5 +23,6 @@ int su_string_extend(u_string *sting, size_t delta);
 int su_string_shrinktofit(u_string *string);
 int su_u_string_compare(const void *a, const void *b);
 int su_string_compare(const void *a, const void *b);
+void su_string_print(const void *s);
 
 #endif //LSO_LIB_STRING_UTILS_H

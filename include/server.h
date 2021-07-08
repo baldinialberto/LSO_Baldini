@@ -5,6 +5,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "server_message.h"
 #include "poll_utils.h"
 #include "../libs/LSO_LIB/file_utils.h"
 
@@ -75,4 +76,14 @@ int serve(int request, int client_socket, u_file_storage* storage);
 void server_skipline(FILE *fstream);
 int server_readline(FILE *fstream, char **str);
 int server_readword(FILE *fstream, char **str);
+int server_openFile(s_message message, int client, u_file_storage *storage);
+int server_closeFile(s_message message, int client, u_file_storage *storage);
+int server_readFile(s_message message, int client, u_file_storage *storage);
+int server_readNFiles(s_message message, int client, u_file_storage *storage);
+int server_writeFile(s_message message, int client, u_file_storage *storage);
+int server_appendToFile(s_message message, int client, u_file_storage *storage);
+int server_lockFile(s_message message, int client, u_file_storage *storage);
+int server_unlockFile(s_message message, int client, u_file_storage *storage);
+int server_removeFile(s_message message, int client, u_file_storage *storage);
+
 #endif

@@ -1,0 +1,1 @@
+./valgrind.sh ./server.exe

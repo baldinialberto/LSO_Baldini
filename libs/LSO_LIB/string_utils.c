@@ -117,10 +117,20 @@ int su_string_compare(const void *a, const void *b)
 {
     if (a == NULL || b == NULL)
     {
-        fprintf(stderr, "su_u_string_compare : wrong params\n");
+        fprintf(stderr, "su_string_compare : wrong params\n");
         fflush(stderr);
         return 0;
     }
     return strncmp((const char *)a, (const char *)b,
                    MIN(strlen((char *)a), strlen((char *)b)));
+}
+void su_string_print(const void *s)
+{
+    if (s == NULL)
+    {
+        fprintf(stderr, "su_string_print : wrong params\n");
+        fflush(stderr);
+        return;
+    }
+    printf("%s", (char *)s);
 }

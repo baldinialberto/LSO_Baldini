@@ -297,6 +297,8 @@ int openFile(const char* pathname, int flags)
         fflush(stderr);
         return -1;
     }
+    fprintf(stdout, "openFile pathname = %s, flags = %X\n", pathname, flags);
+    fflush(stdout);
     if (sapi_sendop(strlen(pathname), SAPI_OPENFILE, (unsigned char)flags) == -1)
     {
         fprintf(stderr, "openFile : sapi_sendop returned an error\n");

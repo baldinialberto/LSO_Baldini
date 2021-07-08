@@ -10,6 +10,7 @@
 #include <thread_utils.h>
 #include <mem_utils.h>
 #include <poll_utils.h>
+#include <server_message.h>
 
 int main(int argc, char **argv)
 {
@@ -245,7 +246,6 @@ int serve(int request, int client_socket, u_file_storage *storage)
 		fflush(stderr);
 		return -1;
 	}
-	/*
 	unsigned char op = request & SAPI_OPMASK;
 	switch (op)
 	{
@@ -262,7 +262,6 @@ int serve(int request, int client_socket, u_file_storage *storage)
 			fflush(stderr);
 			return -1;
 	}
-	 */
 	return 0;
 }
 
@@ -543,5 +542,103 @@ int server_readword(FILE *fstream, char **str)
 	);
 	(*str)[wordLen] = (char) 0;
 
+	return 0;
+}
+
+int server_openFile(s_message message, int client, u_file_storage *storage)
+{
+	DEBUG(puts(__func__));
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_openFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	unsigned int slen = message >> SAPI_MSSLEN_SHFT;
+	char *s = mu_calloc(slen + 1);
+	read(client, s, slen);
+	fprintf(stdout, "proceed to open file %s\n", s);
+	mu_free(s);
+
+	return 0;
+}
+int server_closeFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_closeFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_readFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_readFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_readNFiles(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_readNFiles : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_writeFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_writeFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_appendToFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_appendToFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_lockFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_lockFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_unlockFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_unlockFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	return 0;
+}
+int server_removeFile(s_message message, int client, u_file_storage *storage)
+{
+	if (message == 0 || client == 0 || storage == NULL)
+	{
+		fprintf(stderr, "server_removeFile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
 	return 0;
 }

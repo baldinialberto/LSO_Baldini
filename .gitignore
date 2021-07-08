@@ -4,8 +4,8 @@
 *.log
 *.socket
 *.so
+to_write/*.txt
 cmake-build-debug/
 .vscode/
-to_write/*.txt
 evicted/
 readen/

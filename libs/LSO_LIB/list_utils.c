@@ -48,7 +48,7 @@ int lu_insert(u_list *list, const void *data)
         fflush(stderr);
         return -1;
     }
-    u_list_node *curr, *prev, *new_node = lu_alloc_node(mu_clone(data, list->element_size));
+    u_list_node *curr, *prev, *new_node = lu_alloc_node((void *)data);
     lu_navigate(list, &curr, &prev, data);
     if (prev == NULL)
     {

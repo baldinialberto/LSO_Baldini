@@ -23,8 +23,9 @@ typedef struct client_conf
 
 int parseargs(int argc, char ** argv, client_conf *conf);
 int printargs(client_conf *conf);
+int client_conf_init(client_conf *conf);
 int client_conf_cleanup(client_conf *conf);
-int conf_add_list(const char *optarg, u_list* list);
+int conf_add_list(const char *p_optarg, u_list* list);
 int write_nfiles_from_dir(const char *dirname, int nfiles, const char *wbdir, size_t msec);
 int write_files_list(u_list *filelist, const char *wbdir, long int msec);
 int read_files_list(u_list *filelist, const char *destdir, long int msec);
