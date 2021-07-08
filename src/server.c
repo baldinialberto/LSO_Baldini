@@ -132,6 +132,9 @@ void server_dispatcher(server_infos* infos)
 		if (infos->server_hu)
 		{ pu_remove(&(infos->poll_arr), infos->server_socket_fd); }
 
+		for (size_t i = 0; i < infos->poll_arr.len; i++) printf("%d->", infos->poll_arr.arr[i].fd);
+		printf("\n");
+
 		poll_ready = poll(infos->poll_arr.arr, infos->poll_arr.len, 1000);
 
 		for (size_t i = 0; poll_ready && i < infos->poll_arr.len; i++)
@@ -654,6 +657,8 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 
 	if (file != NULL)
 	{
+		mu_free(path_to_open);
+
 		mutex_lock(file->mutex);
 
 		if (file->client != -1)
@@ -672,7 +677,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		}
 		if (file->data_info & O_LOCK)
 		{
-			fprintf(stderr, "");
+			fprintf(stderr, "server_openFile : file is already locked\n");
 			fflush(stderr);
 			mu_free(path_to_open);
 			mutex_unlock(file->mutex);
@@ -701,6 +706,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		{
 			new_file->data_info &= O_LOCK;
 		}
+		fu_add_file(storage, new_file, path_to_open);
 	}
 
 	if (sapi_respond(SAPI_SUCCESS, client))
@@ -712,6 +718,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 
 	return 0;
 }
+
 
 int server_closeFile(s_message message, int client, u_file_storage* storage)
 {

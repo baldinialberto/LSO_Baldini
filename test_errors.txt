@@ -1,66 +1,52 @@
-==12232== Memcheck, a memory error detector
-==12232== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==12232== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==12232== Command: ./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt
-==12232== 
+==6972== Memcheck, a memory error detector
+==6972== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==6972== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==6972== Command: ./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt
+==6972== 
 openFile pathname = ./to_write/file_0.txt, flags = 3
-==12232== Conditional jump or move depends on uninitialised value(s)
-==12232==    at 0x10C9A8: openFile (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10B3F8: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A776: main (in /home/alberto/LSO_Baldini/client.exe)
-==12232== 
-==12232== 
-==12232== Process terminating with default action of signal 13 (SIGPIPE)
-==12232==    at 0x4871297: write (write.c:26)
-==12232==    by 0x10C06C: sapi_sendop (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10D0B7: writeFile (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10B422: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A776: main (in /home/alberto/LSO_Baldini/client.exe)
-==12232== 
-==12232== HEAP SUMMARY:
-==12232==     in use at exit: 32,209 bytes in 3 blocks
-==12232==   total heap usage: 38 allocs, 35 frees, 581,545 bytes allocated
-==12232== 
-==12232== 16 bytes in 1 blocks are still reachable in loss record 1 of 3
-==12232==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12232==    by 0x48828FB: mu_malloc (mem_utils.c:9)
-==12232==    by 0x4884999: lu_alloc_node (list_utils.c:38)
-==12232==    by 0x4884A33: lu_insert (list_utils.c:51)
-==12232==    by 0x10B08F: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A969: parseargs (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A6FC: main (in /home/alberto/LSO_Baldini/client.exe)
-==12232== 
-==12232== 22 bytes in 1 blocks are still reachable in loss record 2 of 3
-==12232==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12232==    by 0x48828FB: mu_malloc (mem_utils.c:9)
-==12232==    by 0x4882A36: mu_clone (mem_utils.c:54)
-==12232==    by 0x10B07D: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A969: parseargs (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A6FC: main (in /home/alberto/LSO_Baldini/client.exe)
-==12232== 
-==12232== 32,171 bytes in 1 blocks are still reachable in loss record 3 of 3
-==12232==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==12232==    by 0x4882957: mu_realloc (mem_utils.c:21)
-==12232==    by 0x4885E8E: fu_file_read (file_utils.c:259)
-==12232==    by 0x4886853: fu_read_from_path (file_utils.c:456)
-==12232==    by 0x10D05C: writeFile (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10B422: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A776: main (in /home/alberto/LSO_Baldini/client.exe)
-==12232== 
-==12232== LEAK SUMMARY:
-==12232==    definitely lost: 0 bytes in 0 blocks
-==12232==    indirectly lost: 0 bytes in 0 blocks
-==12232==      possibly lost: 0 bytes in 0 blocks
-==12232==    still reachable: 32,209 bytes in 3 blocks
-==12232==         suppressed: 0 bytes in 0 blocks
-==12232== 
-==12232== Use --track-origins=yes to see where uninitialised values come from
-==12232== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
-==12232== 
-==12232== 1 errors in context 1 of 1:
-==12232== Conditional jump or move depends on uninitialised value(s)
-==12232==    at 0x10C9A8: openFile (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10B3F8: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
-==12232==    by 0x10A776: main (in /home/alberto/LSO_Baldini/client.exe)
-==12232== 
-==12232== ERROR SUMMARY: 1 errors from 1 contexts (suppressed: 0 from 0)
+==6972== 
+==6972== Process terminating with default action of signal 2 (SIGINT)
+==6972==    at 0x4871332: read (read.c:26)
+==6972==    by 0x10C2F6: sapi_getresponse (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10D1A5: writeFile (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10B422: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10A776: main (in /home/alberto/LSO_Baldini/client.exe)
+==6972== 
+==6972== HEAP SUMMARY:
+==6972==     in use at exit: 32,209 bytes in 3 blocks
+==6972==   total heap usage: 38 allocs, 35 frees, 581,545 bytes allocated
+==6972== 
+==6972== 16 bytes in 1 blocks are still reachable in loss record 1 of 3
+==6972==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6972==    by 0x48828FB: mu_malloc (mem_utils.c:9)
+==6972==    by 0x4884999: lu_alloc_node (list_utils.c:38)
+==6972==    by 0x4884A33: lu_insert (list_utils.c:51)
+==6972==    by 0x10B08F: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10A969: parseargs (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10A6FC: main (in /home/alberto/LSO_Baldini/client.exe)
+==6972== 
+==6972== 22 bytes in 1 blocks are still reachable in loss record 2 of 3
+==6972==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6972==    by 0x48828FB: mu_malloc (mem_utils.c:9)
+==6972==    by 0x4882A36: mu_clone (mem_utils.c:54)
+==6972==    by 0x10B07D: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10A969: parseargs (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10A6FC: main (in /home/alberto/LSO_Baldini/client.exe)
+==6972== 
+==6972== 32,171 bytes in 1 blocks are still reachable in loss record 3 of 3
+==6972==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==6972==    by 0x4882957: mu_realloc (mem_utils.c:21)
+==6972==    by 0x4885E8E: fu_file_read (file_utils.c:259)
+==6972==    by 0x4886853: fu_read_from_path (file_utils.c:456)
+==6972==    by 0x10D05C: writeFile (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10B422: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
+==6972==    by 0x10A776: main (in /home/alberto/LSO_Baldini/client.exe)
+==6972== 
+==6972== LEAK SUMMARY:
+==6972==    definitely lost: 0 bytes in 0 blocks
+==6972==    indirectly lost: 0 bytes in 0 blocks
+==6972==      possibly lost: 0 bytes in 0 blocks
+==6972==    still reachable: 32,209 bytes in 3 blocks
+==6972==         suppressed: 0 bytes in 0 blocks
+==6972== 
+==6972== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
