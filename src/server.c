@@ -132,8 +132,8 @@ void server_dispatcher(server_infos* infos)
 		if (infos->server_hu)
 		{ pu_remove(&(infos->poll_arr), infos->server_socket_fd); }
 
-		for (size_t i = 0; i < infos->poll_arr.len; i++) printf("%d->", infos->poll_arr.arr[i].fd);
-		printf("\n");
+//		for (size_t i = 0; i < infos->poll_arr.len; i++) printf("%d->", infos->poll_arr.arr[i].fd);
+//		printf("\n");
 
 		poll_ready = poll(infos->poll_arr.arr, infos->poll_arr.len, 1000);
 
@@ -323,6 +323,12 @@ int serve(s_message request, int client_socket, u_file_storage* storage)
 	case SAPI_REMOVEFILE:
 		return server_removeFile(request, client_socket, storage);
 	default:
+		if (sapi_respond(SAPI_FAILURE, client_socket))
+		{
+			fprintf(stderr, "sapi_respond at server_writeFile\n");
+			fflush(stderr);
+			return SAPI_FAILURE;
+		}
 		fprintf(stderr, "serve : unrecognized operation\n");
 		fflush(stderr);
 		return -1;
@@ -513,7 +519,7 @@ void get_setting(char** str, FILE* fstream, server_settings* setts)
 	{
 		if (fscanf(fstream, "%d", &int_sett) != 1)
 		{ return; }
-		setts->available_Memory = int_sett;
+		setts->available_Memory = int_sett * 0xFFFFF;
 	}
 	else if (!strcmp(*str, CONFIG_CLIENT_MAX))
 	{
@@ -667,7 +673,6 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 	}
 
 	u_file_data* file = fu_getfile(storage, path_to_open);
-
 	if (file == NULL && !(message & O_CREATE))
 	{
 		fprintf(stderr, "server_openFile : file %s not found\n", path_to_open);
@@ -687,6 +692,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		mu_free(path_to_open);
 
 		mutex_lock(file->mutex);
+		DEBUG(puts("60%"));
 
 		if (file->client != -1)
 		{
@@ -718,12 +724,14 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		}
 
 		file->client = client;
+		DEBUG(puts("80%"));
 		if (message & O_LOCK)
 		{
 			file->data_info &= O_LOCK;
 		}
 
 		mutex_unlock(file->mutex);
+		DEBUG(puts("90%"));
 	}
 	else
 	{
@@ -781,12 +789,124 @@ int server_readNFiles(s_message message, int client, u_file_storage* storage)
 
 int server_writeFile(s_message message, int client, u_file_storage* storage)
 {
+	DEBUG(puts(__func__ );)
 	if (message == 0 || client == 0 || storage == NULL)
 	{
 		fprintf(stderr, "server_writeFile : wrong params\n");
 		fflush(stderr);
 		return -1;
 	}
+	DEBUG(puts("server_writeFile -0%");)
+	char* path_to_write = sapi_getpath(message, client);
+	DEBUG(puts("server_writeFile -10%");)
+	if (path_to_write == NULL)
+	{
+		if (sapi_respond(SAPI_FAILURE, client))
+		{
+			fprintf(stderr, "sapi_respond at server_writeFile\n");
+			fflush(stderr);
+			return SAPI_FAILURE;
+		}
+		return SAPI_FAILURE;
+	}
+	DEBUG(fprintf(stdout, "server_writeFile : writing path %s\n", path_to_write));
+
+	u_file_data *file = fu_getfile(storage, path_to_write);
+	DEBUG(puts("server_writeFile -20%");)
+	if (file == NULL)
+	{
+		if (sapi_respond(SAPI_FNF, client))
+		{
+			fprintf(stderr, "sapi_respond at server_writeFile\n");
+			fflush(stderr);
+			return SAPI_FAILURE;
+		}
+		return SAPI_FAILURE;
+	}
+	mutex_lock(file->mutex);
+	DEBUG(puts("server_writeFile -30%");)
+	if ((file->client != 0 && file->client != client) ||
+	((file->data_info & O_LOCK) && file->client != client))
+	{
+		mutex_unlock(file->mutex);
+		DEBUG(puts("server_writeFile -70a%");)
+		if (sapi_respond(SAPI_LOCKED, client))
+		{
+			fprintf(stderr, "sapi_respond at server_writeFile\n");
+			fflush(stderr);
+			DEBUG(puts("server_writeFile -100aa%");)
+			return SAPI_FAILURE;
+		}
+		DEBUG(puts("server_writeFile -100a%");)
+		return SAPI_FNF;
+	}
+
+	size_t data_len;
+	CHECK_READ_RESPONSE(client, data_len, sizeof(size_t), "read at server_writeFile");
+	DEBUG(puts("server_writeFile -40%");)
+
+	if (fu_storage_bytes_available(storage) < data_len)
+	{
+		fprintf(stderr, "not enough space available %zu bytes free, %zu needed\n",
+			fu_storage_bytes_available(storage), data_len);
+		fflush(stderr);
+		//***********//
+		// add evict //
+		//***********//
+		if (sapi_respond(SAPI_EVICT, client))
+		{
+			fprintf(stderr, "sapi_respond at server_writeFile\n");
+			fflush(stderr);
+			mutex_unlock(file->mutex);
+			return SAPI_FAILURE;
+		}
+		mutex_unlock(file->mutex);
+		return SAPI_FAILURE;
+	}
+
+	DEBUG(puts("server_writeFile -50%");)
+	void *data = mu_calloc(data_len);
+	if (read(client, &(data), data_len) == -1)
+	{
+		DEBUG(puts("server_writeFile -60b%");)
+		if (errno)
+		{
+			DEBUG(puts("server_writeFile -70ba%");)
+			perror("read at server_writeFile");
+			errno = 0;
+		}
+		if (sapi_respond(SAPI_FAILURE, client))
+		{
+			fprintf(stderr, "read at %s\n", __func__);
+			fflush(stderr);
+			return SAPI_FAILURE;
+		}
+		DEBUG(puts("server_writeFile -100ba%");)
+		return SAPI_FAILURE;
+	}
+	DEBUG(puts("server_writeFile -60%");)
+
+	if (fu_writefile(file, 0, data, data_len))
+	{
+		mutex_unlock(file->mutex);
+		if (sapi_respond(SAPI_FAILURE, client))
+		{
+			fprintf(stderr, "sapi_respond at server_writeFile\n");
+			fflush(stderr);
+			return SAPI_FAILURE;
+		}
+		return SAPI_FAILURE;
+	}
+	DEBUG(puts("server_writeFile -80%");)
+	if (sapi_respond(SAPI_SUCCESS, client))
+	{
+		fprintf(stderr, "sapi_respond at server_writeFile\n");
+		fflush(stderr);
+		return SAPI_FAILURE;
+	}
+	DEBUG(puts("server_writeFile -90%");)
+	mutex_unlock(file->mutex);
+	DEBUG(puts("server_writeFile -100%");)
 	return 0;
 }
 
@@ -857,17 +977,40 @@ char* sapi_getpath(s_message message, int client)
 	return path;
 }
 
+int sapi_getfile(int client, void **file_data, size_t *data_len)
+{
+	if (client == 0 || file_data == NULL || data_len == NULL)
+	{
+		fprintf(stderr, "sapi_getfile : wrong params\n");
+		fflush(stderr);
+		return -1;
+	}
+	int read_len = 0;
+	if ((read_len = (int)read(client, data_len, sizeof(size_t))) < sizeof(s_message))
+	{
+		if (read_len < 0)
+		{ perror("read at sapi_getfile"); }
+		fprintf(stderr, "read at sapi_getfile returned %d, instead of %zu\n",
+			read_len, sizeof(size_t));
+		fflush(stderr);
+		return -1;
+	}
+
+
+
+	return 0;
+}
+
 int sapi_respond(s_message message, int client)
 {
+	DEBUG(puts(__func__ );)
 	if (client == 0)
 	{
 		fprintf(stderr, "sapi_respond : wrong params\n");
 		fflush(stderr);
 		return -1;
 	}
-
 	int write_len = 0;
-
 	if ((write_len = (int)write(client, &message, sizeof(s_message))) < sizeof(message))
 	{
 		if (write_len < 0)
@@ -876,6 +1019,5 @@ int sapi_respond(s_message message, int client)
 		fflush(stderr);
 		return -1;
 	}
-
 	return 0;
 }

@@ -1,0 +1,21 @@
+char *server_socket_filename = MyServerSocket.socket
+char *writeback_foldername = NULL
+char *folder_to_write = NULL
+char *folder_destination = NULL
+unsigned int folder_filecount = 0
+unsigned int read_filecount = 0
+unsigned int connection_timer = 0
+bool verbose = 0
+./to_write/file_0.txt(NULL)
+(NULL)
+(NULL)
+(NULL)
+(NULL)
+openFile pathname = ./to_write/file_0.txt, flags = 3 -0%
+openFile pathname = ./to_write/file_0.txt, flags = 3 -33%
+openFile pathname = ./to_write/file_0.txt, flags = 3 -66%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+openFile pathname = ./to_write/file_0.txt, flags = 3 -100%
+writeFile pathname = ./to_write/file_0.txt

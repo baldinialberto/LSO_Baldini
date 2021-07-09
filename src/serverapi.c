@@ -168,15 +168,19 @@ int sapi_senddata(void *data, size_t datalen)
 }
 s_message sapi_getresponse()
 {
+	puts(__func__);
     s_message message;
-    if (read(server_socket_fd, &message, sizeof(s_message)) == -1)
+    puts("sapi_getresponse -50%");
+    if (read(server_socket_fd, &message, sizeof(s_message)) < sizeof(s_message))
     {
+		puts("sapi_getresponse -75%");
         fprintf(stderr, "sapi_getresponse : read returned an error\n");
         fflush(stderr);
         perror("sapi_getresponse : read");
         return -1;
     }
-    return message;
+	puts("sapi_getresponse -100%");
+	return message;
 }
 int sapi_getdata(void **buff, size_t *size)
 {
@@ -297,14 +301,17 @@ int openFile(const char* pathname, int flags)
         fflush(stderr);
         return -1;
     }
-    fprintf(stdout, "openFile pathname = %s, flags = %X\n", pathname, flags);
-    fflush(stdout);
+    fprintf(stdout, "openFile pathname = %s, flags = %X -0%%\n", pathname, flags);
+	fflush(stdout);
+
     if (sapi_sendop(strlen(pathname), SAPI_OPENFILE, (unsigned char)flags) == -1)
     {
         fprintf(stderr, "openFile : sapi_sendop returned an error\n");
         fflush(stderr);
         return -1;
     }
+	fprintf(stdout, "openFile pathname = %s, flags = %X -33%%\n", pathname, flags);
+	fflush(stdout);
     if (sapi_senddata((void *)pathname, strlen(pathname)) == -1)
     {
         fprintf(stderr, "openFile : sapi_senddata returned an error\n");
@@ -312,6 +319,8 @@ int openFile(const char* pathname, int flags)
         return -1;
     }
     s_message m;
+	fprintf(stdout, "openFile pathname = %s, flags = %X -66%%\n", pathname, flags);
+	fflush(stdout);
     if ((m = sapi_getresponse()))
     {
         fprintf(stderr, "openFile : sapi_getresponse returned an error\n");
@@ -319,6 +328,8 @@ int openFile(const char* pathname, int flags)
         sapi_printerror(stderr, m);
         return -1;
     }
+	fprintf(stdout, "openFile pathname = %s, flags = %X -100%%\n", pathname, flags);
+	fflush(stdout);
     return 0;
 }
 int readFile(const char* pathname, void** buf, size_t* size)
@@ -347,6 +358,8 @@ int readFile(const char* pathname, void** buf, size_t* size)
         fflush(stderr);
         return -1;
     }
+	fprintf(stdout, "readFile pathname = %s\n", pathname);
+	fflush(stdout);
     // send request to open file
     if (sapi_sendop(strlen(pathname), (unsigned char) SAPI_READFILE, (unsigned char) 0) == -1)
     {
@@ -472,6 +485,8 @@ int writeFile(const char* pathname, const char* dirname)
         fflush(stderr);
         return -1;
     }
+	fprintf(stdout, "writeFile pathname = %s\n", pathname);
+	fflush(stdout);
     if (fu_read_from_path(pathname, &data, &datalen) == -1)
     {
         fprintf(stderr, "writeFile : fu_readpath returned an error\n");

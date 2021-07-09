@@ -2,4 +2,6 @@
 #  ./valgrind.sh ./client.exe -f MyServerSocket.socket -W ./to_write/file_${i}.txt
 #done
 
-./valgrind.sh ./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt
+#./valgrind.sh ./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt
+
+./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt

@@ -1,8 +1,8 @@
-==11630== Memcheck, a memory error detector
-==11630== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==11630== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
-==11630== Command: ./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt
-==11630== 
+==8339== Memcheck, a memory error detector
+==8339== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==8339== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==8339== Command: ./client.exe -f MyServerSocket.socket -W ./to_write/file_0.txt
+==8339== 
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = NULL
 char *folder_to_write = NULL
@@ -16,50 +16,45 @@ bool verbose = 0
 (NULL)
 (NULL)
 (NULL)
-openFile pathname = ./to_write/file_0.txt, flags = 3
-==11630== 
-==11630== Process terminating with default action of signal 2 (SIGINT)
-==11630==    at 0x4871332: read (read.c:26)
-==11630==    by 0x10C314: sapi_getresponse (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10D1C3: writeFile (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10B440: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10A794: main (in /home/alberto/LSO_Baldini/client.exe)
-==11630== 
-==11630== HEAP SUMMARY:
-==11630==     in use at exit: 32,209 bytes in 3 blocks
-==11630==   total heap usage: 38 allocs, 35 frees, 581,545 bytes allocated
-==11630== 
-==11630== 16 bytes in 1 blocks are still reachable in loss record 1 of 3
-==11630==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==11630==    by 0x48828DB: mu_malloc (mem_utils.c:9)
-==11630==    by 0x4884979: lu_alloc_node (list_utils.c:38)
-==11630==    by 0x4884A13: lu_insert (list_utils.c:51)
-==11630==    by 0x10B0AD: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10A987: parseargs (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10A70B: main (in /home/alberto/LSO_Baldini/client.exe)
-==11630== 
-==11630== 22 bytes in 1 blocks are still reachable in loss record 2 of 3
-==11630==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==11630==    by 0x48828DB: mu_malloc (mem_utils.c:9)
-==11630==    by 0x4882A16: mu_clone (mem_utils.c:54)
-==11630==    by 0x10B09B: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10A987: parseargs (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10A70B: main (in /home/alberto/LSO_Baldini/client.exe)
-==11630== 
-==11630== 32,171 bytes in 1 blocks are still reachable in loss record 3 of 3
-==11630==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
-==11630==    by 0x4882937: mu_realloc (mem_utils.c:21)
-==11630==    by 0x4885E3F: fu_file_read (file_utils.c:258)
-==11630==    by 0x4886804: fu_read_from_path (file_utils.c:455)
-==11630==    by 0x10D07A: writeFile (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10B440: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
-==11630==    by 0x10A794: main (in /home/alberto/LSO_Baldini/client.exe)
-==11630== 
-==11630== LEAK SUMMARY:
-==11630==    definitely lost: 0 bytes in 0 blocks
-==11630==    indirectly lost: 0 bytes in 0 blocks
-==11630==      possibly lost: 0 bytes in 0 blocks
-==11630==    still reachable: 32,209 bytes in 3 blocks
-==11630==         suppressed: 0 bytes in 0 blocks
-==11630== 
-==11630== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+openFile pathname = ./to_write/file_0.txt, flags = 3 -0%
+openFile pathname = ./to_write/file_0.txt, flags = 3 -33%
+openFile pathname = ./to_write/file_0.txt, flags = 3 -66%
+==8339== 
+==8339== Process terminating with default action of signal 2 (SIGINT)
+==8339==    at 0x4871332: read (read.c:26)
+==8339==    by 0x10C34C: sapi_getresponse (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10CA67: openFile (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10B436: write_files_list (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10A7B4: main (in /home/alberto/LSO_Baldini/client.exe)
+sapi_getresponse
+sapi_getresponse -50%
+==8339== 
+==8339== HEAP SUMMARY:
+==8339==     in use at exit: 38 bytes in 2 blocks
+==8339==   total heap usage: 3 allocs, 1 frees, 4,134 bytes allocated
+==8339== 
+==8339== 16 bytes in 1 blocks are still reachable in loss record 1 of 2
+==8339==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8339==    by 0x48828DB: mu_malloc (mem_utils.c:9)
+==8339==    by 0x4884979: lu_alloc_node (list_utils.c:38)
+==8339==    by 0x4884A13: lu_insert (list_utils.c:51)
+==8339==    by 0x10B0CD: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10A9A7: parseargs (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10A72B: main (in /home/alberto/LSO_Baldini/client.exe)
+==8339== 
+==8339== 22 bytes in 1 blocks are still reachable in loss record 2 of 2
+==8339==    at 0x483B7F3: malloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==8339==    by 0x48828DB: mu_malloc (mem_utils.c:9)
+==8339==    by 0x4882A16: mu_clone (mem_utils.c:54)
+==8339==    by 0x10B0BB: conf_add_list (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10A9A7: parseargs (in /home/alberto/LSO_Baldini/client.exe)
+==8339==    by 0x10A72B: main (in /home/alberto/LSO_Baldini/client.exe)
+==8339== 
+==8339== LEAK SUMMARY:
+==8339==    definitely lost: 0 bytes in 0 blocks
+==8339==    indirectly lost: 0 bytes in 0 blocks
+==8339==      possibly lost: 0 bytes in 0 blocks
+==8339==    still reachable: 38 bytes in 2 blocks
+==8339==         suppressed: 0 bytes in 0 blocks
+==8339== 
+==8339== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

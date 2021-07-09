@@ -17,6 +17,23 @@
 #define CONFIG_CLIENT_MAX "CLIENT_MAX"
 #define SERVER_CONFIGFILE_PATH "./config.txt"
 
+#define CHECK_READ_RESPONSE(client, dest, size, message) \
+if (read(client, &(dest), size) < size)		\
+{											\
+if (errno)									\
+{											\
+perror(message);							\
+errno = 0;									\
+}                                       	\
+if (sapi_respond(SAPI_FAILURE, client)) 	\
+{											\
+fprintf(stderr, "read at %s\n", __func__);	\
+fflush(stderr);								\
+return SAPI_FAILURE;						\
+}											\
+return SAPI_FAILURE;						\
+}
+
 #define DEBUG(X) X
 
 typedef struct server_settings
