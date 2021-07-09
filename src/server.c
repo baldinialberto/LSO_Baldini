@@ -165,17 +165,15 @@ void server_dispatcher(server_infos* infos)
 				}
 				infos->poll_arr.arr[i].revents &= 0;
 			}
-			if (infos->poll_arr.arr[i].revents & POLLHUP)
+			else if (infos->poll_arr.arr[i].revents & POLLHUP)
 			{
 				close(infos->poll_arr.arr[i].fd);
 				pu_remove(&(infos->poll_arr), infos->poll_arr.arr[i].fd);
 			}
 		}
 	}
-	if (!infos->server_quit)
+	if (infos->server_hu)
 	{ infos->server_quit = 1; }
-
-	//join_workers(infos);
 }
 
 void* server_worker(void* worker_arg)
@@ -183,50 +181,78 @@ void* server_worker(void* worker_arg)
 	DEBUG(puts("Worker"));
 	ignore_signals();
 
-	struct worker_arg* wa = (struct worker_arg*)worker_arg;
-	int request = -1;
-	struct timespec condtime;
-	condtime.tv_sec = 0;
-	condtime.tv_nsec = 0xFFFF;
+	struct worker_arg* worker_infos = (struct worker_arg*)worker_arg;
+	s_message request;
+	int serve_ret;
+	struct timespec cond_time;
+	cond_time.tv_sec = 0;
+	cond_time.tv_nsec = 0xFFFF;
 
-	while (!wa->infos->server_quit)
+	while (!worker_infos->infos->server_quit)
 	{
+		pthread_mutex_lock(worker_infos->infos->worker_locks + worker_infos->worker_id);
 
-		pthread_mutex_lock(wa->infos->worker_locks + wa->worker_id);
-
-		while ((wa->infos->workers_clients)[wa->worker_id] == 0)
+		while ((worker_infos->infos->workers_clients)[worker_infos->worker_id] == 0)
 		{
-			if (wa->infos->server_quit)
+			if (worker_infos->infos->server_quit)
 			{
-				mu_free(worker_arg);
+				mu_free(worker_infos);
 				pthread_exit(NULL);
 			}
 			pthread_cond_timedwait(
-				wa->infos->worker_conds + wa->worker_id,
-				wa->infos->worker_locks + wa->worker_id,
-				&condtime
+				worker_infos->infos->worker_conds + worker_infos->worker_id,
+				worker_infos->infos->worker_locks + worker_infos->worker_id,
+				&cond_time
 			);
 		}
+
+		DEBUG(
+			fprintf(stdout, "worker #%d assigned to serve %d\n",
+				worker_infos->worker_id, worker_infos->infos->workers_clients[worker_infos->worker_id]);
+			fflush(stdout);
+		)
 
 		request = 0;
-		read((wa->infos->workers_clients)[wa->worker_id],
-			&request, sizeof(int)
-		);
-		printf("received request %X from %d\n", request, (wa->infos->workers_clients)[wa->worker_id]);
-		if (request)
+		if ((read((worker_infos->infos->workers_clients)[worker_infos->worker_id],
+			&request, sizeof(s_message)) < sizeof(s_message)))
 		{
-			serve(request,
-				(wa->infos->workers_clients)[wa->worker_id],
-				&(wa->infos->storage)
-			);
-			pu_add(&(wa->infos->poll_arr), (wa->infos->workers_clients)[wa->worker_id], POLLIN | POLLHUP);
+			if (errno)
+			{
+				perror("read at server_worker");
+				errno = 0;
+			}
+			continue;
 		}
 
-		(wa->infos->workers_clients)[wa->worker_id] = 0;
-		pthread_mutex_unlock(wa->infos->worker_locks + wa->worker_id);
+		DEBUG(
+			fprintf(stdout, "worker #%d, received request %X from %d\n",
+				worker_infos->worker_id, request,
+				(worker_infos->infos->workers_clients)[worker_infos->worker_id]);
+			fflush(stdout);
+		)
+
+		if (request)
+		{
+
+			serve_ret = serve(request,
+				(worker_infos->infos->workers_clients)[worker_infos->worker_id],
+				&(worker_infos->infos->storage)
+			);
+			fprintf(stdout, "worker #%d, service %X from %d returned %d\n",
+				worker_infos->worker_id, request,
+				(worker_infos->infos->workers_clients)[worker_infos->worker_id],
+				serve_ret);
+			fflush(stdout);
+			pu_add(&(worker_infos->infos->poll_arr),
+				(worker_infos->infos->workers_clients)[worker_infos->worker_id],
+				POLLIN | POLLHUP);
+		}
+
+		(worker_infos->infos->workers_clients)[worker_infos->worker_id] = 0;
+		pthread_mutex_unlock(worker_infos->infos->worker_locks + worker_infos->worker_id);
 	}
 
-	free(worker_arg);
+	free(worker_infos);
 
 	pthread_exit(NULL);
 }
@@ -265,7 +291,7 @@ void* server_signal_handler(void* infos)
 	pthread_exit(NULL);
 }
 
-int serve(int request, int client_socket, u_file_storage* storage)
+int serve(s_message request, int client_socket, u_file_storage* storage)
 {
 	DEBUG(puts("serve"));
 
@@ -382,6 +408,7 @@ int ignore_signals()
 	sigaddset(&set, SIGQUIT);
 	sigaddset(&set, SIGHUP);
 	sigaddset(&set, SIGINT);
+	sigaddset(&set, SIGPIPE);
 
 	return pthread_sigmask(SIG_BLOCK, &set, NULL);
 }
@@ -700,7 +727,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 	}
 	else
 	{
-		u_file_data *new_file = fu_alloc_file_data(NULL, 0);
+		u_file_data* new_file = fu_alloc_file_data(NULL, 0);
 		new_file->client = client;
 		if (message & O_LOCK)
 		{
@@ -718,7 +745,6 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 
 	return 0;
 }
-
 
 int server_closeFile(s_message message, int client, u_file_storage* storage)
 {
@@ -850,7 +876,6 @@ int sapi_respond(s_message message, int client)
 		fflush(stderr);
 		return -1;
 	}
-
 
 	return 0;
 }

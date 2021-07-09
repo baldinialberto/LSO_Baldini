@@ -72,7 +72,7 @@ void *server_signal_handler(void *infos);
 void server_dispatcher(server_infos *infos);
 void *server_worker(void *worker_args);
 int assign_client(server_infos *infos, int client);
-int serve(int request, int client_socket, u_file_storage* storage);
+int serve(s_message request, int client_socket, u_file_storage* storage);
 void server_skipline(FILE *fstream);
 int server_readline(FILE *fstream, char **str);
 int server_readword(FILE *fstream, char **str);

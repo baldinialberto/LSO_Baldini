@@ -11,8 +11,9 @@
 int main(int argc, char **argv)
 {
 	client_conf conf = {0};
+	client_conf_init(&conf);
 	parseargs(argc, argv, &conf);
-	//printargs(&conf);
+	printargs(&conf);
 	int connected = 1;
 
 	if (openConnection(conf.server_socket_filename, conf.connection_timer,

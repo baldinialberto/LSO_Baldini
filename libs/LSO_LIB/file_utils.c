@@ -124,14 +124,13 @@ int fu_add_file(u_file_storage *file_storage, u_file_data *file, const char *fil
         fu_free_file_data(file);
         return -1;
     }
-    char *filepath_clone = mu_clone(filepath, strlen(filepath) + 1);
-    if (hu_insert(&(file_storage->table), filepath_clone, file))
+    //char *filepath_clone = mu_clone(filepath, strlen(filepath) + 1);
+    if (hu_insert(&(file_storage->table), filepath, file))
     {
         fprintf(stderr, "fu_add_file : hu_insert has returned an error, file is not stored in file_storage\n");
         fflush(stderr);
         mutex_unlock(file_storage->mutex);
         fu_free_file_data(file);
-        mu_free(filepath_clone);
         return -1;
     }
     (file_storage->curr_files)++;
