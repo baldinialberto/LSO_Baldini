@@ -298,8 +298,10 @@ int fu_file_write(u_file_data *file, const char *dest_path)
         return -1;
     }
     FILE *file_to_write = fopen(dest_path, "w");
+
     if (file_to_write == NULL)
     {
+    	perror("fopen at fu_file_write");
         fprintf(stdout, "fu_file_write : unable to open %s\n", dest_path);
         fflush(stdout);
         return -1;
@@ -352,11 +354,12 @@ int fu_writefile(u_file_data *file, size_t i, void *data, size_t data_len)
         fflush(stdout);
         return -1;
     }
-    size_t additionalsize = (i + data_len) - file->data_len;
-    if (additionalsize > 0)
-    {
-        file->data = mu_realloc(file->data, file->data_len + additionalsize);
-    }
+    size_t additional_size = (i + data_len) - file->data_len;
+	size_t new_size = (additional_size > 0) ? file->data_len + additional_size : (i + data_len);
+
+    file->data = mu_realloc(file->data, new_size);
+    file->data_len = new_size;
+
     memcpy((char *)(file->data) + i, data, data_len);
 
     return 0;

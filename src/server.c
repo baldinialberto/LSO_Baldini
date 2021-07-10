@@ -673,13 +673,8 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 	char* path_to_open = sapi_getpath(message, client);
 	if (path_to_open == NULL)
 	{
-		if (sapi_respond(SAPI_FAILURE, client))
-		{
-			fprintf(stdout, "sapi_respond at server_openFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
-		return SAPI_FAILURE;
+		SAPI_RESPOND(SAPI_FAILURE, client);
+		return -1;
 	}
 
 	u_file_data* file = fu_getfile(storage, path_to_open);
@@ -688,19 +683,13 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		fprintf(stdout, "server_openFile : file %s not found\n", path_to_open);
 		fflush(stdout);
 		mu_free(path_to_open);
-		if (sapi_respond(SAPI_FNF, client))
-		{
-			fprintf(stdout, "sapi_respond at server_openFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
-		return SAPI_FNF;
+		SAPI_RESPOND(SAPI_FNF, client);
+		return -1;
 	}
 
 	if (file != NULL)
 	{
 		mu_free(path_to_open);
-
 		mutex_lock(file->mutex);
 		DEBUG(puts("60%"));
 
@@ -708,29 +697,17 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		{
 			fprintf(stdout, "server_openFile : file is already open by %d\n", file->client);
 			fflush(stdout);
-			mu_free(path_to_open);
 			mutex_unlock(file->mutex);
-			if (sapi_respond(SAPI_ALREADY, client))
-			{
-				fprintf(stdout, "sapi_respond at server_openFile\n");
-				fflush(stdout);
-				return SAPI_FAILURE;
-			}
-			return SAPI_ALREADY;
+			SAPI_RESPOND(SAPI_ALREADY, client);
+			return -1;
 		}
 		if (file->data_info & O_LOCK)
 		{
 			fprintf(stdout, "server_openFile : file is already locked\n");
 			fflush(stdout);
-			mu_free(path_to_open);
 			mutex_unlock(file->mutex);
-			if (sapi_respond(SAPI_LOCKED, client))
-			{
-				fprintf(stdout, "sapi_respond at server_openFile\n");
-				fflush(stdout);
-				return SAPI_FAILURE;
-			}
-			return SAPI_LOCKED;
+			SAPI_RESPOND(SAPI_LOCKED, client);
+			return -1;
 		}
 
 		file->client = client;
@@ -751,15 +728,16 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		{
 			new_file->data_info &= O_LOCK;
 		}
-		fu_add_file(storage, new_file, path_to_open);
+		if (fu_add_file(storage, new_file, path_to_open))
+		{
+			mu_free(path_to_open);
+			fprintf(stdout, "fu_add_file at server_openFile\n");
+			fflush(stdout);
+			return -1;
+		}
 	}
 
-	if (sapi_respond(SAPI_SUCCESS, client))
-	{
-		fprintf(stdout, "sapi_respond at server_openFile\n");
-		fflush(stdout);
-		return SAPI_FAILURE;
-	}
+	SAPI_RESPOND(SAPI_SUCCESS, client);
 
 	return 0;
 }
@@ -776,12 +754,7 @@ int server_closeFile(s_message message, int client, u_file_storage* storage)
 	if (path_to_close == NULL)
 	{
 		mu_free(path_to_close);
-		if (sapi_respond(SAPI_FAILURE, client))
-		{
-			fprintf(stdout, "sapi_respond at server_closeFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
+		SAPI_RESPOND(SAPI_FAILURE, client);
 		return SAPI_FAILURE;
 	}
 
@@ -790,12 +763,7 @@ int server_closeFile(s_message message, int client, u_file_storage* storage)
 
 	if (file == NULL)
 	{
-		if (sapi_respond(SAPI_FNF, client))
-		{
-			fprintf(stdout, "sapi_respond at server_closeFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
+		SAPI_RESPOND(SAPI_FNF, client);
 		return SAPI_FAILURE;
 	}
 
@@ -804,35 +772,53 @@ int server_closeFile(s_message message, int client, u_file_storage* storage)
 	if (file->client != client)
 	{
 		mutex_unlock(file->mutex);
-		if (sapi_respond(SAPI_LOCKED, client))
-		{
-			fprintf(stdout, "sapi_respond at server_closeFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
+		SAPI_RESPOND(SAPI_LOCKED, client);
 		return SAPI_FAILURE;
 	}
 
-	file->client = 0;
+	file->client = -1;
 	mutex_unlock(file->mutex);
-	if (sapi_respond(SAPI_SUCCESS, client))
-	{
-		fprintf(stdout, "sapi_respond at server_closeFile\n");
-		fflush(stdout);
-		return SAPI_FAILURE;
-	}
+	SAPI_RESPOND(SAPI_SUCCESS, client);
 
 	return 0;
 }
 
 int server_readFile(s_message message, int client, u_file_storage* storage)
 {
+	DEBUG(puts(__func__ ));
 	if (message == 0 || client == 0 || storage == NULL)
 	{
 		fprintf(stdout, "server_readFile : wrong params\n");
 		fflush(stdout);
 		return -1;
 	}
+
+	char *path_to_read = sapi_getpath(message, client);
+	if (path_to_read == NULL)
+	{
+		SAPI_RESPOND(SAPI_FAILURE, client);
+		return SAPI_FAILURE;
+	}
+	u_file_data *file = fu_getfile(storage, path_to_read);
+	mu_free(path_to_read);
+	if (file == NULL)
+	{
+		SAPI_RESPOND(SAPI_FNF, client);
+		return SAPI_FAILURE;
+	}
+	mutex_lock(file->mutex);
+	if ((file->client != 0 && file->client != client) ||
+		((file->data_info & O_LOCK) && file->client != client))
+	{
+		mutex_unlock(file->mutex);
+		SAPI_RESPOND(SAPI_LOCKED, client);
+		return SAPI_FNF;
+	}
+
+	SAPI_RESPOND(SAPI_SUCCESS, client);
+	sapi_send_data(client, file->data, file->data_len);
+	mutex_unlock(file->mutex);
+
 	return 0;
 }
 
@@ -1085,13 +1071,32 @@ int sapi_respond(s_message message, int client)
 		fflush(stdout);
 		return -1;
 	}
-	int write_len = 0;
-	if ((write_len = (int)write(client, &message, sizeof(s_message))) < sizeof(message))
+	if (write(client, &message, sizeof(s_message)) == -1)
 	{
-		if (write_len < 0)
-		{ perror("read at sapi_respond"); }
-		fprintf(stdout, "write at sapi_respond returned %d, instead of %zu\n", write_len, sizeof(s_message));
+		perror("read at sapi_respond");
+		return -1;
+	}
+	return 0;
+}
+
+int sapi_send_data(int client, void *data, size_t data_len)
+{
+	DEBUG(puts(__func__ );)
+	fprintf(stdout, "sapi_send_data : client = %d, data = %p, data_len = %zu\n", client, data, data_len);
+	if (client == 0 || data == NULL || data_len == 0)
+	{
+		fprintf(stdout, "sapi_send_data : wrong params\n");
 		fflush(stdout);
+		return -1;
+	}
+	if (write(client, &data_len, sizeof(size_t)) == -1)
+	{
+		perror("read at sapi_respond");
+		return -1;
+	}
+	if (write(client, data, data_len) == -1)
+	{
+		perror("read at sapi_respond");
 		return -1;
 	}
 	return 0;

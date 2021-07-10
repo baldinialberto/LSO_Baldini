@@ -17,21 +17,29 @@
 #define CONFIG_CLIENT_MAX "CLIENT_MAX"
 #define SERVER_CONFIGFILE_PATH "./config.txt"
 
+#define SAPI_RESPOND(MESSAGE, CLIENT) 					\
+if (sapi_respond(MESSAGE, CLIENT))    					\
+{                                     					\
+	fprintf(stdout, "sapi_respond at %s", __func__); 	\
+	fflush(stdout);                      				\
+	return -1;											\
+}
+
 #define CHECK_READ_RESPONSE(client, dest, size, message) \
-if (read(client, &(dest), size) < size)		\
-{											\
-if (errno)									\
-{											\
-perror(message);							\
-errno = 0;									\
-}                                       	\
-if (sapi_respond(SAPI_FAILURE, client)) 	\
-{											\
-fprintf(stdout, "read at %s\n", __func__);	\
-fflush(stdout);								\
-return SAPI_FAILURE;						\
-}											\
-return SAPI_FAILURE;						\
+if (read(client, &(dest), size) < size)						\
+{															\
+	if (errno)												\
+	{														\
+		perror(message);									\
+		errno = 0;											\
+	}                                       				\
+	if (sapi_respond(SAPI_FAILURE, client)) 				\
+	{														\
+		fprintf(stdout, "read at %s\n", __func__);			\
+		fflush(stdout);										\
+		return SAPI_FAILURE;								\
+	}														\
+	return SAPI_FAILURE;									\
 }
 
 #define DEBUG(X) X
@@ -104,5 +112,6 @@ int server_unlockFile(s_message message, int client, u_file_storage *storage);
 int server_removeFile(s_message message, int client, u_file_storage *storage);
 char *sapi_getpath(s_message message, int client);
 int sapi_respond(s_message message, int client);
+int sapi_send_data(int client, void *data, size_t data_len);
 
 #endif

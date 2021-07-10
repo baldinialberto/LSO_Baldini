@@ -243,7 +243,7 @@ int write_files_list(u_list* filelist, const char* wbdir, long int msec)
 	t.tv_nsec = msec % 1000 * 1000000;
 	lu_foreach(filelist,
 		nanosleep(&t, NULL);
-		if (openFile(i->data, O_CREATE | O_LOCK))
+		if (openFile((char *)i->data, O_CREATE))
 		{
 			res = 1;
 			continue;
@@ -274,11 +274,11 @@ int read_files_list(u_list* filelist, const char* destdir, long int msec)
 	u_string temp = su_string_from_literal("");
 	lu_foreach(filelist,
 		nanosleep(&t, NULL);
-		res += openFile(i->data, O_LOCK);
+		res += openFile(i->data, 0);
 		nanosleep(&t, NULL);
 		if (readFile((char*)i->data, &buff, &size))
 		{
-			fprintf(stdout, "\n");
+			fprintf(stdout, "read of %s failed\n", (char*)i->data);
 			fflush(stdout);
 			res++;
 		}
@@ -290,6 +290,7 @@ int read_files_list(u_list* filelist, const char* destdir, long int msec)
 		}
 		nanosleep(&t, NULL);
 		res += closeFile(i->data);
+		su_realloc(&temp, 0);
 	);
 	su_free_string(&temp);
 	return res ? -1 : 0;

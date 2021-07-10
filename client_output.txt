@@ -1,151 +1,242 @@
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = NULL
 char *folder_to_write = NULL
-char *folder_destination = NULL
+char *folder_destination = /home/alberto/LSO_Baldini/readen
 unsigned int folder_filecount = 0
 unsigned int read_filecount = 0
 unsigned int connection_timer = 0
 bool verbose = 0
-./to_write/file_0.txt./to_write/file_2.txt./to_write/file_4.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_0.txt/home/alberto/LSO_Baldini/to_write/file_2.txt/home/alberto/LSO_Baldini/to_write/file_4.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_0.txt/home/alberto/LSO_Baldini/to_write/file_2.txt/home/alberto/LSO_Baldini/to_write/file_4.txt(NULL)
 (NULL)
 (NULL)
 (NULL)
-(NULL)
-openFile pathname = ./to_write/file_0.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_0.txt, flags = 3 -33%
-openFile pathname = ./to_write/file_0.txt, flags = 3 -66%
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = NULL
 char *folder_to_write = NULL
-char *folder_destination = NULL
+char *folder_destination = /home/alberto/LSO_Baldini/readen
 unsigned int folder_filecount = 0
 unsigned int read_filecount = 0
 unsigned int connection_timer = 0
 bool verbose = 0
-./to_write/file_1.txt./to_write/file_3.txt./to_write/file_5.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_10.txt/home/alberto/LSO_Baldini/to_write/file_6.txt/home/alberto/LSO_Baldini/to_write/file_8.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_10.txt/home/alberto/LSO_Baldini/to_write/file_6.txt/home/alberto/LSO_Baldini/to_write/file_8.txt(NULL)
 (NULL)
 (NULL)
 (NULL)
-(NULL)
-openFile pathname = ./to_write/file_1.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_1.txt, flags = 3 -33%
-openFile pathname = ./to_write/file_1.txt, flags = 3 -66%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt, flags = 1 -66%
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = NULL
 char *folder_to_write = NULL
-char *folder_destination = NULL
+char *folder_destination = /home/alberto/LSO_Baldini/readen
 unsigned int folder_filecount = 0
 unsigned int read_filecount = 0
 unsigned int connection_timer = 0
 bool verbose = 0
-./to_write/file_10.txt./to_write/file_6.txt./to_write/file_8.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_1.txt/home/alberto/LSO_Baldini/to_write/file_3.txt/home/alberto/LSO_Baldini/to_write/file_5.txt(NULL)
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_0.txt, flags = 1 -0%
+/home/alberto/LSO_Baldini/to_write/file_1.txt/home/alberto/LSO_Baldini/to_write/file_3.txt/home/alberto/LSO_Baldini/to_write/file_5.txt(NULL)
 (NULL)
 (NULL)
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_0.txt, flags = 1 -33%
 (NULL)
-(NULL)
-openFile pathname = ./to_write/file_10.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_10.txt, flags = 3 -33%
-openFile pathname = ./to_write/file_10.txt, flags = 3 -66%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_0.txt, flags = 1 -66%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt, flags = 1 -66%
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = NULL
 char *folder_to_write = NULL
-char *folder_destination = NULL
+char *folder_destination = /home/alberto/LSO_Baldini/readen
 unsigned int folder_filecount = 0
 unsigned int read_filecount = 0
 unsigned int connection_timer = 0
 bool verbose = 0
-./to_write/file_11.txt./to_write/file_7.txt./to_write/file_9.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_11.txt/home/alberto/LSO_Baldini/to_write/file_7.txt/home/alberto/LSO_Baldini/to_write/file_9.txt(NULL)
+/home/alberto/LSO_Baldini/to_write/file_11.txt/home/alberto/LSO_Baldini/to_write/file_7.txt/home/alberto/LSO_Baldini/to_write/file_9.txt(NULL)
 (NULL)
 (NULL)
 (NULL)
-(NULL)
-openFile pathname = ./to_write/file_11.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_11.txt, flags = 3 -33%
-openFile pathname = ./to_write/file_11.txt, flags = 3 -66%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 1 -66%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-openFile pathname = ./to_write/file_10.txt, flags = 3 -100%
-writeFile pathname = ./to_write/file_10.txt -0%
-writeFile pathname = ./to_write/file_10.txt -20%
-writeFile pathname = ./to_write/file_10.txt -40%
-writeFile pathname = ./to_write/file_10.txt -60%
-writeFile pathname = ./to_write/file_10.txt -80%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt, flags = 1 -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -0%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-openFile pathname = ./to_write/file_11.txt, flags = 3 -100%
-writeFile pathname = ./to_write/file_11.txt -0%
-writeFile pathname = ./to_write/file_11.txt -20%
-writeFile pathname = ./to_write/file_11.txt -40%
-writeFile pathname = ./to_write/file_11.txt -60%
-writeFile pathname = ./to_write/file_11.txt -80%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt, flags = 1 -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -20%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -40%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -60%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -80%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -0%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -20%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -40%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -60%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -80%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-writeFile pathname = ./to_write/file_10.txt -90%
-writeFile pathname = ./to_write/file_10.txt -95%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 1 -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -0%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-writeFile pathname = ./to_write/file_10.txt -100%
-closeFile pathname = ./to_write/file_10.txt -0%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -90%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -95%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-closeFile pathname = ./to_write/file_10.txt -100%
-openFile pathname = ./to_write/file_6.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_6.txt, flags = 3 -33%
-openFile pathname = ./to_write/file_6.txt, flags = 3 -66%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -90%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -95%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-openFile pathname = ./to_write/file_6.txt, flags = 3 -100%
-writeFile pathname = ./to_write/file_6.txt -0%
-writeFile pathname = ./to_write/file_6.txt -20%
-writeFile pathname = ./to_write/file_6.txt -40%
-writeFile pathname = ./to_write/file_6.txt -60%
-writeFile pathname = ./to_write/file_6.txt -80%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -0%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-writeFile pathname = ./to_write/file_6.txt -90%
-writeFile pathname = ./to_write/file_6.txt -95%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -0%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -20%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -40%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -60%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -80%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-writeFile pathname = ./to_write/file_6.txt -100%
-closeFile pathname = ./to_write/file_6.txt -0%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_10.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_6.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_6.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_6.txt, flags = 1 -66%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-closeFile pathname = ./to_write/file_6.txt -100%
-openFile pathname = ./to_write/file_8.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_8.txt, flags = 3 -33%
-openFile pathname = ./to_write/file_8.txt, flags = 3 -66%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_1.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_3.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_3.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_3.txt, flags = 1 -66%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-openFile pathname = ./to_write/file_8.txt, flags = 3 -100%
-writeFile pathname = ./to_write/file_8.txt -0%
-writeFile pathname = ./to_write/file_8.txt -20%
-writeFile pathname = ./to_write/file_8.txt -40%
-writeFile pathname = ./to_write/file_8.txt -60%
-writeFile pathname = ./to_write/file_8.txt -80%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -90%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -95%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-writeFile pathname = ./to_write/file_8.txt -90%
-writeFile pathname = ./to_write/file_8.txt -95%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -0%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-writeFile pathname = ./to_write/file_8.txt -100%
-closeFile pathname = ./to_write/file_8.txt -0%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 1 -66%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -100%
-closeFile pathname = ./to_write/file_8.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 1 -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -0%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -20%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -40%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -60%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -80%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -90%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -95%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -0%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 1 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 1 -66%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 1 -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -0%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -20%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -40%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -60%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -80%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -90%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -95%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -0%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 0 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 0 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 0 -66%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt, flags = 0 -100%
+readFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -0%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_11.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 0 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 0 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 0 -66%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt, flags = 0 -100%
+readFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -0%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_7.txt -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 0 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 0 -33%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 0 -66%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt, flags = 0 -100%
+readFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -0%
+sapi_getresponse
+sapi_getresponse -50%
+sapi_getresponse -100%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_9.txt -100%
 sapi_getresponse
 sapi_getresponse -50%
 sapi_getresponse -75%
@@ -159,15 +250,14 @@ sapi_getresponse -50%
 sapi_getresponse -75%
 sapi_getresponse : read returned an error
 sapi_getresponse : read: Connection reset by peer
-sapi_getresponse : read: Connection reset by peer
-writeFile pathname = ./to_write/file_11.txt m = ffffffff
 openFile : sapi_getresponse returned an error
-writeFile : sapi_getresponse returned an error
+sapi : server error
 sapi_getresponse : read: Connection reset by peer
-sapi : server error
-sapi : server error
+sapi_getresponse : read: Connection reset by peer
+openFile : sapi_getresponse returned an error
 openFile : sapi_getresponse returned an error
 sapi : server error
-openFile pathname = ./to_write/file_2.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_7.txt, flags = 3 -0%
-openFile pathname = ./to_write/file_3.txt, flags = 3 -0%
+sapi : server error
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_2.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_8.txt, flags = 1 -0%
+openFile pathname = /home/alberto/LSO_Baldini/to_write/file_5.txt, flags = 1 -0%
