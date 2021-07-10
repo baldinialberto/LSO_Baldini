@@ -17,8 +17,8 @@ int tu_create_thread_detached(void *(*proc)(void *), void *arg)
 {
 	if (proc == NULL)
 	{
-		fprintf(stderr, "tu_create_thread_detached : wrong params\n");
-		fflush(stderr);
+		fprintf(stdout, "tu_create_thread_detached : wrong params\n");
+		fflush(stdout);
 		return -1;
 	}
 	pthread_t pt;
@@ -33,8 +33,8 @@ pthread_t tu_create_thread(void *(*proc)(void *), void *arg)
 {
 	if (proc == NULL)
 	{
-		fprintf(stderr, "tu_create_thread : wrong params\n");
-		fflush(stderr);
+		fprintf(stdout, "tu_create_thread : wrong params\n");
+		fflush(stdout);
 		return (pthread_t)0;
 	}
 	pthread_t pt;

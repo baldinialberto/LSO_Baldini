@@ -27,8 +27,8 @@ errno = 0;									\
 }                                       	\
 if (sapi_respond(SAPI_FAILURE, client)) 	\
 {											\
-fprintf(stderr, "read at %s\n", __func__);	\
-fflush(stderr);								\
+fprintf(stdout, "read at %s\n", __func__);	\
+fflush(stdout);								\
 return SAPI_FAILURE;						\
 }											\
 return SAPI_FAILURE;						\

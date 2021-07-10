@@ -13,8 +13,8 @@ u_string su_string_from_literal(const char *literal)
 {
     if (literal == NULL)
     {
-        fprintf(stderr, "su_string_from_literal : param literal == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_string_from_literal : param literal == NULL\n");
+        fflush(stdout);
         return (u_string){NULL, 0};
     }
     size_t literal_len = strlen(literal);
@@ -28,8 +28,8 @@ int su_free_string(u_string *string)
 {
     if (string == NULL)
     {
-        fprintf(stderr, "su_free_string : param string == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_free_string : param string == NULL\n");
+        fflush(stdout);
         return -1;
     }
     mu_free(string->data);
@@ -39,14 +39,14 @@ int su_append_chars(u_string *string, const char *literal)
 {
     if (string == NULL)
     {
-        fprintf(stderr, "su_append_literal : param string == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_append_literal : param string == NULL\n");
+        fflush(stdout);
         return -1;
     }
     if (literal == NULL)
     {
-        fprintf(stderr, "su_append_literal : param literal == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_append_literal : param literal == NULL\n");
+        fflush(stdout);
         return -1;
     }
     size_t literal_len = strlen(literal), i = string->len;
@@ -59,8 +59,8 @@ int su_string_extend(u_string *string, size_t delta)
 {
     if (string == NULL)
     {
-        fprintf(stderr, "su_string_extend : param string == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_string_extend : param string == NULL\n");
+        fflush(stdout);
         return -1;
     }
     if (delta == 0) return 0;
@@ -71,8 +71,8 @@ int su_string_shrinktofit(u_string *string)
 {
     if (string == NULL)
     {
-        fprintf(stderr, "su_string_shrinktofit : param string == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_string_shrinktofit : param string == NULL\n");
+        fflush(stdout);
         return -1;
     }
     return su_realloc(string, su_strlen(string));
@@ -81,8 +81,8 @@ int su_realloc(u_string *string, size_t newsize)
 {
     if (string == NULL)
     {
-        fprintf(stderr, "su_realloc : param string == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_realloc : param string == NULL\n");
+        fflush(stdout);
         return -1;
     }
     string->len = newsize;
@@ -96,8 +96,8 @@ size_t su_strlen(u_string *string)
 {
     if (string == NULL)
     {
-        fprintf(stderr, "su_strlen : param string == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "su_strlen : param string == NULL\n");
+        fflush(stdout);
         return 0;
     }
     return (string->len = strlen(string->data));
@@ -106,8 +106,8 @@ int su_u_string_compare(const void *a, const void *b)
 {
     if (a == NULL || b == NULL)
     {
-        fprintf(stderr, "su_u_string_compare : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "su_u_string_compare : wrong params\n");
+        fflush(stdout);
         return 0;
     }
     return strncmp(((u_string *)a)->data, ((u_string *)b)->data,
@@ -117,8 +117,8 @@ int su_string_compare(const void *a, const void *b)
 {
     if (a == NULL || b == NULL)
     {
-        fprintf(stderr, "su_string_compare : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "su_string_compare : wrong params\n");
+        fflush(stdout);
         return 0;
     }
     return strncmp((const char *)a, (const char *)b,
@@ -128,8 +128,8 @@ void su_string_print(const void *s)
 {
     if (s == NULL)
     {
-        fprintf(stderr, "su_string_print : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "su_string_print : wrong params\n");
+        fflush(stdout);
         return;
     }
     printf("%s", (char *)s);

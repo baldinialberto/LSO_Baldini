@@ -11,20 +11,20 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *fileli
 {
     if (dirpath == NULL)
     {
-        fprintf(stderr, "du_getfilepaths_from_dir : param dirpath == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "du_getfilepaths_from_dir : param dirpath == NULL\n");
+        fflush(stdout);
         return -1;
     }
     if (nfilepaths == 0)
     {
-        fprintf(stderr, "du_getfilepaths_from_dir : param nfilepaths == 0 -> nothing to do\n");
-        fflush(stderr);
+        fprintf(stdout, "du_getfilepaths_from_dir : param nfilepaths == 0 -> nothing to do\n");
+        fflush(stdout);
         return 0;
     }
     if (filelist == NULL)
     {
-        fprintf(stderr, "du_getfilepaths_from_dir : param savelist == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "du_getfilepaths_from_dir : param savelist == NULL\n");
+        fflush(stdout);
         return -1;
     }
 
@@ -39,15 +39,15 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *fileli
     if (chdir(dirpath) == -1)
     {
         perror("du_getfilepaths_from_dir : chdir");
-        fprintf(stderr, "du_getfilepaths_from_dir : chdir returned an error\n");
-        fflush(stderr);
+        fprintf(stdout, "du_getfilepaths_from_dir : chdir returned an error\n");
+        fflush(stdout);
         return -1;
     }
     if ((dir = opendir(".")) == NULL)
     {
         perror("du_getfilepaths_from_dir : opendir");
-        fprintf(stderr, "du_getfilepaths_from_dir : opendir returned an error\n");
-        fflush(stderr);
+        fprintf(stdout, "du_getfilepaths_from_dir : opendir returned an error\n");
+        fflush(stdout);
         return -1;
     }
 
@@ -79,8 +79,8 @@ int du_getfilepaths_from_dir(const char *dirpath, int nfilepaths, u_list *fileli
     if (closedir(dir) == -1)
     {
         perror("du_getfilepaths_from_dir : closedir");
-        fprintf(stderr, "du_getfilepaths_from_dir : closedir returned an error\n");
-        fflush(stderr);
+        fprintf(stdout, "du_getfilepaths_from_dir : closedir returned an error\n");
+        fflush(stdout);
         return -1;
     }
 

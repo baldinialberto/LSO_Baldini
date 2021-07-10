@@ -13,8 +13,8 @@ size_t hu_hash_string(const void *key)
     char *str = (char *)key;
     if (str == NULL)
     {
-        fprintf(stderr, "hu_hash_string : param str == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_hash_string : param str == NULL\n");
+        fflush(stdout);
         return 0;
     }
 
@@ -47,8 +47,8 @@ u_hash_item *hu_alloc_item(const void *key, void *data)
 {
     if (key == NULL)
     {
-        fprintf(stderr, "hu_alloc_item : param key == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_alloc_item : param key == NULL\n");
+        fflush(stdout);
         return NULL;
     }
     u_hash_item *new_item = mu_malloc(sizeof(u_hash_item));
@@ -61,8 +61,8 @@ int hu_insert(u_hash_table *table, const void *key, void *data)
 {
     if (table == NULL || data == NULL)
     {
-        fprintf(stderr, "hu_insert : param table == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_insert : param table == NULL\n");
+        fflush(stdout);
         return -1;
     }
     u_hash_list *list = table->table + hu_index(table, key);
@@ -84,14 +84,14 @@ int hu_remove(u_hash_table *table, const void *key)
 {
     if (table == NULL || key == NULL)
     {
-        fprintf(stderr, "hu_remove : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_remove : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_remove : hashtable is empty\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_remove : hashtable is empty\n");
+        fflush(stdout);
         return -1;
     }
 
@@ -100,8 +100,8 @@ int hu_remove(u_hash_table *table, const void *key)
     hu_navigate_list(*list, &curr, &prev, key, table->compare);
     if (curr == NULL || table->compare(key, curr->key))
     {
-        fprintf(stderr, "hu_remove : file_data not in list\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_remove : file_data not in list\n");
+        fflush(stdout);
         fprintf(stdout, "hu_remove : file_data not in list\n");
         fflush(stdout);
         return -1;
@@ -125,14 +125,14 @@ void *hu_get(u_hash_table *table, const void *key)
 {
     if (table == NULL || key == NULL)
     {
-        fprintf(stderr, "hu_get : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_get : wrong params\n");
+        fflush(stdout);
         return NULL;
     }
     if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_get : hashtable is empty\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_get : hashtable is empty\n");
+        fflush(stdout);
         return NULL;
     }
 
@@ -141,8 +141,8 @@ void *hu_get(u_hash_table *table, const void *key)
     hu_navigate_list(*list, &curr, &prev, key, table->compare);
     if (curr == NULL || table->compare(key, curr->key))
     {
-        fprintf(stderr, "hu_get : file_data not in list\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_get : file_data not in list\n");
+        fflush(stdout);
         fprintf(stdout, "hu_get : file_data not in list\n");
         fflush(stdout);
         return NULL;
@@ -153,8 +153,8 @@ int hu_is_empty(u_hash_table *table)
 {
     if (table == NULL)
     {
-        fprintf(stderr, "hu_is_empty : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_is_empty : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     int empty = 1;
@@ -175,8 +175,8 @@ void hu_free(u_hash_table *table)
 {
     if (table == NULL)
     {
-        fprintf(stderr, "hu_free : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_free : wrong params\n");
+        fflush(stdout);
         return;
     }
     if (!hu_is_empty(table))
@@ -201,14 +201,14 @@ void hu_print(u_hash_table *table)
     puts("hu_print");
     if (table == NULL)
     {
-        fprintf(stderr, "hu_print : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_print : wrong params\n");
+        fflush(stdout);
         return;
     }
     if (hu_is_empty(table))
     {
-        fprintf(stderr, "hu_print : hashtable is empty\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_print : hashtable is empty\n");
+        fflush(stdout);
         return;
     }
     hu_foreach(table->table, table->n_entries,
@@ -219,8 +219,8 @@ size_t hu_index(u_hash_table *table, const void *key)
 {
     if (table == NULL || key == NULL)
     {
-        fprintf(stderr, "hu_index : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_index : wrong params\n");
+        fflush(stdout);
         return 0;
     }
     return table->hash(key) % table->n_entries;
@@ -229,8 +229,8 @@ void hu_navigate_list(u_hash_list list, u_hash_item **curr, u_hash_item **prev, 
 {
     if (curr == NULL || prev == NULL || key == NULL || compare == NULL)
     {
-        fprintf(stderr, "hu_navigate_list : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "hu_navigate_list : wrong params\n");
+        fflush(stdout);
         return;
     }
     *curr = list;

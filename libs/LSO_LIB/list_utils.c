@@ -21,8 +21,8 @@ u_list lu_init_list(size_t element_size, int (*compare_func)(const void *, const
         new_list.print = print_func;
     } else
     {
-        fprintf(stderr, "lu_init_list : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_init_list : wrong params\n");
+        fflush(stdout);
     }
 
     return new_list;
@@ -31,8 +31,8 @@ u_list_node *lu_alloc_node(void *data)
 {
     if (data == NULL)
     {
-        fprintf(stderr, "lu_alloc_node : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_alloc_node : wrong params\n");
+        fflush(stdout);
         return NULL;
     }
     u_list_node *new_node = mu_malloc(sizeof(u_list_node));
@@ -44,8 +44,8 @@ int lu_insert(u_list *list, const void *data)
 {
     if (list == NULL || data == NULL)
     {
-        fprintf(stderr, "lu_insert : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_insert : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     u_list_node *curr, *prev, *new_node = lu_alloc_node((void *)data);
@@ -67,22 +67,22 @@ int lu_remove(u_list *list, const void *data)
 {
     if (list == NULL || data == NULL)
     {
-        fprintf(stderr, "lu_remove : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_remove : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     if (lu_is_empty(list))
     {
-        fprintf(stderr, "lu_remove : list empty\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_remove : list empty\n");
+        fflush(stdout);
         return -1;
     }
     u_list_node *curr, *prev;
     lu_navigate(list, &curr, &prev, data);
     if (curr == NULL || list->compare(data, curr->data))
     {
-        fprintf(stderr, "lu_remove : file_data not in list\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_remove : file_data not in list\n");
+        fflush(stdout);
         return -1;
     } else
     {
@@ -115,8 +115,8 @@ long int lu_index_of_obj(u_list *list, const void *obj)
 {
     if (list == NULL || obj == NULL)
     {
-        fprintf(stderr, "lu_index_of_obj : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_index_of_obj : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     u_list_node  *curr = list->head;
@@ -133,8 +133,8 @@ int lu_is_empty(u_list *list)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_index_of_obj : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_index_of_obj : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     return list->len == 0;
@@ -143,14 +143,14 @@ void *lu_get(u_list *list, long int index)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_get : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_get : wrong params\n");
+        fflush(stdout);
         return NULL;
     }
     if (index < 0 || index >= list->len)
     {
-        fprintf(stderr, "lu_get : param index out of range\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_get : param index out of range\n");
+        fflush(stdout);
         return NULL;
     }
     u_list_node *curr = list->head;
@@ -165,8 +165,8 @@ void lu_free(u_list *list)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_free : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_free : wrong params\n");
+        fflush(stdout);
         return;
     }
     if (lu_is_empty(list)) return;
@@ -185,8 +185,8 @@ void lu_print(u_list *list)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_print : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_print : wrong params\n");
+        fflush(stdout);
         return;
     }
     if (!lu_is_empty(list)) {
@@ -204,8 +204,8 @@ void *lu_plain_arr(u_list *list)
 {
     if (list == NULL)
     {
-        fprintf(stderr, "lu_plainarr : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "lu_plainarr : wrong params\n");
+        fflush(stdout);
         return NULL;
     }
     if (lu_is_empty(list)) return NULL;

@@ -15,14 +15,14 @@ u_arr au_init_arr(size_t len, size_t element_size,
 {
     if (len == 0 || element_size == 0)
     {
-        fprintf(stderr, "au_init_arr : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_init_arr : wrong params\n");
+        fflush(stdout);
         return (u_arr){0};
     }
     if (compare_func == NULL || print_func == NULL)
     {
-        fprintf(stderr, "au_init_arr : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_init_arr : wrong params\n");
+        fflush(stdout);
         return (u_arr){0};
     }
 
@@ -42,8 +42,8 @@ void au_free(u_arr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "au_free : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_free : wrong params\n");
+        fflush(stdout);
         return;
     }
     if (arr->free != NULL)
@@ -61,8 +61,8 @@ int au_insert(u_arr *arr, const void *new_element)
 {
     if (arr == NULL || new_element == NULL)
     {
-        fprintf(stderr, "au_insert : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_insert : wrong params\n");
+        fflush(stdout);
         return 1;
     }
 
@@ -82,8 +82,8 @@ int au_remove(u_arr *arr, const void *old_element)
 {
     if (arr == NULL || old_element == NULL)
     {
-        fprintf(stderr, "au_remove : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_remove : wrong params\n");
+        fflush(stdout);
         return 1;
     }
     if (au_is_empty(arr))
@@ -110,8 +110,8 @@ void au_print(u_arr *arr)
 {
     if (arr == NULL || arr->print == NULL)
     {
-        fprintf(stderr, "au_print : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_print : wrong params\n");
+        fflush(stdout);
         return;
     }
     for (size_t i = 0; i < arr->element_count; i++)
@@ -123,8 +123,8 @@ void *au_get(u_arr *arr, size_t index)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "au_get : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_get : wrong params\n");
+        fflush(stdout);
         return NULL;
     }
     if (index >= arr->len)
@@ -139,8 +139,8 @@ long int au_index_of_obj(u_arr *arr, const void *obj)
 {
     if (arr == NULL || obj == NULL)
     {
-        fprintf(stderr, "au_get : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_get : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     void *ret_ptr;
@@ -158,8 +158,8 @@ void *au_find(u_arr *arr, const void *obj)
 {
     if (arr == NULL || obj == NULL)
     {
-        fprintf(stderr, "au_get : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_get : wrong params\n");
+        fflush(stdout);
         return NULL;
     }
     return au_get(arr, au_index_of_obj(arr, obj));
@@ -168,8 +168,8 @@ void au_sort(u_arr *arr)
 {
     if (arr == NULL || arr->compare == NULL)
     {
-        fprintf(stderr, "au_sort : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_sort : wrong params\n");
+        fflush(stdout);
         return;
     }
     if (arr->is_sorted)
@@ -185,8 +185,8 @@ int au_extends(u_arr *arr, size_t new_len)
 {
     if (arr == NULL || new_len == 0)
     {
-        fprintf(stderr, "au_extends : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_extends : wrong params\n");
+        fflush(stdout);
         return 1;
     }
 
@@ -200,8 +200,8 @@ int au_shrinks(u_arr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "au_shrinks : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_shrinks : wrong params\n");
+        fflush(stdout);
         return 1;
     }
 
@@ -221,8 +221,8 @@ int au_is_full(u_arr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "au_is_full : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_is_full : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     return (arr->element_count == arr->len);
@@ -231,8 +231,8 @@ int au_is_empty(u_arr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "au_is_empty : wrong params\n");
-        fflush(stderr);
+        fprintf(stdout, "au_is_empty : wrong params\n");
+        fflush(stdout);
         return -1;
     }
     return (arr->element_count == 0);

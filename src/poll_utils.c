@@ -17,8 +17,8 @@ int pu_isempty(u_pollarr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_isempty : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_isempty : param arr == NULL\n");
+        fflush(stdout);
         return -1;
     }
     return arr->len == 0;
@@ -27,8 +27,8 @@ int pu_isfull(u_pollarr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_isfull : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_isfull : param arr == NULL\n");
+        fflush(stdout);
         return -1;
     }
     return arr->len == arr->maxlen;
@@ -37,8 +37,8 @@ size_t pu_length(u_pollarr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_length : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_length : param arr == NULL\n");
+        fflush(stdout);
         return 0;
     }
     return arr->len;
@@ -47,8 +47,8 @@ struct pollfd *pu_arr(u_pollarr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_arr : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_arr : param arr == NULL\n");
+        fflush(stdout);
         return NULL;
     }
     return arr->arr;
@@ -57,14 +57,14 @@ int pu_add(u_pollarr *arr, int newfd, short events)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_add : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_add : param arr == NULL\n");
+        fflush(stdout);
         return -1;
     }
     if (pu_isfull(arr))
     {
-        fprintf(stderr, "pu_add : arr is full\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_add : arr is full\n");
+        fflush(stdout);
         return -1;
     }
     (arr->arr)[(arr->len)].fd = newfd;
@@ -76,14 +76,14 @@ int pu_remove(u_pollarr *arr, int oldfd)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_remove : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_remove : param arr == NULL\n");
+        fflush(stdout);
         return -1;
     }
     if (pu_isempty(arr))
     {
-        fprintf(stderr, "pu_remove : arr is empty\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_remove : arr is empty\n");
+        fflush(stdout);
         return -1;
     }
     size_t i = arr->len - 1;
@@ -108,8 +108,8 @@ int pu_free(u_pollarr *arr)
 {
     if (arr == NULL)
     {
-        fprintf(stderr, "pu_free : param arr == NULL\n");
-        fflush(stderr);
+        fprintf(stdout, "pu_free : param arr == NULL\n");
+        fflush(stdout);
         return -1;
     }
     mu_free(arr->arr);
