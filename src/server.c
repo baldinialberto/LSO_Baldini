@@ -400,18 +400,21 @@ int assign_client(server_infos* infos, int client)
 	{
 		if (!pthread_mutex_trylock(infos->worker_locks + i))
 		{
+			if ((infos->workers_clients)[i])
+			{
+				pthread_mutex_unlock(infos->worker_locks + i);
+				continue;
+			}
 			fprintf(stdout, "worker #%d free -> assign client %d\n", i, client);
 			fflush(stdout);
 			(infos->workers_clients)[i] = client;
 			pthread_cond_signal(infos->worker_conds + i);
 			pthread_mutex_unlock(infos->worker_locks + i);
-			break;
+			return 0;
 		}
 		fprintf(stdout, "worker #%d busy\n", i);
 		fflush(stdout);
 	}
-
-	return 0;
 }
 
 int ignore_signals()
@@ -733,10 +736,10 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 			mu_free(path_to_open);
 			fprintf(stdout, "fu_add_file at server_openFile\n");
 			fflush(stdout);
+			SAPI_RESPOND(SAPI_FAILURE, client);
 			return -1;
 		}
 	}
-
 	SAPI_RESPOND(SAPI_SUCCESS, client);
 
 	return 0;
@@ -1057,8 +1060,6 @@ int sapi_getfile(int client, void **file_data, size_t *data_len)
 		return -1;
 	}
 
-
-
 	return 0;
 }
 
@@ -1073,7 +1074,7 @@ int sapi_respond(s_message message, int client)
 	}
 	if (write(client, &message, sizeof(s_message)) == -1)
 	{
-		perror("read at sapi_respond");
+		perror("write at sapi_respond");
 		return -1;
 	}
 	return 0;
@@ -1091,12 +1092,12 @@ int sapi_send_data(int client, void *data, size_t data_len)
 	}
 	if (write(client, &data_len, sizeof(size_t)) == -1)
 	{
-		perror("read at sapi_respond");
+		perror("write at sapi_respond");
 		return -1;
 	}
 	if (write(client, data, data_len) == -1)
 	{
-		perror("read at sapi_respond");
+		perror("write at sapi_respond");
 		return -1;
 	}
 	return 0;

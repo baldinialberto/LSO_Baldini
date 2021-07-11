@@ -186,7 +186,9 @@ void fu_storage_free(u_file_storage *file_storage)
         fflush(stdout);
         return;
     }
+	mutex_lock(file_storage->mutex);
     hu_free(&(file_storage->table));
+	mutex_unlock(file_storage->mutex);
     mutex_destroy(file_storage->mutex);
 }
 int fu_file_read(const char *path, u_file_data *dest_file)
