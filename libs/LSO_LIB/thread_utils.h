@@ -23,12 +23,11 @@
 #define cond_init(cond)         pthread_cond_init(&(cond), NULL)
 #define cond_destroy(cond)      pthread_cond_destroy(&(cond))
 
-int mutex_timed_lock(pthread_mutex_t *mutex, size_t nsec);
-int condvar_timed_wait(pthread_cond_t *condvar,
-                       pthread_mutex_t *mutex, size_t nsec);
+int mutex_timed_lock(pthread_mutex_t* mutex, size_t nsec);
+int condvar_timed_wait(pthread_cond_t* condvar,
+		pthread_mutex_t* mutex, size_t nsec);
 
-int tu_create_thread_detached(void *(*proc)(void *), void *arg);
-pthread_t tu_create_thread(void *(*proc)(void *), void *arg);
-
+int tu_create_thread_detached(void* (* proc)(void*), void* arg);
+pthread_t tu_create_thread(void* (* proc)(void*), void* arg);
 
 #endif //LSO_LIB_THREAD_UTILS_H

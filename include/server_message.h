@@ -17,7 +17,7 @@
 #define SAPI_OPENFILE       0x0C
 #define SAPI_READFILE       0x10
 #define SAPI_READNFILES     0x14
-#define SAPI_WRITEFILE      0x18 
+#define SAPI_WRITEFILE      0x18
 #define SAPI_APPENDFILE     0x1C
 #define SAPI_LOCKFILE       0x20
 #define SAPI_UNLOCKFILE     0x24
@@ -33,7 +33,5 @@
 #define SAPI_MESSAGE_LEN(FLAG, OP, MESSAGELEN) ((unsigned int)FLAG | (unsigned int)OP | (unsigned int)(MESSAGELEN << SAPI_MSSLEN_SHFT))
 
 typedef unsigned int s_message;
-
-
 
 #endif

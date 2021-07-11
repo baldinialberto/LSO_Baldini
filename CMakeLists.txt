@@ -8,7 +8,7 @@ include_directories(./include ./libs/LSO_LIB)
 add_executable(LSO_Baldini
         src/server.c include/server.h
         src/client.c include/client.h
-        src/tester.c include/server_message.h
+        include/server_message.h
         src/serverapi.c include/serverapi.h
         src/dir_utils.c include/dir_utils.h
         libs/LSO_LIB/array_utils.c
