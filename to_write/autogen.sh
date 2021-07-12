@@ -1,3 +1,3 @@
-for ((i=0; i<100; i++)) do
-	man man > file_${i}.txt
+for ((i=100; i<200; i++)) do
+  head -c ${i}KB /dev/urandom > file_${i}.txt
 done

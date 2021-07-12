@@ -43,6 +43,11 @@ void au_free(u_arr* arr)
 		fflush(stdout);
 		return;
 	}
+	if (arr->free!=NULL) {
+		for (size_t i = 0; i<arr->element_count; i++) {
+			arr->free(au_get(arr, i));
+		}
+	}
 	mu_free(arr->data);
 	memset(arr, 0, sizeof(u_arr));
 }

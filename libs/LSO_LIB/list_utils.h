@@ -15,11 +15,13 @@ for (u_list_node *i = list->head; i != NULL; i = i->next)    \
     to_do;                             \
 }
 
-typedef struct utils_list_node {
+typedef struct utils_list_node
+{
 	void* data;
 	struct utils_list_node* next;
 } u_list_node;
-typedef struct utils_list {
+typedef struct utils_list
+{
 	u_list_node* head;
 	size_t len;
 	size_t element_size;
@@ -30,7 +32,7 @@ typedef struct utils_list {
 
 u_list_node* lu_alloc_node(void* data);
 u_list lu_init_list(size_t element_size, int (* compare_func)(const void*, const void*),
-		void (* free_func)(void*), void (* print_func)(const void*));
+	void (* free_func)(void*), void (* print_func)(const void*));
 int lu_insert(u_list* list, const void* data);
 int lu_remove(u_list* list, const void* data);
 void lu_navigate(u_list* list, u_list_node** curr, u_list_node** prev, const void* data);

@@ -4,7 +4,8 @@
 #pragma once
 #include <stdlib.h>
 
-typedef struct u_arr {
+typedef struct u_arr
+{
 	void* data;
 	size_t len;
 	size_t element_count;
@@ -16,7 +17,7 @@ typedef struct u_arr {
 } u_arr;
 
 u_arr au_init_arr(size_t len, size_t element_size, int(* compare)(const void*, const void*),
-		void (* print)(const void*), void (* free)(void*));
+	void (* print)(const void*), void (* free)(void*));
 void au_free(u_arr* arr);
 int au_insert(u_arr* arr, const void* new_element);
 int au_remove(u_arr* arr, const void* old_element);

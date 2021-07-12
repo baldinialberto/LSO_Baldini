@@ -1,0 +1,1454 @@
+==8948== Memcheck, a memory error detector
+==8948== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==8948== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==8948== Command: ./server.exe
+==8948== 
+main
+init_server_settings
+get_setting
+get_setting
+get_setting
+get_setting
+get_setting
+get_setting
+get_setting
+init_server_infos
+create_server_socket
+fu_init_file_storage
+ignore_signals
+server_dispatcher
+spawn_workers
+3->
+server_worker
+ignore_signals
+server_signal_handler
+3->
+3->
+3->
+3->
+3->4->
+assign_client
+worker #0 free -> assign client 4
+3->5->
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F0D from 4
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : hashtable is empty
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+3->4->6->
+worker #0 assigned to serve 5
+assign_client
+worker #0 busy
+worker #0, received request 2F0D from 5
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 5 returned 0
+worker #0 is now free
+worker #0 busy
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F18 from 4
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+3->5->4->7->
+worker #0 assigned to serve 6
+assign_client
+worker #0 busy
+worker #0, received request 2F0D from 6
+worker #0 busy
+serve
+server_openFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0 busy
+worker #0, service 2F0D from 6 returned 0
+worker #0 free -> assign client 5
+worker #0 is now free
+worker #0 assigned to serve 5
+assign_client
+worker #0, received request 2F18 from 5
+serve
+server_writeFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+worker #0 busy
+fu_storage_bytes_available
+sapi_respond
+worker #0 busy
+worker #0 busy
+worker #0 busy
+fu_writefile
+sapi_respond
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0, service 2F18 from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F28 from 4
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 7
+3->6->5->4->8->
+worker #0 assigned to serve 7
+assign_client
+worker #0 busy
+worker #0, received request 2F0D from 7
+serve
+server_openFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 7 returned 0
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 free -> assign client 6
+worker #0 is now free
+assign_client
+worker #0 assigned to serve 6
+worker #0 busy
+worker #0, received request 2F18 from 6
+serve
+server_writeFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+worker #0 busy
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F28 from 5
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F0C from 4
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 8
+3->7->6->5->4->9->
+assign_client
+worker #0 assigned to serve 8
+worker #0, received request 2F0D from 8
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 8 returned 0
+worker #0 is now free
+worker #0 free -> assign client 7
+assign_client
+worker #0 assigned to serve 7
+worker #0, received request 2F18 from 7
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 7 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+assign_client
+worker #0 assigned to serve 6
+worker #0, received request 2F28 from 6
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F0C from 5
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F10 from 4
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 4, data = 0x4a9dcd0, data_len = 101000
+worker #0, service 2F10 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 9
+3->8->7->6->5->4->10->
+assign_client
+worker #0 assigned to serve 9
+worker #0, received request 2F0D from 9
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 9 returned 0
+worker #0 is now free
+worker #0 free -> assign client 8
+assign_client
+worker #0 assigned to serve 8
+worker #0, received request 2F18 from 8
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 8 returned 0
+worker #0 is now free
+worker #0 free -> assign client 7
+assign_client
+worker #0 assigned to serve 7
+worker #0 busy
+worker #0, received request 2F28 from 7
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+worker #0 busy
+sapi_respond
+worker #0 busy
+worker #0, service 2F28 from 7 returned 0
+worker #0 busy
+worker #0 is now free
+worker #0 free -> assign client 6
+worker #0 assigned to serve 6
+assign_client
+worker #0, received request 2F0C from 6
+serve
+server_openFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 6 returned 0
+worker #0 busy
+worker #0 is now free
+worker #0 free -> assign client 5
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F10 from 5
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 5, data = 0x4acfc10, data_len = 103000
+worker #0, service 2F10 from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F28 from 4
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 10
+worker #0 assigned to serve 10
+worker #0, received request 2F0D from 10
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 10 returned 0
+worker #0 is now free
+3->9->8->7->6->5->10->11->4->
+assign_client
+worker #0 free -> assign client 9
+assign_client
+worker #0 assigned to serve 9
+worker #0, received request 2F18 from 9
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 9 returned 0
+worker #0 is now free
+worker #0 free -> assign client 8
+assign_client
+worker #0 assigned to serve 8
+worker #0, received request 2F28 from 8
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 8 returned 0
+worker #0 is now free
+worker #0 free -> assign client 7
+assign_client
+worker #0 assigned to serve 7
+worker #0, received request 2F0C from 7
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 7 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+assign_client
+worker #0 assigned to serve 6
+worker #0, received request 2F10 from 6
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 6, data = 0x4b01fa0, data_len = 102000
+worker #0, service 2F10 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F28 from 5
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 10
+assign_client
+worker #0 assigned to serve 10
+worker #0, received request 2F18 from 10
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 10 returned 0
+worker #0 is now free
+worker #0 free -> assign client 11
+worker #0 assigned to serve 11
+worker #0, received request 2F0D from 11
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 11 returned 0
+worker #0 is now free
+3->12->9->8->7->6->5->11->10->
+assign_client
+worker #0 free -> assign client 12
+assign_client
+worker #0 assigned to serve 12
+worker #0, received request 2F0D from 12
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 12 returned 0
+worker #0 is now free
+worker #0 free -> assign client 9
+assign_client
+worker #0 assigned to serve 9
+worker #0, received request 2F28 from 9
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 9 returned 0
+worker #0 is now free
+worker #0 free -> assign client 8
+assign_client
+worker #0 assigned to serve 8
+worker #0, received request 2F0C from 8
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 8 returned 0
+worker #0 is now free
+worker #0 free -> assign client 7
+assign_client
+worker #0 assigned to serve 7
+worker #0, received request 2F10 from 7
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 7, data = 0x4b35ef0, data_len = 110000
+worker #0, service 2F10 from 7 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+assign_client
+worker #0 assigned to serve 6
+worker #0, received request 2F28 from 6
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 11
+3->4->12->9->8->7->10->6->
+assign_client
+worker #0 assigned to serve 11
+worker #0, received request 2F18 from 11
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 11 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F0D from 4
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 12
+assign_client
+worker #0 assigned to serve 12
+worker #0, received request 2F18 from 12
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 12 returned 0
+worker #0 is now free
+worker #0 free -> assign client 9
+worker #0 assigned to serve 9
+worker #0, received request 2F0C from 9
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 9 returned 0
+worker #0 is now free
+assign_client
+worker #0 free -> assign client 8
+assign_client
+worker #0 assigned to serve 8
+worker #0, received request 2F10 from 8
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 8, data = 0x4b696e0, data_len = 100000
+worker #0, service 2F10 from 8 returned 0
+worker #0 is now free
+worker #0 free -> assign client 7
+assign_client
+worker #0 assigned to serve 7
+worker #0, received request 2F28 from 7
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 7 returned 0
+worker #0 is now free
+worker #0 free -> assign client 10
+3->11->4->9->12->8->7->5->
+worker #0 assigned to serve 10
+assign_client
+worker #0 busy
+worker #0, received request 2F28 from 10
+serve
+server_closeFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+sapi_respond
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0, service 2F28 from 10 returned 0
+worker #0 free -> assign client 11
+worker #0 is now free
+worker #0 assigned to serve 11
+assign_client
+worker #0, received request 2F28 from 11
+serve
+server_closeFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 11 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F18 from 4
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 9
+assign_client
+worker #0 assigned to serve 9
+worker #0, received request 2F10 from 9
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 9, data = 0x4b9bbc0, data_len = 105000
+worker #0, service 2F10 from 9 returned 0
+worker #0 is now free
+worker #0 free -> assign client 12
+assign_client
+worker #0 assigned to serve 12
+worker #0, received request 2F28 from 12
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 12 returned 0
+worker #0 is now free
+worker #0 free -> assign client 8
+assign_client
+worker #0 assigned to serve 8
+worker #0, received request 2F28 from 8
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 8 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+3->10->11->4->9->12->6->8->
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F0D from 5
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 10
+assign_client
+worker #0 assigned to serve 10
+worker #0, received request 2F0C from 10
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 10 returned 0
+worker #0 is now free
+worker #0 free -> assign client 11
+assign_client
+worker #0 assigned to serve 11
+worker #0, received request 2F0C from 11
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 11 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F28 from 4
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 9
+assign_client
+worker #0 assigned to serve 9
+worker #0, received request 2F28 from 9
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 9 returned 0
+worker #0 is now free
+worker #0 free -> assign client 12
+assign_client
+worker #0 assigned to serve 12
+worker #0, received request 2F0C from 12
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 12 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+3->5->10->11->4->9->12->
+worker #0 assigned to serve 6
+assign_client
+worker #0 busy
+worker #0, received request 2F0D from 6
+worker #0 busy
+serve
+server_openFile
+sapi_getpath
+worker #0 busy
+fu_getfile
+hu_get : file_data not in list
+fu_alloc_file_data
+fu_storage_bytes_available
+fu_storage_files_available
+fu_add_file
+fu_storage_files_available
+fu_storage_bytes_available
+sapi_respond
+worker #0, service 2F0D from 6 returned 0
+worker #0 busy
+worker #0 is now free
+worker #0 free -> assign client 5
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F18 from 5
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+fu_storage_bytes_available
+server_evict
+fu_evict_files
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+/////////////////
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_110.txt, 110000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_105.txt, 105000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_103.txt, 103000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_102.txt, 102000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_101.txt, 101000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_100.txt, 100000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_108.txt, 108000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_107.txt, 107000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_106.txt, 106000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_104.txt, 104000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_111.txt, 0
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_109.txt, 0
+/////////////////
+bytes_to_free = 108425
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+fu_evict_compare
+back to server_evict
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_108.txt, 108000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_107.txt, 107000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_106.txt, 106000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_104.txt, 104000
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_111.txt, 0
+fu_print_file_data
+/home/alberto/LSO_Baldini/to_write/file_109.txt, 0
+sapi_respond
+sapi_getlen
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+worker #0 busy
+pthread_mutex_trylock: Success
+pthread_mutex_trylock: Success
+fu_paths_compare
+fu_paths_compare
+fu_paths_compare
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 10
+assign_client
+worker #0 assigned to serve 10
+worker #0, received request 2F10 from 10
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 10, data = 0x4bcf6b0, data_len = 106000
+worker #0, service 2F10 from 10 returned 0
+worker #0 is now free
+worker #0 free -> assign client 11
+assign_client
+worker #0 assigned to serve 11
+worker #0, received request 2F10 from 11
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 11, data = 0x4c03c30, data_len = 107000
+worker #0, service 2F10 from 11 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+3->6->5->10->11->12->
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F0C from 4
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+assign_client
+worker #0 assigned to serve 6
+worker #0, received request 2F18 from 6
+serve
+server_writeFile
+sapi_getpath
+fu_getfile
+fu_storage_bytes_available
+sapi_respond
+fu_writefile
+sapi_respond
+worker #0, service 2F18 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+assign_client
+worker #0 assigned to serve 5
+worker #0, received request 2F28 from 5
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 5 returned 0
+worker #0 is now free
+worker #0 free -> assign client 11
+3->4->6->12->5->
+assign_client
+worker #0 assigned to serve 11
+worker #0, received request 2F28 from 11
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 11 returned 0
+worker #0 is now free
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F10 from 4
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 4, data = 0x4c6c5a0, data_len = 104000
+worker #0, service 2F10 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+assign_client
+worker #0 assigned to serve 6
+worker #0, received request 2F28 from 6
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 12
+assign_client
+worker #0 assigned to serve 12
+worker #0, received request 2F10 from 12
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 12, data = 0x4c38660, data_len = 108000
+worker #0, service 2F10 from 12 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+worker #0 assigned to serve 5
+worker #0, received request 2F0C from 5
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 5 returned 0
+worker #0 is now free
+3->11->4->6->5->12->
+assign_client
+worker #0 free -> assign client 4
+assign_client
+worker #0 assigned to serve 4
+worker #0, received request 2F28 from 4
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 4 returned 0
+worker #0 is now free
+worker #0 free -> assign client 6
+3->12->5->4->
+worker #0 assigned to serve 6
+assign_client
+worker #0, received request 2F0C from 6
+serve
+server_openFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F0C from 6 returned 0
+worker #0 is now free
+worker #0 busy
+worker #0 free -> assign client 5
+worker #0 assigned to serve 5
+worker #0, received request 2F10 from 5
+serve
+server_readFile
+sapi_getpath
+3->fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 5, data = 0x4ca1550, data_len = 111000
+4->6->
+worker #0, service 2F10 from 5 returned 0
+worker #0 is now free
+assign_client
+worker #0 free -> assign client 6
+3->5->
+worker #0 assigned to serve 6
+worker #0, received request 2F10 from 6
+serve
+server_readFile
+sapi_getpath
+fu_getfile
+sapi_respond
+sapi_send_data
+sapi_send_data : client = 6, data = 0x4cd7300, data_len = 109000
+assign_client
+worker #0 busy
+worker #0, service 2F10 from 6 returned 0
+worker #0 is now free
+worker #0 free -> assign client 5
+3->6->
+worker #0 assigned to serve 5
+worker #0, received request 2F28 from 5
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 5 returned 0
+worker #0 is now free
+assign_client
+worker #0 free -> assign client 6
+3->5->
+3->
+worker #0 assigned to serve 6
+worker #0, received request 2F28 from 6
+serve
+server_closeFile
+sapi_getpath
+fu_getfile
+sapi_respond
+worker #0, service 2F28 from 6 returned 0
+worker #0 is now free
+3->6->
+3->
+3->
+3->
+3->
+3->
+
+server_signal_handler received signal 2
+join_workers
+free_server_infos
+fu_storage_free
+file storage at exit : 12 files in storage, 1266000 bytes occupied, serverCapacity = 1048575
+fu_storage_files_available
+fu_storage_bytes_available
+file storage at exit : avBytes = -217425, avFiles = 88
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+fu_free_file_data
+free file
+==8948== 
+==8948== HEAP SUMMARY:
+==8948==     in use at exit: 0 bytes in 0 blocks
+==8948==   total heap usage: 138 allocs, 138 frees, 2,547,232 bytes allocated
+==8948== 
+==8948== All heap blocks were freed -- no leaks are possible
+==8948== 
+==8948== For lists of detected and suppressed errors, rerun with: -s
+==8948== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

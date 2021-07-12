@@ -15,20 +15,23 @@
 
 #define DEBUG(X) X
 
-typedef struct utils_file_data {
+typedef struct utils_file_data
+{
 	void* data;
 	size_t data_len;
 	int client;
 	unsigned int data_info;
 	mutex_t mutex;
-	const char *path;
+	const char* path;
 } u_file_data;
-typedef struct utils_file {
+typedef struct utils_file
+{
 	const char* path;
 	u_file_data* file_data;
 } u_file;
 
-typedef struct utils_file_storage {
+typedef struct utils_file_storage
+{
 	u_hash_table table;
 	size_t max_files;
 	size_t curr_files;
@@ -55,7 +58,7 @@ void fu_free_file_data(void* file);
 int fu_read_from_path(const char* path, void** data, size_t* data_len);
 int fu_write_to_path(const char* path, void* data, size_t data_len);
 void fu_print_file(const void* file);
-int fu_paths_compare(const void *a, const void *b);
+int fu_paths_compare(const void* a, const void* b);
 u_arr fu_evict_files(u_file_storage* fistorage, size_t bytes_to_free);
 void fu_ensure_path(const char* path);
 

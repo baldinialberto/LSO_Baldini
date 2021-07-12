@@ -8,7 +8,8 @@
 #pragma once
 #include <stdlib.h>
 
-typedef struct utils_string {
+typedef struct utils_string
+{
 	char* data;
 	size_t len;
 } u_string;

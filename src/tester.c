@@ -4,9 +4,10 @@ int main(int argc, char** argv)
 {
 	u_file_storage fstorage = fu_init_file_storage(100, 0xA << 20);
 	char temp[256] = { (char)0 };
-	int n = (argc==2) ? strtol(argv[1], NULL, 10) : 10;
+	int n = (argc == 2) ? strtol(argv[1], NULL, 10) : 10;
 	u_file file;
-	for (int i = 0; i<n; i++) {
+	for (int i = 0; i < n; i++)
+	{
 		printf("---%d---\n", i);
 		sprintf(temp, "/home/alberto/LSO_Baldini/towrite/meta_%d.txt", i);
 		file = fu_allocfile_empty(temp);
