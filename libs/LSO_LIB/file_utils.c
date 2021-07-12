@@ -551,12 +551,12 @@ u_arr fu_evict_files(u_file_storage* storage, size_t bytes_to_free)
 
 	size_t i = 0;
 	printf("bytes_to_free = %zu\n", bytes_to_free);
-	for (; i < evict_arr.element_count && bytes_to_free > 0; i++)
+	for (; i < evict_arr.element_count && bytes_to_free; i++)
 	{
 		if ((*((u_file_data**)(au_get(&evict_arr, i))))->data_len > bytes_to_free)
 		{
 			bytes_to_free = 0;
-			break;
+			continue;
 		}
 		bytes_to_free -= (*((u_file_data**)(au_get(&evict_arr, i))))->data_len;
 		printf("bytes_to_free = %zu\n", bytes_to_free);
@@ -566,14 +566,6 @@ u_arr fu_evict_files(u_file_storage* storage, size_t bytes_to_free)
 		au_free(&evict_arr);
 		return (u_arr){ 0 };
 	}
-	for (; i < evict_arr.element_count; i++)
-	{
-		printf("remove %zu\n", i);
-		(*((u_file_data**)(au_get(&evict_arr, i))))->data_info = 0;
-		au_remove(&evict_arr, au_get(&evict_arr, i));
-	}
-
-	qsort(evict_arr.data, evict_arr.element_count, evict_arr.element_size, fu_evict_compare);
 
 	return evict_arr;
 }

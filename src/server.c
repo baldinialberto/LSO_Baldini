@@ -1167,9 +1167,15 @@ int server_evict(int client, u_file_storage* storage, size_t bytes_to_free)
 	}
 
 	int send_files_back = sapi_getlen(client) != 0;
-	for (size_t i = 0; i < evict_arr.element_count; i++)
+	for (size_t i = 0; bytes_to_free && i < evict_arr.len; i++)
 	{
-		curr_file = (u_file_data*)(au_get(&evict_arr, i));
+		curr_file = *((u_file_data**)(au_get(&evict_arr, i)));
+		printf("%p\n", (void *)curr_file);
+		if (curr_file == NULL)
+		{
+			exit(0);
+		}
+
 		mutex_trylock(curr_file->mutex);
 		if (!trylock_res)
 		{
@@ -1190,16 +1196,13 @@ int server_evict(int client, u_file_storage* storage, size_t bytes_to_free)
 				sapi_send_path(client, curr_file->path);
 				sapi_send_data(client, curr_file->data, curr_file->data_len);
 			}
+			if (curr_file->data_len > bytes_to_free) {bytes_to_free = 0;}
+			else {bytes_to_free -= curr_file->data_len;}
 			curr_file->client = -2;
 			mutex_unlock(curr_file->mutex);
 			fu_remove_file(storage, curr_file->path);
 		}
-		else
-		{
-			au_remove(&evict_arr, au_get(&evict_arr, i));
-		}
 	}
-
 	au_free(&evict_arr);
 	if (send_files_back && sapi_respond(SAPI_SUCCESS, client))
 	{

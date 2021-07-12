@@ -12,7 +12,7 @@
 
 #define mutex_t                 pthread_mutex_t
 #define mutex_lock(mutex)       if (pthread_mutex_lock(&(mutex))) {perror("pthread_mutex_lock"); errno = 0;}
-#define mutex_trylock(mutex)    int trylock_res; if((trylock_res = pthread_mutex_trylock(&(mutex)))) {perror("pthread_mutex_trylock"); errno = 0;};
+#define mutex_trylock(mutex)    int trylock_res; if((trylock_res = pthread_mutex_trylock(&(mutex)))) {if (errno) {perror("pthread_mutex_trylock"); errno = 0;}};
 #define mutex_unlock(mutex)     if(pthread_mutex_unlock(&(mutex))) {perror("pthread_mutex_unlock"); errno = 0;}
 #define mutex_init(mutex)       if(pthread_mutex_init(&(mutex), NULL)) {perror("pthread_mutex_init"); errno = 0;}
 #define mutex_destroy(mutex)    if(pthread_mutex_destroy(&(mutex))) {perror("pthread_mutex_destroy"); errno = 0;}
