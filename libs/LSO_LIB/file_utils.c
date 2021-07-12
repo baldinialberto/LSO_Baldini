@@ -568,6 +568,7 @@ u_arr fu_evict_files(u_file_storage* storage, size_t bytes_to_free)
 	}
 	for (; i < evict_arr.element_count; i++)
 	{
+		printf("remove %zu\n", i);
 		(*((u_file_data**)(au_get(&evict_arr, i))))->data_info = 0;
 		au_remove(&evict_arr, au_get(&evict_arr, i));
 	}
