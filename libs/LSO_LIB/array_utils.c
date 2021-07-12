@@ -11,14 +11,14 @@
 u_arr au_init_arr(size_t len, size_t element_size,
 		int(* compare_func)(const void*, const void*),
 		void (* print_func)(const void*),
-		void (* free_func)(const void*))
+		void (* free_func)(void*))
 {
 	if (len==0 || element_size==0) {
 		fprintf(stdout, "au_init_arr : wrong params\n");
 		fflush(stdout);
 		return (u_arr){ 0 };
 	}
-	if (compare_func==NULL || print_func==NULL) {
+	if (compare_func==NULL) {
 		fprintf(stdout, "au_init_arr : wrong params\n");
 		fflush(stdout);
 		return (u_arr){ 0 };
@@ -43,12 +43,6 @@ void au_free(u_arr* arr)
 		fflush(stdout);
 		return;
 	}
-	if (arr->free!=NULL) {
-		for (size_t i = 0; i<arr->element_count; i++) {
-			arr->free(au_get(arr, i));
-		}
-	}
-
 	mu_free(arr->data);
 	memset(arr, 0, sizeof(u_arr));
 }

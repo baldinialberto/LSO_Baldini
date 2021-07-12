@@ -20,12 +20,12 @@ int main(int argc, char** argv)
 	static server_infos infos;
 
 	CHECK_PERROR_EXIT(init_server_settings(&settings),
-			"init_server_settings at main");
+			"init_server_settings at main")
 	CHECK_PERROR_EXIT(init_server_infos(&settings, &infos),
-			"init_server_infos at main");
+			"init_server_infos at main")
 
 	CHECK_PERROR_EXIT((tu_create_thread_detached(&server_signal_handler, (void*)&infos)),
-			"tu_create_thread_detached at main");
+			"tu_create_thread_detached at main")
 	CHECK_PERROR_EXIT((ignore_signals()),
 			"ignore_signals at main");
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 
 int init_server_settings(server_settings* setts)
 {
-	DEBUG(puts("init_server_settings"));
+	DEBUG(puts(__func__));
 
 	FILE* configFile = NULL;
 	CHECK_PERROR_EXIT((configFile = fopen(SERVER_CONFIGFILE_PATH, "r"))==NULL,
@@ -86,7 +86,7 @@ int init_server_settings(server_settings* setts)
 
 int init_server_infos(server_settings* setts, server_infos* infos)
 {
-	DEBUG(puts("init_server_infos"));
+	DEBUG(puts(__func__));
 
 	CHECK_PERROR_EXIT(
 			(infos->server_socket_fd = create_server_socket(setts))==-1,
@@ -104,6 +104,9 @@ int init_server_infos(server_settings* setts, server_infos* infos)
 		pthread_cond_init(infos->worker_conds+i, NULL);
 	}
 
+	mutex_init(infos->dispatcher_lock);
+	cond_init(infos->workers_busy);
+
 	infos->server_quit = (infos->server_hu = 0);
 	infos->poll_arr = pu_initarr(setts->maxClientCount);
 	infos->storage = fu_init_file_storage(setts->maxFileCount, setts->available_Memory);
@@ -113,7 +116,7 @@ int init_server_infos(server_settings* setts, server_infos* infos)
 
 void server_dispatcher(server_infos* infos)
 {
-	DEBUG(puts("Dispatcher"));
+	DEBUG(puts(__func__));
 
 	spawn_workers(infos);
 
@@ -162,7 +165,7 @@ void server_dispatcher(server_infos* infos)
 
 void* server_worker(void* worker_arg)
 {
-	DEBUG(puts("Worker"));
+	DEBUG(puts(__func__));
 	ignore_signals();
 
 	struct worker_arg* worker_infos = (struct worker_arg*)worker_arg;
@@ -177,8 +180,8 @@ void* server_worker(void* worker_arg)
 
 		while ((worker_infos->infos->workers_clients)[worker_infos->worker_id]==0) {
 			if (worker_infos->infos->server_quit) {
-				mu_free(worker_infos);
-				pthread_exit(NULL);
+				pthread_mutex_unlock(worker_infos->infos->worker_locks+worker_infos->worker_id);
+				return worker_arg;
 			}
 
 			pthread_cond_timedwait(
@@ -206,10 +209,9 @@ void* server_worker(void* worker_arg)
 			continue;
 		}
 
-		DEBUG(
-				fprintf(stdout, "worker #%d, received request %X from %d\n",
-						worker_infos->worker_id, request,
-						(worker_infos->infos->workers_clients)[worker_infos->worker_id]);
+		DEBUG(fprintf(stdout, "worker #%d, received request %X from %d\n",
+				worker_infos->worker_id, request,
+				(worker_infos->infos->workers_clients)[worker_infos->worker_id]);
 				fflush(stdout);
 		)
 
@@ -233,15 +235,15 @@ void* server_worker(void* worker_arg)
 		pthread_mutex_unlock(worker_infos->infos->worker_locks+worker_infos->worker_id);
 		fprintf(stdout, "worker #%d is now free\n", worker_infos->worker_id);
 		fflush(stdout);
+		cond_signal(worker_infos->infos->workers_busy);
 	}
 
-	free(worker_infos);
-	pthread_exit(NULL);
+	return worker_arg;
 }
 
 void* server_signal_handler(void* infos)
 {
-	DEBUG(puts("Signal_handler"));
+	DEBUG(puts(__func__));
 
 	server_infos* s_infos = (server_infos*)infos;
 
@@ -266,12 +268,12 @@ void* server_signal_handler(void* infos)
 		s_infos->server_hu = 1;
 	}
 
-	pthread_exit(NULL);
+	return NULL;
 }
 
 int serve(s_message request, int client_socket, u_file_storage* storage)
 {
-	DEBUG(puts("serve"));
+	DEBUG(puts(__func__));
 
 	if (storage==NULL) {
 		fprintf(stdout, "serve : param storage == NULL\n");
@@ -313,7 +315,7 @@ int serve(s_message request, int client_socket, u_file_storage* storage)
 
 int spawn_workers(server_infos* infos)
 {
-	DEBUG(puts("spawn_workers"));
+	DEBUG(puts(__func__));
 
 	struct worker_arg* arg;
 	for (int i = 0; i<infos->n_workers; i++) {
@@ -327,10 +329,10 @@ int spawn_workers(server_infos* infos)
 
 int join_workers(server_infos* infos)
 {
-	DEBUG(puts("join_workers"));
+	DEBUG(puts(__func__));
 
 	int ret;
-	void *res;
+	void* res;
 
 	for (int i = 0; i<infos->n_workers; i++) {
 		if ((ret = pthread_join((infos->workers)[i], &res))) {
@@ -358,11 +360,14 @@ int join_workers(server_infos* infos)
 
 int assign_client(server_infos* infos, int client)
 {
-	DEBUG(puts("assign_client"));
+	DEBUG(puts(__func__));
 
 	static int i = 0;
+	unsigned short workers_busy = 0;
 
 	if (infos==NULL || client<0) { return -1; }
+
+	mutex_lock(infos->dispatcher_lock);
 
 	for (;; i = ((i+1)%infos->n_workers)) {
 		if (!pthread_mutex_trylock(infos->worker_locks+i)) {
@@ -375,16 +380,24 @@ int assign_client(server_infos* infos, int client)
 			(infos->workers_clients)[i] = client;
 			pthread_cond_signal(infos->worker_conds+i);
 			pthread_mutex_unlock(infos->worker_locks+i);
+			mutex_unlock(infos->dispatcher_lock);
 			return 0;
 		}
+		workers_busy++;
 		fprintf(stdout, "worker #%d busy\n", i);
 		fflush(stdout);
+		if (workers_busy==infos->n_workers) {
+			condvar_timed_wait(&(infos->workers_busy), &(infos->dispatcher_lock), 0xFFFFFF);
+			//cond_wait(infos->workers_busy, infos->dispatcher_lock);
+			workers_busy = 0;
+		}
 	}
+
 }
 
 int ignore_signals()
 {
-	DEBUG(puts("ignore_signals"));
+	DEBUG(puts(__func__));
 
 	sigset_t set;
 
@@ -399,7 +412,7 @@ int ignore_signals()
 
 int free_server_infos(server_infos* infos)
 {
-	DEBUG(puts("free_server_infos"));
+	DEBUG(puts(__func__));
 
 	if (infos==NULL) {
 		return -1;
@@ -411,6 +424,8 @@ int free_server_infos(server_infos* infos)
 		pthread_cond_destroy(infos->worker_conds+i);
 		pthread_mutex_destroy(infos->worker_locks+i);
 	}
+	mutex_destroy(infos->dispatcher_lock);
+	cond_destroy(infos->workers_busy);
 	if (infos->worker_conds!=NULL) { free(infos->worker_conds); }
 	if (infos->worker_locks!=NULL) { free(infos->worker_locks); }
 	fu_storage_free(&(infos->storage));
@@ -471,7 +486,7 @@ int write_log(const char* op, server_settings* setts)
 
 void get_setting(char** str, FILE* fstream, server_settings* setts)
 {
-	DEBUG(puts("get_settings"));
+	DEBUG(puts(__func__));
 
 	int int_sett = 0;
 
@@ -525,7 +540,7 @@ void get_setting(char** str, FILE* fstream, server_settings* setts)
 
 int create_server_socket(server_settings* setts)
 {
-	DEBUG(puts("create_server_socket"));
+	DEBUG(puts(__func__));
 	DEBUG(unlink(setts->socket_name));
 
 	int socket_res;
@@ -631,7 +646,6 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 	if (file!=NULL) {
 		mu_free(path_to_open);
 		mutex_lock(file->mutex);
-		DEBUG(puts("60%"));
 
 		if (file->client!=-1) {
 			fprintf(stdout, "server_openFile : file is already open by %d\n", file->client);
@@ -640,22 +654,13 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 			SAPI_RESPOND(SAPI_ALREADY, client);
 			return -1;
 		}
-		if (file->data_info & O_LOCK) {
-			fprintf(stdout, "server_openFile : file is already locked\n");
-			fflush(stdout);
-			mutex_unlock(file->mutex);
-			SAPI_RESPOND(SAPI_LOCKED, client);
-			return -1;
-		}
 
 		file->client = client;
-		DEBUG(puts("80%"));
 		if (message & O_LOCK) {
 			file->data_info &= O_LOCK;
 		}
 
 		mutex_unlock(file->mutex);
-		DEBUG(puts("90%"));
 	}
 	else {
 		u_file_data* new_file = fu_alloc_file_data(NULL, 0);
@@ -663,13 +668,21 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		if (message & O_LOCK) {
 			new_file->data_info &= O_LOCK;
 		}
+		mutex_lock(storage->mutex);
+		if (fu_storage_bytes_available(storage)==0 || fu_storage_files_available(storage)==0) {
+			mutex_unlock(storage->mutex);
+			SAPI_RESPOND(SAPI_FAILURE, client);
+			return -1;
+		}
 		if (fu_add_file(storage, new_file, path_to_open)) {
+			mutex_unlock(storage->mutex);
 			mu_free(path_to_open);
 			fprintf(stdout, "fu_add_file at server_openFile\n");
 			fflush(stdout);
 			SAPI_RESPOND(SAPI_FAILURE, client);
 			return -1;
 		}
+		mutex_unlock(storage->mutex);
 	}
 	SAPI_RESPOND(SAPI_SUCCESS, client);
 
@@ -678,6 +691,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 
 int server_closeFile(s_message message, int client, u_file_storage* storage)
 {
+	DEBUG(puts(__func__));
 	if (message==0 || client==0 || storage==NULL) {
 		fprintf(stdout, "server_closeFile : wrong params\n");
 		fflush(stdout);
@@ -766,82 +780,58 @@ int server_writeFile(s_message message, int client, u_file_storage* storage)
 		fflush(stdout);
 		return -1;
 	}
-	DEBUG(puts("server_writeFile -0%");)
 	char* path_to_write = sapi_getpath(message, client);
-	DEBUG(puts("server_writeFile -10%");)
 	if (path_to_write==NULL) {
-		if (sapi_respond(SAPI_FAILURE, client)) {
-			fprintf(stdout, "sapi_respond at server_writeFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
+		SAPI_RESPOND(SAPI_FAILURE, client);
 		return SAPI_FAILURE;
 	}
-	DEBUG(fprintf(stdout, "server_writeFile : writing path %s\n", path_to_write));
-
+	mutex_lock(storage->mutex);
 	u_file_data* file = fu_getfile(storage, path_to_write);
 	mu_free(path_to_write);
-	DEBUG(puts("server_writeFile -20%");)
 	if (file==NULL) {
-		if (sapi_respond(SAPI_FNF, client)) {
-			fprintf(stdout, "sapi_respond at server_writeFile\n");
-			fflush(stdout);
-			return SAPI_FAILURE;
-		}
+		mutex_unlock(storage->mutex);
+		SAPI_RESPOND(SAPI_FNF, client);
 		return SAPI_FAILURE;
 	}
 	mutex_lock(file->mutex);
-	DEBUG(puts("server_writeFile -30%");)
-	if ((file->client!=0 && file->client!=client) ||
-			((file->data_info & O_LOCK) && file->client!=client)) {
+	if (file->client!=client) {
 		mutex_unlock(file->mutex);
-		DEBUG(puts("server_writeFile -70a%");)
-		if (sapi_respond(SAPI_LOCKED, client)) {
-			fprintf(stdout, "sapi_respond at server_writeFile\n");
-			fflush(stdout);
-			DEBUG(puts("server_writeFile -100aa%");)
-			return SAPI_FAILURE;
-		}
-		DEBUG(puts("server_writeFile -100a%");)
+		SAPI_RESPOND(SAPI_LOCKED, client);
 		return SAPI_FNF;
 	}
 
 	size_t data_len;
 	CHECK_READ_RESPONSE(client, data_len, sizeof(size_t), "read at server_writeFile");
-	DEBUG(puts("server_writeFile -40%");)
+
 
 	if (fu_storage_bytes_available(storage)<data_len) {
-		fprintf(stdout, "not enough space available %zu bytes free, %zu needed\n",
-				fu_storage_bytes_available(storage), data_len);
-		fflush(stdout);
-		//***********//
-		// add evict //
-		//***********//
-		if (sapi_respond(SAPI_EVICT, client)) {
-			fprintf(stdout, "sapi_respond at server_writeFile\n");
-			fflush(stdout);
+		if (server_evict(client, storage, data_len-fu_storage_bytes_available(storage))) {
+			if (errno) {
+				perror("server_evict at serve_openFile");
+				errno = 0;
+			}
 			mutex_unlock(file->mutex);
+			mutex_unlock(storage->mutex);
+			SAPI_RESPOND(SAPI_FAILURE, client);
 			return SAPI_FAILURE;
 		}
-		mutex_unlock(file->mutex);
-		return SAPI_FAILURE;
 	}
 	else {
 		if (sapi_respond(SAPI_SUCCESS, client)) {
 			fprintf(stdout, "sapi_respond at server_writeFile\n");
 			fflush(stdout);
 			mutex_unlock(file->mutex);
+			mutex_unlock(storage->mutex);
 			return SAPI_FAILURE;
 		}
 	}
+	mutex_unlock(storage->mutex);
 
-	DEBUG(puts("server_writeFile -50%");)
 	void* data = mu_calloc(data_len);
 	if (read(client, data, data_len)==-1) {
 		mu_free(data);
-		DEBUG(puts("server_writeFile -60b%");)
+		mutex_unlock(file->mutex);
 		if (errno) {
-			DEBUG(puts("server_writeFile -70ba%");)
 			perror("read at server_writeFile");
 			errno = 0;
 		}
@@ -850,12 +840,10 @@ int server_writeFile(s_message message, int client, u_file_storage* storage)
 			fflush(stdout);
 			return SAPI_FAILURE;
 		}
-		DEBUG(puts("server_writeFile -100ba%");)
 		return SAPI_FAILURE;
 	}
-	DEBUG(puts("server_writeFile -60%");)
 
-	if (fu_writefile(file, 0, data, data_len)) {
+	if (fu_writefile(storage, file, 0, data, data_len)) {
 		mu_free(data);
 		mutex_unlock(file->mutex);
 		if (sapi_respond(SAPI_FAILURE, client)) {
@@ -867,26 +855,104 @@ int server_writeFile(s_message message, int client, u_file_storage* storage)
 	}
 	mu_free(data);
 
-	DEBUG(puts("server_writeFile -80%");)
 	if (sapi_respond(SAPI_SUCCESS, client)) {
 		mutex_unlock(file->mutex);
 		fprintf(stdout, "sapi_respond at server_writeFile\n");
 		fflush(stdout);
 		return SAPI_FAILURE;
 	}
-	DEBUG(puts("server_writeFile -90%");)
 	mutex_unlock(file->mutex);
-	DEBUG(puts("server_writeFile -100%");)
 	return 0;
 }
 
 int server_appendToFile(s_message message, int client, u_file_storage* storage)
 {
+	DEBUG(puts(__func__);)
 	if (message==0 || client==0 || storage==NULL) {
-		fprintf(stdout, "server_appendToFile : wrong params\n");
+		fprintf(stdout, "%s : wrong params\n", __func__);
 		fflush(stdout);
 		return -1;
 	}
+	char* path_to_write = sapi_getpath(message, client);
+	if (path_to_write==NULL) {
+		SAPI_RESPOND(SAPI_FAILURE, client);
+		return SAPI_FAILURE;
+	}
+	mutex_lock(storage->mutex);
+	u_file_data* file = fu_getfile(storage, path_to_write);
+	mu_free(path_to_write);
+	if (file==NULL) {
+		mutex_unlock(storage->mutex);
+		SAPI_RESPOND(SAPI_FNF, client);
+		return SAPI_FAILURE;
+	}
+	mutex_lock(file->mutex);
+	mutex_unlock(storage->mutex);
+	if (file->client!=client) {
+		mutex_unlock(file->mutex);
+		SAPI_RESPOND(SAPI_LOCKED, client);
+		return SAPI_FNF;
+	}
+
+	size_t data_len;
+	CHECK_READ_RESPONSE(client, data_len, sizeof(size_t), "read at server_appendToFile");
+
+	mutex_lock(storage->mutex);
+
+	if (fu_storage_bytes_available(storage)<data_len) {
+		if (server_evict(client, storage, data_len-fu_storage_bytes_available(storage))) {
+			if (errno) {
+				perror("server_evict at server_appendToFile");
+				errno = 0;
+			}
+			SAPI_RESPOND(SAPI_FAILURE, client);
+		}
+	}
+	else {
+		if (sapi_respond(SAPI_SUCCESS, client)) {
+			fprintf(stdout, "sapi_respond at server_appendToFile\n");
+			fflush(stdout);
+			mutex_unlock(file->mutex);
+			mutex_unlock(storage->mutex);
+			return SAPI_FAILURE;
+		}
+	}
+	mutex_unlock(storage->mutex);
+
+	void* data = mu_calloc(data_len);
+	if (read(client, data, data_len)==-1) {
+		mu_free(data);
+		if (errno) {
+			perror("read at server_appendToFile");
+			errno = 0;
+		}
+		if (sapi_respond(SAPI_FAILURE, client)) {
+			fprintf(stdout, "read at %s\n", __func__);
+			fflush(stdout);
+			return SAPI_FAILURE;
+		}
+		return SAPI_FAILURE;
+	}
+
+	if (fu_writefile(storage, file, data_len, data, data_len)) {
+		mu_free(data);
+		mutex_unlock(file->mutex);
+		if (sapi_respond(SAPI_FAILURE, client)) {
+			fprintf(stdout, "sapi_respond at server_appendToFile\n");
+			fflush(stdout);
+			return SAPI_FAILURE;
+		}
+		return SAPI_FAILURE;
+	}
+	mu_free(data);
+
+	if (sapi_respond(SAPI_SUCCESS, client)) {
+		mutex_unlock(file->mutex);
+		fprintf(stdout, "sapi_respond at server_appendToFile\n");
+		fflush(stdout);
+		return SAPI_FAILURE;
+	}
+	mutex_unlock(file->mutex);
 	return 0;
 }
 
@@ -912,16 +978,106 @@ int server_unlockFile(s_message message, int client, u_file_storage* storage)
 
 int server_removeFile(s_message message, int client, u_file_storage* storage)
 {
+	DEBUG(puts(__func__));
 	if (message==0 || client==0 || storage==NULL) {
 		fprintf(stdout, "server_removeFile : wrong params\n");
 		fflush(stdout);
 		return -1;
 	}
+	char* path_to_remove = sapi_getpath(message, client);
+	if (path_to_remove==NULL) {
+		mu_free(path_to_remove);
+		SAPI_RESPOND(SAPI_FAILURE, client);
+		return SAPI_FAILURE;
+	}
+
+	mutex_lock(storage->mutex);
+	u_file_data* file = fu_getfile(storage, path_to_remove);
+	mu_free(path_to_remove);
+
+	if (file==NULL) {
+		mutex_unlock(storage->mutex);
+		SAPI_RESPOND(SAPI_FNF, client);
+		return SAPI_SUCCESS;
+	}
+
+	mutex_lock(file->mutex);
+
+	if (file->client!=client) {
+		mutex_unlock(file->mutex);
+		mutex_unlock(storage->mutex);
+		SAPI_RESPOND(SAPI_LOCKED, client);
+		return SAPI_FAILURE;
+	}
+
+	mutex_unlock(file->mutex);
+	fu_remove_file(storage, path_to_remove);
+	mutex_unlock(storage->mutex);
+	SAPI_RESPOND(SAPI_SUCCESS, client);
+
+	return 0;
+}
+
+int server_evict(int client, u_file_storage* storage, size_t bytes_to_free)
+{
+	DEBUG(puts(__func__));
+	u_arr evict_arr = fu_evict_files(storage, bytes_to_free);
+	if (evict_arr.data == NULL)
+	{
+		fprintf(stdout, "%s : unable to evict\n", __func__);
+		fflush(stdout);
+		return -1;
+	}
+	u_file_data* curr_file;
+	if (sapi_respond(SAPI_EVICT, client)) {
+		au_free(&evict_arr);
+		fprintf(stdout, "sapi_respond at %s", __func__);
+		fflush(stdout);
+		return -1;
+	}
+
+	int send_files_back = sapi_getlen(client)!=0;
+	for (size_t i = 0; i<evict_arr.element_count; i++) {
+		curr_file = (u_file_data*)(au_get(&evict_arr, i));
+		mutex_trylock(curr_file->mutex);
+		if (!trylock_res) {
+			if (curr_file->client!=client) {
+				mutex_unlock(curr_file->mutex);
+				continue;
+			}
+			if (send_files_back && sapi_respond(SAPI_EVICT, client)) {
+				au_free(&evict_arr);
+				fprintf(stdout, "sapi_respond at %s", __func__);
+				fflush(stdout);
+				return -1;
+			}
+			if (send_files_back) {
+				sapi_send_path(client, curr_file->path);
+				sapi_send_data(client, curr_file->data, curr_file->data_len);
+			}
+			curr_file->client = -2;
+			mutex_unlock(curr_file->mutex);
+			fu_remove_file(storage, curr_file->path);
+		}
+		else {
+			au_remove(&evict_arr, au_get(&evict_arr, i));
+		}
+	}
+
+	au_free(&evict_arr);
+	if (send_files_back && sapi_respond(SAPI_SUCCESS, client)) {
+		mutex_unlock(storage->mutex);
+		fprintf(stdout, "sapi_respond at %s", __func__);
+		fflush(stdout);
+		return -1;
+	}
+
 	return 0;
 }
 
 char* sapi_getpath(s_message message, int client)
 {
+	DEBUG(puts(__func__));
 	if (message==0 || client==0) {
 		fprintf(stdout, "sapi_getpath : wrong params\n");
 		fflush(stdout);
@@ -940,18 +1096,56 @@ char* sapi_getpath(s_message message, int client)
 	return path;
 }
 
+int sapi_send_path(int client, const char* path)
+{
+	DEBUG(puts(__func__));
+	if (path==NULL || client==0) {
+		fprintf(stdout, "sapi_send_path : wrong params\n");
+		fflush(stdout);
+		return -1;
+	}
+	size_t path_len = strlen(path);
+	if (write(client, &path_len, sizeof(size_t))==-1) {
+		perror("write at sapi_send_path");
+		return -1;
+	}
+	if (write(client, path, path_len)==-1) {
+		perror("write at sapi_send_path");
+		return -1;
+	}
+
+	return 0;
+}
+
+size_t sapi_getlen(int client)
+{
+	DEBUG(puts(__func__));
+	if (client==0) {
+		fprintf(stdout, "sapi_getlen : wrong params\n");
+		fflush(stdout);
+		return 0;
+	}
+	size_t res;
+	if (read(client, &res, sizeof(size_t))==-1) {
+		perror("read at sapi_getfile");
+		fprintf(stdout, "read at sapi_getfile\n");
+		fflush(stdout);
+		return 0;
+	}
+	return res;
+}
+
 int sapi_getfile(int client, void** file_data, size_t* data_len)
 {
+	DEBUG(puts(__func__));
 	if (client==0 || file_data==NULL || data_len==NULL) {
 		fprintf(stdout, "sapi_getfile : wrong params\n");
 		fflush(stdout);
 		return -1;
 	}
-	int read_len = 0;
-	if ((read_len = (int)read(client, data_len, sizeof(size_t)))<sizeof(s_message)) {
-		if (read_len<0) { perror("read at sapi_getfile"); }
-		fprintf(stdout, "read at sapi_getfile returned %d, instead of %zu\n",
-				read_len, sizeof(size_t));
+	if (read(client, data_len, sizeof(size_t))==-1) {
+		perror("read at sapi_getfile");
+		fprintf(stdout, "read at sapi_getfile\n");
 		fflush(stdout);
 		return -1;
 	}

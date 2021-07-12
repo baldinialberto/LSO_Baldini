@@ -11,10 +11,11 @@
 #include "error_utils.h"
 
 #define mutex_t                 pthread_mutex_t
-#define mutex_lock(mutex)       pthread_mutex_lock(&(mutex))
-#define mutex_unlock(mutex)     pthread_mutex_unlock(&(mutex))
-#define mutex_init(mutex)       pthread_mutex_init(&(mutex), NULL)
-#define mutex_destroy(mutex)    pthread_mutex_destroy(&(mutex))
+#define mutex_lock(mutex)       if (pthread_mutex_lock(&(mutex))) {perror("pthread_mutex_lock"); errno = 0;}
+#define mutex_trylock(mutex)    int trylock_res; if((trylock_res = pthread_mutex_trylock(&(mutex)))) {perror("pthread_mutex_trylock"); errno = 0;};
+#define mutex_unlock(mutex)     if(pthread_mutex_unlock(&(mutex))) {perror("pthread_mutex_unlock"); errno = 0;}
+#define mutex_init(mutex)       if(pthread_mutex_init(&(mutex), NULL)) {perror("pthread_mutex_init"); errno = 0;}
+#define mutex_destroy(mutex)    if(pthread_mutex_destroy(&(mutex))) {perror("pthread_mutex_destroy"); errno = 0;}
 
 #define cond_t                  pthread_cond_t
 #define cond_wait(cond, mutex)  pthread_cond_wait(&(cond), &(mutex))

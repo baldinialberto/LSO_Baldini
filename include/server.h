@@ -72,6 +72,8 @@ typedef struct server_infos {
 	u_pollarr poll_arr;
 	pthread_cond_t* worker_conds;
 	pthread_mutex_t* worker_locks;
+	pthread_mutex_t dispatcher_lock;
+	pthread_cond_t workers_busy;
 } server_infos;
 
 struct worker_arg {
@@ -106,7 +108,10 @@ int server_appendToFile(s_message message, int client, u_file_storage* storage);
 int server_lockFile(s_message message, int client, u_file_storage* storage);
 int server_unlockFile(s_message message, int client, u_file_storage* storage);
 int server_removeFile(s_message message, int client, u_file_storage* storage);
+int server_evict(int client, u_file_storage *storage, size_t bytes_to_free);
 char* sapi_getpath(s_message message, int client);
+int sapi_send_path(int client, const char *path);
+size_t sapi_getlen(int client);
 int sapi_respond(s_message message, int client);
 int sapi_send_data(int client, void* data, size_t data_len);
 

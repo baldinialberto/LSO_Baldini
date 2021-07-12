@@ -131,8 +131,6 @@ void* hu_get(u_hash_table* table, const void* key)
 	if (curr==NULL || table->compare(key, curr->key)) {
 		fprintf(stdout, "hu_get : file_data not in list\n");
 		fflush(stdout);
-		fprintf(stdout, "hu_get : file_data not in list\n");
-		fflush(stdout);
 		return NULL;
 	}
 	return curr->data;

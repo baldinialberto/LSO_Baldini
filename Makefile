@@ -1,5 +1,5 @@
 CC:=gcc
-CFLAGS:= -Wall -pedantic -I ./include -I ./libs/LSO_LIB
+CFLAGS:= -Wall -pedantic -g -I ./include -I ./libs/LSO_LIB
 LIBS:= -lpthread -L ./libs/LSO_LIB -lso -Wl,-rpath,./libs/LSO_LIB
 VPATH:=src:libs/LSO_LIB
 
