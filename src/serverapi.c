@@ -203,12 +203,17 @@ int sapi_get_path(char **path)
 
 		return -1;
 	}
-	size_t path_len;
+	size_t path_len = 0;
 	if (read(server_socket_fd, &path_len, sizeof(size_t)) == -1)
 	{
 		perror("read at sapi_getpath");
 		mu_free(*path);
-		return 1;
+		return -1;
+	}
+	fprintf(stdout, "%s, path_len = %zu\n", __func__, path_len);
+	if (path_len == 0)
+	{
+		return -1;
 	}
 	*path = mu_realloc(*path, path_len + 1);
 	memset(*path + path_len, 0,  1);
@@ -216,10 +221,10 @@ int sapi_get_path(char **path)
 	{
 		perror("read at sapi_getpath");
 		mu_free(*path);
-		return 1;
+		return -1;
 	}
 
-	//printf("path = %s\n", *path);
+	printf("path = %s\n", *path);
 
 	return 0;
 }
@@ -435,7 +440,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 	}
 	return 0;
 }
-int readNFiles(int N, const char* dirname)
+int readNFiles(unsigned int N, const char* dirname)
 {
 	puts(__func__);
 	if (N == 0)
@@ -465,10 +470,26 @@ int readNFiles(int N, const char* dirname)
 	}
 	int nfiles_readen = 0;
 	void* buff = NULL;
+	char *path = NULL;
 	size_t size = 0;
 	u_string destpath = su_string_from_literal("");
-	while (sapi_get_data(&buff, &size) != -1) // get filename
+	while (1) // get filename
 	{
+		if (sapi_get_path(&path))
+		{
+			fprintf(stdout, "readNFiles : su_append_literal returned an error\n");
+			fflush(stdout);
+			perror("sapi_get_path");
+			exit(1);
+		}
+		if (path == NULL || strlen(path) == 0)
+		{
+			mu_free(buff);
+			mu_free(path);
+			su_free_string(&destpath);
+
+			return nfiles_readen;
+		}
 		// there's data to read
 		// create destpath  = dirname + filename
 		if (su_append_chars(&destpath, dirname))
@@ -478,7 +499,7 @@ int readNFiles(int N, const char* dirname)
 			su_free_string(&destpath);
 			continue;
 		}
-		if (su_append_chars(&destpath, (char*)buff))
+		if (su_append_chars(&destpath, path))
 		{
 			fprintf(stdout, "readNFiles : su_append_literal returned an error\n");
 			fflush(stdout);
@@ -505,11 +526,12 @@ int readNFiles(int N, const char* dirname)
 			}
 		}
 		su_realloc(&destpath, 0);
+		mu_free(path);
+		mu_free(buff);
+		path = NULL;
+		buff = NULL;
 	}
-	mu_free(buff);
-	su_free_string(&destpath);
 
-	return nfiles_readen;
 }
 int writeFile(const char* pathname, const char* dirname)
 {
@@ -784,7 +806,7 @@ int closeFile(const char* pathname)
 		fflush(stdout);
 		return -1;
 	}
-	fprintf(stdout, "closeFile pathname = %s -0%%\n", pathname);
+	fprintf(stdout, "closeFile pathname = %s\n", pathname);
 	fflush(stdout);
 	if (sapi_sendop(strlen(pathname), SAPI_CLOSEFILE, (unsigned char)0) == -1)
 	{
@@ -806,8 +828,6 @@ int closeFile(const char* pathname)
 		sapi_printerror(stdout, m);
 		return -1;
 	}
-	fprintf(stdout, "closeFile pathname = %s -100%%\n", pathname);
-	fflush(stdout);
 	return 0;
 }
 int removeFile(const char* pathname)
@@ -825,6 +845,8 @@ int removeFile(const char* pathname)
 		fflush(stdout);
 		return -1;
 	}
+	fprintf(stdout, "removeFile pathname = %s\n", pathname);
+	fflush(stdout);
 	if (sapi_sendop(strlen(pathname), SAPI_REMOVEFILE, (unsigned char)0) == -1)
 	{
 		fprintf(stdout, "removeFile : sapi_sendop returned an error\n");

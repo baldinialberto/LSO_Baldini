@@ -20,7 +20,7 @@
 #define SAPI_RESPOND(MESSAGE, CLIENT)                    \
 if (server_respond(MESSAGE, CLIENT))                        \
 {                                                        \
-    fprintf(stdout, "sapi_respond at %s", __func__);    \
+    fprintf(stdout, "server_respond at %s\n", __func__);    \
     fflush(stdout);                                    \
     return -1;                                            \
 }

@@ -4,9 +4,10 @@
 
 u_pollarr pu_initarr(size_t maxlen)
 {
-	u_pollarr arr;
+	u_pollarr arr = {0};
 	arr.len = 0;
 	arr.maxlen = maxlen;
+	arr.empty = 1;
 	if (maxlen > 0)
 	{
 		arr.arr = (struct pollfd *)mu_calloc(maxlen * sizeof(struct pollfd));
@@ -21,7 +22,7 @@ int pu_isempty(u_pollarr* arr)
 		fflush(stdout);
 		return -1;
 	}
-	return arr->len == 0;
+	return (arr->len == 0) && arr->empty;
 }
 int pu_isfull(u_pollarr* arr)
 {
@@ -33,26 +34,7 @@ int pu_isfull(u_pollarr* arr)
 	}
 	return arr->len == arr->maxlen;
 }
-size_t pu_length(u_pollarr* arr)
-{
-	if (arr == NULL)
-	{
-		fprintf(stdout, "pu_length : param arr == NULL\n");
-		fflush(stdout);
-		return 0;
-	}
-	return arr->len;
-}
-struct pollfd* pu_arr(u_pollarr* arr)
-{
-	if (arr == NULL)
-	{
-		fprintf(stdout, "pu_arr : param arr == NULL\n");
-		fflush(stdout);
-		return NULL;
-	}
-	return arr->arr;
-}
+
 int pu_add(u_pollarr* arr, int newfd, short events)
 {
 	if (arr == NULL)
@@ -86,20 +68,20 @@ int pu_remove(u_pollarr* arr, int oldfd)
 		fflush(stdout);
 		return -1;
 	}
-	int i = (int)(arr->len) - 1;
-	for (; i >= 0 && (arr->arr)[i].fd != oldfd; i--);
-	if (i >= 0) //found
+	size_t i = arr->len > 0 ? arr->len - 1 : 0;
+	for (; i > 0 && (arr->arr)[i].fd != oldfd; i--);
+	if (i == 0 && (arr->arr)[i].fd != oldfd) return -1;
+
+	//found
+	if (i != (arr->len - 1))
 	{
-		if (i != (arr->len - 1))
-		{
-			memcpy(arr->arr + i, arr->arr + arr->len - 1,
-				sizeof(struct pollfd));
-		}
-		memset(arr->arr + arr->len - 1, 0, sizeof(struct pollfd));
-		(arr->len)--;
-		return 0;
+		memcpy(arr->arr + i, arr->arr + arr->len - 1,
+			sizeof(struct pollfd));
 	}
-	return -1;
+	memset(arr->arr + arr->len - 1, 0, sizeof(struct pollfd));
+	(arr->len)--;
+	return 0;
+
 }
 int pu_free(u_pollarr* arr)
 {

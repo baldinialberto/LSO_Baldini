@@ -22,15 +22,24 @@ int main(int argc, char** argv)
 		if (errno)
 		{ perror("openConnection"); }
 		connected = 0;
+	} else {
+		puts("Connected");
 	}
 
-	write_files_list(&(conf.files_to_write), conf.writeback_foldername, conf.connection_timer);
-	read_files_list(&(conf.files_to_read), conf.folder_destination, conf.connection_timer);
+
+	write_nfiles_from_dir(conf.folder_to_write, (int)conf.folder_filecount, conf.writeback_foldername, conf.connection_timer);
+	//write_files_list(&(conf.files_to_write), conf.writeback_foldername, conf.connection_timer);
+	//read_files_list(&(conf.files_to_read), conf.folder_destination, conf.connection_timer);
+	readNFiles((int)conf.read_filecount, conf.folder_destination);
+	//remove_files_list(&(conf.files_to_delete), conf.connection_timer);
+
 
 	if (connected && closeConnection(conf.server_socket_filename))
 	{
 		perror("closeConnection");
 	}
+
+	puts("Disconnected");
 
 	client_conf_cleanup(&conf);
 
@@ -297,29 +306,43 @@ int read_files_list(u_list* filelist, const char* destdir, long int msec)
 	return res ? -1 : 0;
 }
 
-int lock_files_list(u_list* filelist)
+int lock_files_list(u_list* filelist, long int msec)
 {
+	struct timespec t;
+	t.tv_sec = msec / 1000;
+	t.tv_nsec = msec % 1000 * 1000000;
 	int res = 0;
 	lu_foreach(filelist,
 		res += lockFile((char*)i->data);
+		nanosleep(&t, NULL);
 	);
 	return res ? -1 : 0;
 }
 
-int unlock_files_list(u_list* filelist)
+int unlock_files_list(u_list* filelist, long int msec)
 {
+	struct timespec t;
+	t.tv_sec = msec / 1000;
+	t.tv_nsec = msec % 1000 * 1000000;
 	int res = 0;
 	lu_foreach(filelist,
 		res += unlockFile((char*)i->data);
+		nanosleep(&t, NULL);
 	);
 	return res ? -1 : 0;
 }
 
-int remove_files_list(u_list* filelist)
+int remove_files_list(u_list* filelist, long int msec)
 {
+	struct timespec t;
+	t.tv_sec = msec / 1000;
+	t.tv_nsec = msec % 1000 * 1000000;
 	int res = 0;
 	lu_foreach(filelist,
+		res += openFile((char*)i->data, 0);
+		nanosleep(&t, NULL);
 		res += removeFile((char*)i->data);
+		nanosleep(&t, NULL);
 	);
 	return res ? -1 : 0;
 }

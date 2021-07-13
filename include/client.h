@@ -28,8 +28,8 @@ int conf_add_list(const char* p_optarg, u_list* list);
 int write_nfiles_from_dir(const char* dirname, int nfiles, const char* wbdir, size_t msec);
 int write_files_list(u_list* filelist, const char* wbdir, long int msec);
 int read_files_list(u_list* filelist, const char* destdir, long int msec);
-int lock_files_list(u_list* filelist);
-int unlock_files_list(u_list* filelist);
-int remove_files_list(u_list* filelist);
+int lock_files_list(u_list* filelist, long int msec);
+int unlock_files_list(u_list* filelist, long int msec);
+int remove_files_list(u_list* filelist, long int msec);
 
 #endif

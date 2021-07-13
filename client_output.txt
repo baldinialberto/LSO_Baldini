@@ -1,833 +1,81 @@
+==24516== Memcheck, a memory error detector
+==24516== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==24516== Using Valgrind-3.15.0 and LibVEX; rerun with -h for copyright info
+==24516== Command: ./client.exe -f MyServerSocket.socket -D /home/alberto/LSO_Baldini/evicted -d /home/alberto/LSO_Baldini/readen -w /home/alberto/LSO_Baldini/to_write,10 -R 10
+==24516== 
+lu_init_list
+lu_init_list
+lu_init_list
+lu_init_list
+lu_init_list
 char *server_socket_filename = MyServerSocket.socket
 char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
+char *folder_to_write = /home/alberto/LSO_Baldini/to_write
 char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
+unsigned int folder_filecount = 10
+unsigned int read_filecount = 10
 unsigned int connection_timer = 0
 bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_100.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_100.txt(NULL)
+lu_print
+lu_is_empty
 (NULL)
+lu_print
+lu_is_empty
 (NULL)
+lu_print
+lu_is_empty
 (NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_101.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_101.txt(NULL)
+lu_print
+lu_is_empty
 (NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_102.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_102.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_105.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_105.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_107.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_107.txt(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_106.txt(NULL)
-(NULL)
-/home/alberto/LSO_Baldini/to_write/file_106.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_108.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_108.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_109.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_109.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_110.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_110.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_120.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_120.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_124.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_124.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_123.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_123.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_121.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_121.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_111.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_111.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_112.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_112.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_114.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_114.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_115.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_115.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_126.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_126.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_122.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_122.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_128.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_128.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_129.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_129.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_127.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_127.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_125.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_125.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_131.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_131.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_132.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_132.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_133.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_133.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_136.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_136.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_119.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_119.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_118.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_118.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_113.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_113.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_116.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_116.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_138.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_138.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_139.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_139.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_140.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_140.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_142.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_142.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_117.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_117.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_143.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_143.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_130.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_130.txt(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_135.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_135.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_137.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_137.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_141.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_141.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_144.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_144.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_104.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_104.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_145.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_145.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_134.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_134.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_149.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_149.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_146.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_146.txt(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_147.txt(NULL)
-(NULL)
-/home/alberto/LSO_Baldini/to_write/file_147.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_148.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_148.txt(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-(NULL)
-char *server_socket_filename = MyServerSocket.socket
-char *writeback_foldername = /home/alberto/LSO_Baldini/evicted
-char *folder_to_write = NULL
-char *folder_destination = /home/alberto/LSO_Baldini/readen
-unsigned int folder_filecount = 0
-unsigned int read_filecount = 0
-unsigned int connection_timer = 0
-bool verbose = 0
-/home/alberto/LSO_Baldini/to_write/file_103.txt(NULL)
-/home/alberto/LSO_Baldini/to_write/file_103.txt(NULL)
-(NULL)
-(NULL)
+lu_print
+lu_is_empty
 (NULL)
 openConnection
+Connected
+lu_init_list
+lu_init_list
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_get
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
+lu_insert
+lu_alloc_node
+lu_navigate
 openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_141.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_144.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_105.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_104.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_108.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_111.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_115.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_109.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_114.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_118.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_110.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_149.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_132.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_129.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_147.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_106.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_146.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_133.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_128.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_103.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_122.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_131.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_148.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_113.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_102.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_138.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_116.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_125.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_139.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_124.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_127.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_136.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_107.txt, flags = 1
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_158.txt, flags = 1
 sapi_sendop
 sapi_senddata
 sapi_get_response
 writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_130.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_140.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_142.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_121.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_120.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_143.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_117.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_123.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_112.txt, flags = 1
-openConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_145.txt, flags = 1
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_115.txt
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_158.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -837,22 +85,17 @@ sapi_get_response
 sapi_senddata
 sapi_get_response
 closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt -0%
-fu_read_from_path
-fu_file_read
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_158.txt
 sapi_sendop
 sapi_senddata
-sapi_senddatalen
 sapi_get_response
-sapi_senddata
-sapi_get_response
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt -0%
+openFile
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_164.txt, flags = 1
 sapi_sendop
 sapi_senddata
 sapi_get_response
 writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_164.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -862,16 +105,17 @@ sapi_get_response
 sapi_senddata
 sapi_get_response
 closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt -0%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_164.txt
 sapi_sendop
 sapi_senddata
 sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt -100%
+openFile
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_167.txt, flags = 1
 sapi_sendop
 sapi_senddata
 sapi_get_response
 writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_167.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -881,36 +125,17 @@ sapi_get_response
 sapi_senddata
 sapi_get_response
 closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt -0%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt, flags = 0
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_167.txt
 sapi_sendop
 sapi_senddata
 sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt -100%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt -100%
 openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt, flags = 0
-fu_read_from_path
-fu_file_read
-sapi_sendop
-sapi_senddata
-sapi_senddatalen
-sapi_get_response
-sapi_senddata
-sapi_get_response
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt -0%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt, flags = 0
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_178.txt, flags = 1
 sapi_sendop
 sapi_senddata
 sapi_get_response
 writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_105.txt
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_178.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -920,23 +145,17 @@ sapi_get_response
 sapi_senddata
 sapi_get_response
 closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_115.txt -0%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_178.txt
 sapi_sendop
 sapi_senddata
 sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt -100%
+openFile
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_199.txt, flags = 1
 sapi_sendop
 sapi_senddata
 sapi_get_response
 writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_118.txt
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt, flags = 0
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_199.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -946,7 +165,17 @@ sapi_get_response
 sapi_senddata
 sapi_get_response
 closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt -0%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_199.txt
+sapi_sendop
+sapi_senddata
+sapi_get_response
+openFile
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_41.txt, flags = 1
+sapi_sendop
+sapi_senddata
+sapi_get_response
+writeFile
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_41.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -956,60 +185,17 @@ sapi_get_response
 sapi_senddata
 sapi_get_response
 closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt -0%
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_41.txt
 sapi_sendop
 sapi_senddata
 sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt -100%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
 openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_115.txt, flags = 0
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_74.txt, flags = 1
 sapi_sendop
 sapi_senddata
 sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt -100%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_get_data
-mu_realloc size = 134000
-fu_write_to_path
-fu_file_write
-fu_ensure_path
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [readen]
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [to_write]
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt -0%
+writeFile
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_74.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
@@ -1018,119 +204,85 @@ sapi_senddatalen
 sapi_get_response
 sapi_senddata
 sapi_get_response
-writeFile : sapi_getresponse returned an error
+closeFile
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_74.txt
 sapi_sendop
 sapi_senddata
 sapi_get_response
-sapi_get_data
-mu_realloc size = 126000
-fu_write_to_path
-fu_file_write
-fu_ensure_path
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [readen]
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [to_write]
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt -0%
-sapi_printerror
-sapi : server error
 openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_118.txt, flags = 0
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_85.txt, flags = 1
+sapi_sendop
+sapi_senddata
+sapi_get_response
+writeFile
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_85.txt
 fu_read_from_path
 fu_file_read
 sapi_sendop
 sapi_senddata
 sapi_senddatalen
 sapi_get_response
-sapi_senddatalen
-sapi_evict
-dirname = /home/alberto/LSO_Baldini/evicted
+sapi_senddata
+sapi_get_response
+closeFile
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_85.txt
+sapi_sendop
+sapi_senddata
+sapi_get_response
+openFile
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_87.txt, flags = 1
+sapi_sendop
+sapi_senddata
+sapi_get_response
+writeFile
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_87.txt
+fu_read_from_path
+fu_file_read
+sapi_sendop
+sapi_senddata
 sapi_senddatalen
 sapi_get_response
+sapi_senddata
+sapi_get_response
+closeFile
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_87.txt
+sapi_sendop
+sapi_senddata
+sapi_get_response
+openFile
+openFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_90.txt, flags = 1
+sapi_sendop
+sapi_senddata
+sapi_get_response
+writeFile
+writeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_90.txt
+fu_read_from_path
+fu_file_read
+sapi_sendop
+sapi_senddata
+sapi_senddatalen
+sapi_get_response
+sapi_senddata
+sapi_get_response
+closeFile
+closeFile pathname = /home/alberto/LSO_Baldini/to_write/testFile_90.txt
+sapi_sendop
+sapi_senddata
+sapi_get_response
+lu_free
+lu_is_empty
+lu_remove
+lu_is_empty
+lu_navigate
+lu_free
+lu_is_empty
+readNFiles
+sapi_sendop
 sapi_get_path
-path = [/home/alberto/LSO_Baldini/to_write/file_100.txt]
-sapi_evict, file to evict = /home/alberto/LSO_Baldini/evicted//home/alberto/LSO_Baldini/to_write/file_100.txt
+sapi_get_path, path_len = 50
+path = /home/alberto/LSO_Baldini/to_write/testFile_41.txt
 sapi_get_data
-mu_realloc size = 100000
-fu_write_to_path
-fu_file_write
-fu_ensure_path
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [evicted]
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [to_write]
-sapi_get_response
-sapi_printerror
-sapi : server evict
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt -100%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_105.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_111.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_105.txt
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_115.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_132.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_107.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_get_data
-mu_realloc size = 119000
+mu_realloc size = 41000
 fu_write_to_path
 fu_file_write
 fu_ensure_path
@@ -1142,208 +294,11 @@ current token = [home]
 current token = [alberto]
 current token = [LSO_Baldini]
 current token = [to_write]
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_119.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_get_data
-mu_realloc size = 135000
-fu_write_to_path
-fu_file_write
-fu_ensure_path
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [readen]
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [to_write]
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_135.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_126.txt -100%
-closeConnection
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_100.txt failed
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_118.txt
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_100.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_134.txt -100%
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_114.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_132.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_107.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_get_data
-mu_realloc size = 137000
-fu_write_to_path
-fu_file_write
-fu_ensure_path
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [readen]
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [to_write]
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_137.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-fu_read_from_path
-fu_file_read
-sapi_sendop
-sapi_senddata
-sapi_senddatalen
-sapi_get_response
-sapi_senddatalen
-sapi_evict
-dirname = /home/alberto/LSO_Baldini/evicted
-sapi_senddatalen
-sapi_get_response
 sapi_get_path
-path = [/home/alberto/LSO_Baldini/to_write/file_134.txt]
-sapi_evict, file to evict = /home/alberto/LSO_Baldini/evicted//home/alberto/LSO_Baldini/to_write/file_134.txt
+sapi_get_path, path_len = 51
+path = /home/alberto/LSO_Baldini/to_write/testFile_158.txt
 sapi_get_data
-mu_realloc size = 134000
-fu_write_to_path
-fu_file_write
-fu_ensure_path
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [evicted]
-current token = [home]
-current token = [alberto]
-current token = [LSO_Baldini]
-current token = [to_write]
-sapi_get_response
-sapi_printerror
-sapi : server evict
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-closeConnection
-read of /home/alberto/LSO_Baldini/to_write/file_105.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_105.txt -0%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_111.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-read of /home/alberto/LSO_Baldini/to_write/file_115.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_115.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_111.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_121.txt
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_114.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_107.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_get_data
-mu_realloc size = 101000
+mu_realloc size = 158000
 fu_write_to_path
 fu_file_write
 fu_ensure_path
@@ -1355,1296 +310,64 @@ current token = [home]
 current token = [alberto]
 current token = [LSO_Baldini]
 current token = [to_write]
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_101.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_printerror
-sapi : server error
-read of /home/alberto/LSO_Baldini/to_write/file_132.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_107.txt -0%
-closeConnection
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_132.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_133.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-read of /home/alberto/LSO_Baldini/to_write/file_111.txt failed
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_114.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_111.txt -0%
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_114.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_105.txt -100%
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_133.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_108.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_129.txt
-fu_read_from_path
-fu_file_read
-sapi_sendop
-sapi_senddata
-sapi_senddatalen
-sapi_get_response
-sapi_senddatalen
-sapi_evict
-dirname = /home/alberto/LSO_Baldini/evicted
-sapi_senddatalen
-sapi_get_response
 sapi_get_path
-path = [/home/alberto/LSO_Baldini/to_write/file_126.txt]
-sapi_evict, file to evict = /home/alberto/LSO_Baldini/evicted//home/alberto/LSO_Baldini/to_write/file_126.txt
+sapi_get_path, path_len = 51
+path = /home/alberto/LSO_Baldini/to_write/testFile_164.txt
 sapi_get_data
-mu_realloc size = 126000
+mu_realloc size = 164000
 fu_write_to_path
 fu_file_write
 fu_ensure_path
 current token = [home]
 current token = [alberto]
 current token = [LSO_Baldini]
-current token = [evicted]
+current token = [readen]
 current token = [home]
 current token = [alberto]
 current token = [LSO_Baldini]
 current token = [to_write]
-sapi_get_response
-sapi_printerror
-sapi : server evict
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_121.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_111.txt -100%
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_121.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-read of /home/alberto/LSO_Baldini/to_write/file_121.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_133.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_121.txt -0%
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_133.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_108.txt
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_140.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_121.txt -100%
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-writeFile
-writeFile pathname = /home/alberto/LSO_Baldini/to_write/file_112.txt
-fu_read_from_path
-fu_file_read
-sapi_sendop
-sapi_senddata
-sapi_senddatalen
-sapi_get_response
-sapi_senddatalen
-sapi_evict
-dirname = /home/alberto/LSO_Baldini/evicted
-sapi_senddatalen
-sapi_get_response
 sapi_get_path
-path = [/home/alberto/LSO_Baldini/to_write/file_135.txt]
-sapi_evict, file to evict = /home/alberto/LSO_Baldini/evicted//home/alberto/LSO_Baldini/to_write/file_135.txt
+sapi_get_path, path_len = 50
+path = /home/alberto/LSO_Baldini/to_write/testFile_74.txt
 sapi_get_data
-mu_realloc size = 135000
+mu_realloc size = 74000
 fu_write_to_path
 fu_file_write
 fu_ensure_path
 current token = [home]
 current token = [alberto]
 current token = [LSO_Baldini]
-current token = [evicted]
+current token = [readen]
 current token = [home]
 current token = [alberto]
 current token = [LSO_Baldini]
 current token = [to_write]
-sapi_get_response
-sapi_printerror
-sapi : server evict
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_129.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_129.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_109.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_108.txt failed
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_140.txt
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_108.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_143.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_109.txt
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_128.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-read of /home/alberto/LSO_Baldini/to_write/file_129.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_129.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-fu_read_from_path
-fu_file_read
-sapi_sendop
-sapi_senddata
-sapi_senddatalen
-sapi_get_response
-sapi_senddatalen
-sapi_evict
-dirname = /home/alberto/LSO_Baldini/evicted
-sapi_senddatalen
-sapi_get_response
-sapi_printerror
-sapi : server evict
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_112.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_143.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_112.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_140.txt failed
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_110.txt, flags = 0
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_140.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_109.txt failed
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_141.txt, flags = 0
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_109.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-read of /home/alberto/LSO_Baldini/to_write/file_112.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_112.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_129.txt -100%
-closeConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_131.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_143.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_143.txt -0%
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_128.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_110.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_144.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_141.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_128.txt failed
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_131.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_128.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_145.txt, flags = 0
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_106.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_144.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_110.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_131.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_110.txt -0%
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_131.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_141.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_141.txt -0%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_138.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_145.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_106.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_122.txt, flags = 0
-closeConnection
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_144.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_144.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_138.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_145.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_106.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_145.txt -0%
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_139.txt, flags = 0
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_113.txt, flags = 0
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_106.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_138.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_138.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_122.txt
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_136.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_139.txt
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_113.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_102.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_printerror
-sapi : server error
-closeConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_116.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_136.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_139.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_139.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_122.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_113.txt failed
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_142.txt, flags = 0
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_113.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_122.txt -0%
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_124.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_116.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_102.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_125.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_116.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_116.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_136.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_136.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_142.txt
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_124.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_117.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_127.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_125.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_142.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_142.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_130.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_102.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_102.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_124.txt failed
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_117.txt
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_124.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_120.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_127.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_130.txt
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_117.txt failed
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_123.txt, flags = 0
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_117.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_125.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_125.txt -0%
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_130.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_127.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_130.txt -0%
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_127.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_146.txt, flags = 0
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_120.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_123.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_120.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_104.txt, flags = 0
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_120.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_147.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_149.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_146.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_123.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_103.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : server error
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_149.txt
-openFile
-openFile pathname = /home/alberto/LSO_Baldini/to_write/file_148.txt, flags = 0
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_123.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_146.txt failed
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_104.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_147.txt
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_146.txt -0%
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_148.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_149.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_149.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-openFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_104.txt failed
-readFile
-readFile pathname = /home/alberto/LSO_Baldini/to_write/file_103.txt
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_148.txt failed
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_104.txt -0%
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_148.txt -0%
-read of /home/alberto/LSO_Baldini/to_write/file_147.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-readFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-read of /home/alberto/LSO_Baldini/to_write/file_103.txt failed
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_147.txt -0%
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_103.txt -0%
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-closeFile : sapi_getresponse returned an error
-sapi_printerror
-sapi : file not found
-closeConnection
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_getresponse : read returned an error
-sapi_getresponse : read: Connection reset by peer
-sapi_sendop
-sapi_senddata
-sapi_get_response
-sapi_get_data
-readFile : sapi_get_data returned an error
-closeFile : sapi_getresponse returned an error
-read of /home/alberto/LSO_Baldini/to_write/file_118.txt failed
-sapi_printerror
-sapi : server error
-closeConnection
-closeFile
-closeFile pathname = /home/alberto/LSO_Baldini/to_write/file_118.txt -0%
+sapi_get_path
+sapi_get_path, path_len = 5787775677738995273
+mu_realloc called with argument 5787775677738995274
+==24516== 
+==24516== HEAP SUMMARY:
+==24516==     in use at exit: 36 bytes in 2 blocks
+==24516==   total heap usage: 1,346 allocs, 1,344 frees, 91,587,352 bytes allocated
+==24516== 
+==24516== 1 bytes in 1 blocks are still reachable in loss record 1 of 2
+==24516==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24516==    by 0x4884BBB: mu_realloc (mem_utils.c:38)
+==24516==    by 0x488509F: su_realloc (string_utils.c:88)
+==24516==    by 0x10D5DA: readNFiles (serverapi.c:528)
+==24516==    by 0x10A7D1: main (client.c:33)
+==24516== 
+==24516== 35 bytes in 1 blocks are still reachable in loss record 2 of 2
+==24516==    at 0x483DFAF: realloc (in /usr/lib/x86_64-linux-gnu/valgrind/vgpreload_memcheck-amd64-linux.so)
+==24516==    by 0x4884BBB: mu_realloc (mem_utils.c:38)
+==24516==    by 0x10A984: parseargs (client.c:83)
+==24516==    by 0x10A72B: main (client.c:15)
+==24516== 
+==24516== LEAK SUMMARY:
+==24516==    definitely lost: 0 bytes in 0 blocks
+==24516==    indirectly lost: 0 bytes in 0 blocks
+==24516==      possibly lost: 0 bytes in 0 blocks
+==24516==    still reachable: 36 bytes in 2 blocks
+==24516==         suppressed: 0 bytes in 0 blocks
+==24516== 
+==24516== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

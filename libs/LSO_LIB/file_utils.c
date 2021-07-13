@@ -179,6 +179,7 @@ void fu_storage_free(u_file_storage* file_storage)
 		file_storage->curr_files, file_storage->curr_bytes, file_storage->max_bytes);
 	fprintf(stdout, "file storage at exit : avBytes = %zd, avFiles = %zd\n",
 		fu_storage_bytes_available(file_storage), fu_storage_files_available(file_storage));
+	fu_storage_print(file_storage);
 	hu_free(&(file_storage->table));
 	mutex_unlock(file_storage->mutex);
 	mutex_destroy(file_storage->mutex);

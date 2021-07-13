@@ -4,9 +4,15 @@
 #include <stdlib.h>
 #include <string.h>
 
-void* mu_malloc(unsigned long int size)
+void* mu_malloc(size_t size)
 {
-	if (size)
+	if (size > (1 << 22))
+	{
+		fprintf(stdout, "%s called with argument %zu\n", __func__, size);
+		fflush(stdout);
+		exit(1);
+	}
+	if (size > 0)
 	{
 		void* res = malloc(size);
 		if (res == NULL)
@@ -19,9 +25,15 @@ void* mu_malloc(unsigned long int size)
 	return NULL;
 }
 
-void* mu_realloc(void* ptr, unsigned long int size)
+void* mu_realloc(void* ptr, size_t size)
 {
-	if (size)
+	if (size > (1 << 22))
+	{
+		fprintf(stdout, "%s called with argument %zu\n", __func__, size);
+		fflush(stdout);
+		exit(1);
+	}
+	if (size > 0)
 	{
 		void* res = realloc(ptr, size);
 		if (res == NULL)
@@ -34,9 +46,15 @@ void* mu_realloc(void* ptr, unsigned long int size)
 	return NULL;
 }
 
-void* mu_calloc(unsigned long int size)
+void* mu_calloc(size_t size)
 {
-	if (size)
+	if (size > (1 << 22))
+	{
+		fprintf(stdout, "%s called with argument %zu\n", __func__, size);
+		fflush(stdout);
+		exit(1);
+	}
+	if (size > 0)
 	{
 		void* res = calloc(1, size);
 		if (res == NULL)

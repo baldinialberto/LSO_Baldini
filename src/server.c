@@ -12,15 +12,6 @@
 #include <poll_utils.h>
 #include <server_message.h>
 
-void int_print(const void* x)
-{
-	printf("%d, ", *((int*)x));
-}
-
-int int_comp(const void* a, const void* b)
-{
-	return *((int*)a) - *((int*)b);
-}
 
 int main(int argc, char** argv)
 {
@@ -29,10 +20,13 @@ int main(int argc, char** argv)
 	static server_settings settings;
 	static server_infos infos;
 
+
 	CHECK_PERROR_EXIT(init_server_settings(&settings),
 		"init_server_settings at main")
 	CHECK_PERROR_EXIT(init_server_infos(&settings, &infos),
 		"init_server_infos at main")
+
+	print_server_settings(&settings);
 
 	CHECK_PERROR_EXIT((tu_create_thread_detached(&server_signal_handler, (void*)&infos)),
 		"tu_create_thread_detached at main")
@@ -145,7 +139,7 @@ void server_dispatcher(server_infos* infos)
 		if (infos->server_hu)
 		{ pu_remove(&(infos->poll_arr), infos->server_socket_fd); }
 
-		for (size_t i = 0; i < infos->poll_arr.len; i++) printf("%d->", infos->poll_arr.arr[i].fd);
+		//for (size_t i = 0; i < infos->poll_arr.len; i++) printf("%d->", infos->poll_arr.arr[i].fd);
 		printf("\n");
 
 		poll_ready = poll(infos->poll_arr.arr, infos->poll_arr.len, 100);
@@ -178,6 +172,7 @@ void server_dispatcher(server_infos* infos)
 					}
 					else
 					{
+						infos->poll_arr.empty = 0;
 						pu_remove(&(infos->poll_arr), infos->poll_arr.arr[i].fd);
 					}
 				}
@@ -262,6 +257,7 @@ void* server_worker(void* worker_arg)
 			pu_add(&(worker_infos->infos->poll_arr),
 				(worker_infos->infos->workers_clients)[worker_infos->worker_id],
 				POLLIN | POLLHUP);
+			worker_infos->infos->poll_arr.empty = 1;
 		}
 
 		(worker_infos->infos->workers_clients)[worker_infos->worker_id] = 0;
@@ -500,7 +496,7 @@ SOCKET_NAME = %s\n\
 LOGFILE_NAME = %s\n\
 CLIENT_MAX = %d\n",
 		setts->n_workers,
-		setts->available_Memory,
+		setts->available_Memory >> 20,
 		setts->maxFileCount,
 		setts->socket_name,
 		setts->logfile_name,
@@ -561,7 +557,7 @@ void get_setting(char** str, FILE* fstream, server_settings* setts)
 	{
 		if (fscanf(fstream, "%d", &int_sett) != 1)
 		{ return; }
-		setts->available_Memory = int_sett * 0xFFFFF;
+		setts->available_Memory = int_sett << 20;
 	}
 	else if (!strcmp(*str, CONFIG_CLIENT_MAX))
 	{
@@ -858,12 +854,85 @@ int server_readFile(s_message message, int client, u_file_storage* storage)
 
 int server_readNFiles(s_message message, int client, u_file_storage* storage)
 {
+	DEBUG(puts(__func__);)
 	if (message == 0 || client == 0 || storage == NULL)
 	{
 		fprintf(stdout, "server_readNFiles : wrong params\n");
 		fflush(stdout);
 		return -1;
 	}
+	unsigned int n_files = message >> SAPI_MSSLEN_SHFT;
+	printf("%s, must read %d files\n", __func__, n_files);
+	mutex_lock(storage->mutex);
+	u_file_data *file = NULL;
+	char *file_name = NULL;
+	size_t bad_res = 0;
+
+	hu_foreach(
+		storage->table.table, storage->table.n_entries,
+		puts("hu_foreach iteration");
+			if (n_files == 0)
+			{
+				puts("no more files");
+				mutex_unlock(storage->mutex);
+				if (write(client, &bad_res, sizeof(size_t)) == -1)
+				{
+					if (errno)
+					{
+						perror("write at server_readNFiles");
+						errno = 0;
+					}
+					return -1;
+				}
+				return 0;
+			}
+			puts("there's more files");
+			file = hi->data;
+			file_name = (char *)hi->key;
+			if (pthread_mutex_trylock(&(file->mutex)) == 0)
+			{
+				puts("lock granted");
+				if (file->data_len > 0)
+				{
+					file->data_info++;
+					puts("there's data");
+					if (server_send_path(client, file_name))
+					{
+						mutex_unlock(file->mutex);
+						mutex_unlock(storage->mutex);
+						SAPI_RESPOND(SAPI_FAILURE, client);
+						return -1;
+					}
+					puts("path sended");
+					if (server_send_data(client, file->data, file->data_len))
+					{
+						mutex_unlock(file->mutex);
+						mutex_unlock(storage->mutex);
+						SAPI_RESPOND(SAPI_FAILURE, client);
+						return -1;
+					}
+					puts("data sended");
+					n_files--;
+				} else {
+					puts("there's no data");
+				}
+				mutex_unlock(file->mutex);
+			} else {
+				puts("lock not granted");
+			}
+		)
+	mutex_unlock(storage->mutex);
+	if (write(client, &bad_res, sizeof(size_t)) == -1)
+	{
+		if (errno)
+		{
+			perror("write at server_readNFiles");
+			errno = 0;
+		}
+		return -1;
+	}
+
+
 	return 0;
 }
 
@@ -1255,6 +1324,7 @@ int server_send_path(int client, const char* path)
 		fflush(stdout);
 		return -1;
 	}
+	printf("%s, path = %s\n", __func__, path);
 	size_t path_len = strlen(path);
 	if (write(client, &path_len, sizeof(size_t)) == -1)
 	{

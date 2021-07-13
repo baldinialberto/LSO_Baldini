@@ -11,9 +11,10 @@
 u_list lu_init_list(size_t element_size, int (* compare_func)(const void*, const void*),
 	void (* free_func)(void*), void (* print_func)(const void*))
 {
+	puts(__func__);
 	u_list new_list = { 0 };
 
-	if (element_size != 0 && compare_func != NULL && print_func != NULL && free_func != NULL)
+	if (element_size != 0 && compare_func != NULL && free_func != NULL)
 	{
 		new_list.element_size = element_size;
 		new_list.free = free_func;
@@ -30,6 +31,7 @@ u_list lu_init_list(size_t element_size, int (* compare_func)(const void*, const
 }
 u_list_node* lu_alloc_node(void* data)
 {
+	puts(__func__);
 	if (data == NULL)
 	{
 		fprintf(stdout, "lu_alloc_node : wrong params\n");
@@ -43,6 +45,7 @@ u_list_node* lu_alloc_node(void* data)
 }
 int lu_insert(u_list* list, const void* data)
 {
+	puts(__func__);
 	if (list == NULL || data == NULL)
 	{
 		fprintf(stdout, "lu_insert : wrong params\n");
@@ -66,6 +69,7 @@ int lu_insert(u_list* list, const void* data)
 }
 int lu_remove(u_list* list, const void* data)
 {
+	puts(__func__);
 	if (list == NULL || data == NULL)
 	{
 		fprintf(stdout, "lu_remove : wrong params\n");
@@ -106,6 +110,7 @@ int lu_remove(u_list* list, const void* data)
 }
 void lu_navigate(u_list* list, u_list_node** curr, u_list_node** prev, const void* data)
 {
+	puts(__func__);
 	*curr = list->head;
 	*prev = NULL;
 	while (*curr != NULL && list->compare(data, (*curr)->data) > 0)
@@ -116,6 +121,7 @@ void lu_navigate(u_list* list, u_list_node** curr, u_list_node** prev, const voi
 }
 long int lu_index_of_obj(u_list* list, const void* obj)
 {
+	puts(__func__);
 	if (list == NULL || obj == NULL)
 	{
 		fprintf(stdout, "lu_index_of_obj : wrong params\n");
@@ -134,6 +140,7 @@ long int lu_index_of_obj(u_list* list, const void* obj)
 }
 int lu_is_empty(u_list* list)
 {
+	puts(__func__);
 	if (list == NULL)
 	{
 		fprintf(stdout, "lu_index_of_obj : wrong params\n");
@@ -144,6 +151,7 @@ int lu_is_empty(u_list* list)
 }
 void* lu_get(u_list* list, long int index)
 {
+	puts(__func__);
 	if (list == NULL)
 	{
 		fprintf(stdout, "lu_get : wrong params\n");
@@ -166,6 +174,7 @@ void* lu_get(u_list* list, long int index)
 }
 void lu_free(u_list* list)
 {
+	puts(__func__);
 	if (list == NULL)
 	{
 		fprintf(stdout, "lu_free : wrong params\n");
@@ -186,6 +195,7 @@ void lu_free(u_list* list)
 }
 void lu_print(u_list* list)
 {
+	puts(__func__);
 	if (list == NULL)
 	{
 		fprintf(stdout, "lu_print : wrong params\n");
@@ -206,6 +216,7 @@ void lu_print(u_list* list)
 }
 void* lu_plain_arr(u_list* list)
 {
+	puts(__func__);
 	if (list == NULL)
 	{
 		fprintf(stdout, "lu_plainarr : wrong params\n");
