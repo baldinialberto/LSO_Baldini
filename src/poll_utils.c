@@ -9,7 +9,7 @@ u_pollarr pu_initarr(size_t maxlen)
 	arr.maxlen = maxlen;
 	if (maxlen > 0)
 	{
-		arr.arr = mu_calloc(maxlen * sizeof(struct pollfd));
+		arr.arr = (struct pollfd *)mu_calloc(maxlen * sizeof(struct pollfd));
 	}
 	return arr;
 }
@@ -86,7 +86,7 @@ int pu_remove(u_pollarr* arr, int oldfd)
 		fflush(stdout);
 		return -1;
 	}
-	size_t i = arr->len - 1;
+	int i = (int)(arr->len) - 1;
 	for (; i >= 0 && (arr->arr)[i].fd != oldfd; i--);
 	if (i >= 0) //found
 	{
@@ -99,10 +99,7 @@ int pu_remove(u_pollarr* arr, int oldfd)
 		(arr->len)--;
 		return 0;
 	}
-	else
-	{
-		return -1;
-	}
+	return -1;
 }
 int pu_free(u_pollarr* arr)
 {

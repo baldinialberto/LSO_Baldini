@@ -9,6 +9,7 @@ TARGETS:= client.exe server.exe
 
 
 all : lib $(TARGETS)
+	cd to_write && bash ./autogen.sh && cd ../
 	-rm -f *.o
 	cd libs/LSO_LIB && make clean && cd ../../
 
@@ -26,4 +27,7 @@ client.exe : client.o dir_utils.o serverapi.o
 
 clean : 
 	-rm -f *.o *.exe *.socket *.log
+	-rm -f to_write/*.txt
+	-rm -r -f readen
+	-rm -r -f evicted
 	cd libs/LSO_LIB && make clean && make clean_lib && cd ../../

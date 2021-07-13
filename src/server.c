@@ -148,7 +148,7 @@ void server_dispatcher(server_infos* infos)
 		for (size_t i = 0; i < infos->poll_arr.len; i++) printf("%d->", infos->poll_arr.arr[i].fd);
 		printf("\n");
 
-		poll_ready = poll(infos->poll_arr.arr, infos->poll_arr.len, 1000);
+		poll_ready = poll(infos->poll_arr.arr, infos->poll_arr.len, 100);
 
 		for (size_t i = 0; poll_ready && (i < infos->poll_arr.len); i++)
 		{
@@ -200,7 +200,7 @@ void* server_worker(void* worker_arg)
 	int serve_ret;
 	struct timespec cond_time;
 	cond_time.tv_sec = 0;
-	cond_time.tv_nsec = 0xFFFF;
+	cond_time.tv_nsec = 0x3B9AC9FF;
 
 	while (!worker_infos->infos->server_quit)
 	{
@@ -294,7 +294,7 @@ void* server_signal_handler(void* infos)
 		perror("server_signal_handler : sigwait");
 	}
 
-	DEBUG(printf("\nserver_signal_handler received signal %d\n", sig));
+	DEBUG(printf("////////////////\nserver_signal_handler received signal %d\n////////////\n", sig));
 
 	if (sig == SIGINT || sig == SIGQUIT)
 	{
@@ -753,6 +753,8 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		if (fu_storage_bytes_available(storage) == 0 || fu_storage_files_available(storage) == 0)
 		{
 			mutex_unlock(storage->mutex);
+			mu_free(path_to_open);
+			fu_free_file_data((void *)new_file);
 			SAPI_RESPOND(SAPI_FAILURE, client);
 			return -1;
 		}
@@ -760,6 +762,7 @@ int server_openFile(s_message message, int client, u_file_storage* storage)
 		{
 			mutex_unlock(storage->mutex);
 			mu_free(path_to_open);
+			fu_free_file_data((void *)new_file);
 			fprintf(stdout, "fu_add_file at server_openFile\n");
 			fflush(stdout);
 			SAPI_RESPOND(SAPI_FAILURE, client);

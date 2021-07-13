@@ -1,1 +1,0 @@
-./client.exe -f MyServerSocket.socket -W /home/alberto/LSO_Baldini/to_write/file_7.txt,/home/alberto/LSO_Baldini/to_write/file_9.txt,/home/alberto/LSO_Baldini/to_write/file_11.txt -r /home/alberto/LSO_Baldini/to_write/file_7.txt,/home/alberto/LSO_Baldini/to_write/file_9.txt,/home/alberto/LSO_Baldini/to_write/file_11.txt -d /home/alberto/LSO_Baldini/readen

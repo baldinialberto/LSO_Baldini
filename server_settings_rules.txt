@@ -1,0 +1,17 @@
+#   Server Config File #
+#   Each line starting with [#] is a comment
+#   Settings list :
+#   NWORKERS = [Number og Thread Workers]
+#   CAPACITY = [Server's Store Capacity (MB)]
+#   FILECAPACITY = [Server's File Capacity]
+#   SOCKET_NAME = "Server Socket Name"
+#   LOGFILE_NAME = "Logfile Name"
+#   CLIENT_MAX = [Maximum number of connected clients]
+#   ...
+
+#   NWORKERS = 4
+#   CAPACITY = 32
+#   FILECAPACITY = 1000
+#   SOCKET_NAME = MyServerSocket.socket
+#   LOGFILE_NAME = MyServerLog.log
+#   CLIENT_MAX = 100
