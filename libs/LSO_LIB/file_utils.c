@@ -63,6 +63,7 @@ u_file_data* fu_alloc_file_data(void* data, size_t data_len)
 	new_file->data = data;
 	new_file->data_info = 0;
 	new_file->client = -1;
+	new_file->path = NULL;
 	mutex_init(new_file->mutex);
 
 	return new_file;
@@ -530,7 +531,7 @@ int fu_evict_compare(const void* a, const void* b)
 void fu_print_file_data(const void* x)
 {
 	DEBUG(puts(__func__));
-	printf("%s, %zu\n", (*((u_file_data**)x))->path, (*((u_file_data**)x))->data_len);
+	printf("%s, %zu\n", (*((u_file_data**)x))->path != NULL ? (*((u_file_data**)x))->path : "NULL", (*((u_file_data**)x))->data_len);
 }
 
 u_arr fu_evict_files(u_file_storage* storage, size_t bytes_to_free)

@@ -19,7 +19,9 @@ int server_socket_fd;
 int sapi_evict(const char* dirname)
 {
 	puts(__func__);
+	printf("dirname = %s\n", dirname);
 	u_string destpath = su_string_from_literal("");
+	char *path = NULL;
 	void* tempdata = NULL;
 	size_t tempdatalen = 0;
 	if (sapi_senddatalen(1))
@@ -28,17 +30,15 @@ int sapi_evict(const char* dirname)
 		fflush(stdout);
 		return -1;
 	}
-	while (sapi_getresponse() == SAPI_EVICT)
+	while (sapi_get_response() == SAPI_EVICT)
 	{
-		// there's a file to evict
-		// get filename
-		if (sapi_getdata(&tempdata, &tempdatalen))
+		if (sapi_get_path(&path))
 		{
-			fprintf(stdout, "writeFile : sapi_getdata returned an error\n");
+			fprintf(stdout, "writeFile : sapi_get_data returned an error\n");
 			fflush(stdout);
 			return -1;
 		}
-		// create destpath  = dirname + filename
+		printf("path = [%s]\n", path);
 		if (su_append_chars(&destpath, dirname))
 		{
 			fprintf(stdout, "writeFile : su_append_literal returned an error\n");
@@ -46,15 +46,24 @@ int sapi_evict(const char* dirname)
 			su_free_string(&destpath);
 			continue;
 		}
-		if (su_append_chars(&destpath, (char*)tempdata))
+		if (su_append_chars(&destpath, "/"))
 		{
 			fprintf(stdout, "writeFile : su_append_literal returned an error\n");
 			fflush(stdout);
 			su_free_string(&destpath);
 			continue;
 		}
+		if (su_append_chars(&destpath, path))
+		{
+			fprintf(stdout, "writeFile : su_append_literal returned an error\n");
+			fflush(stdout);
+			su_free_string(&destpath);
+			continue;
+		}
+
+		printf("%s, file to evict = %s\n", __func__, destpath.data);
 		// get filedata
-		if (sapi_getdata(&tempdata, &tempdatalen) == -1)
+		if (sapi_get_data(&tempdata, &tempdatalen))
 		{
 			fprintf(stdout, "writeFile : sapi_senddata returned an error\n");
 			fflush(stdout);
@@ -71,6 +80,8 @@ int sapi_evict(const char* dirname)
 		su_realloc(&destpath, 0);
 	}
 	su_free_string(&destpath);
+	mu_free(tempdata);
+	mu_free(path);
 	return 0;
 }
 void sapi_printerror(FILE* fstream, s_message message)
@@ -171,52 +182,81 @@ int sapi_senddata(void* data, size_t datalen)
 	}
 	return 0;
 }
-s_message sapi_getresponse()
+s_message sapi_get_response()
 {
 	puts(__func__);
 	s_message message;
-	puts("sapi_getresponse -50%");
 	if (read(server_socket_fd, &message, sizeof(s_message)) == -1)
 	{
-		puts("sapi_getresponse -75%");
 		fprintf(stdout, "sapi_getresponse : read returned an error\n");
 		fflush(stdout);
 		perror("sapi_getresponse : read");
 		return -1;
 	}
-	puts("sapi_getresponse -100%");
 	return message;
 }
-int sapi_getdata(void** buff, size_t* size)
+int sapi_get_path(char **path)
 {
 	puts(__func__);
-	if (buff == NULL)
+	if (path == NULL)
 	{
-		fprintf(stdout, "sapi_getdata : param buff == NULL\n");
+		fprintf(stdout, "%s : param buff == NULL\n", __func__);
+		fflush(stdout);
+
+		return -1;
+	}
+	size_t path_len;
+	if (read(server_socket_fd, &path_len, sizeof(size_t)) == -1)
+	{
+		perror("read at sapi_getpath");
+		mu_free(*path);
+		return 1;
+	}
+	*path = mu_realloc(*path, path_len + 1);
+	memset(*path + path_len, 0,  1);
+	if (read(server_socket_fd, *path, path_len) == -1)
+	{
+		perror("read at sapi_getpath");
+		mu_free(*path);
+		return 1;
+	}
+
+	//printf("path = %s\n", *path);
+
+	return 0;
+}
+int sapi_get_data(void** data, size_t* datalen)
+{
+	puts(__func__);
+	if (data == NULL)
+	{
+		fprintf(stdout, "sapi_get_data : param buff == NULL\n");
 		fflush(stdout);
 		return -1;
 	}
-	if (size == NULL)
+	if (datalen == NULL)
 	{
-		fprintf(stdout, "sapi_getdata : param size == NULL\n");
+		fprintf(stdout, "sapi_get_data : param size == NULL\n");
 		fflush(stdout);
 		return -1;
 	}
-	if (read(server_socket_fd, size, sizeof(size_t)) == -1)
+	if (read(server_socket_fd, datalen, sizeof(size_t)) == -1)
 	{
-		fprintf(stdout, "sapi_getdata : read returned an error\n");
+		fprintf(stdout, "sapi_get_data : read returned an error\n");
 		fflush(stdout);
-		perror("sapi_getdata : read");
+		perror("sapi_get_data : read");
 		return -1;
 	}
-	if (*size > 0)
+	if (*datalen > 0)
 	{
-		*buff = mu_realloc(*buff, *size);
-		if (read(server_socket_fd, *buff, *size) == -1)
+		printf("mu_realloc size = %zu\n", *datalen);
+		*data = mu_realloc(*data, *datalen);
+		memset(*data, 0, *datalen);
+		if (read(server_socket_fd, *data, *datalen) == -1)
 		{
-			fprintf(stdout, "sapi_getdata : read returned an error\n");
+			fprintf(stdout, "sapi_get_data : read returned an error\n");
 			fflush(stdout);
-			perror("sapi_getdata : read");
+			perror("sapi_get_data : read");
 			return -1;
 		}
 	}
@@ -326,7 +366,7 @@ int openFile(const char* pathname, int flags)
 		fflush(stdout);
 		return -1;
 	}
-	s_message m = sapi_getresponse();
+	s_message m = sapi_get_response();
 	if (m != SAPI_SUCCESS)
 	{
 		fprintf(stdout, "openFile : sapi_getresponse returned an error\n");
@@ -381,7 +421,7 @@ int readFile(const char* pathname, void** buf, size_t* size)
 	}
 	// receive confirmation
 	s_message m;
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "readFile : sapi_getresponse returned an error\n");
 		fflush(stdout);
@@ -389,9 +429,9 @@ int readFile(const char* pathname, void** buf, size_t* size)
 		return -1;
 	}
 	// receive data
-	if (sapi_getdata(buf, size) == -1)
+	if (sapi_get_data(buf, size) == -1)
 	{
-		fprintf(stdout, "readFile : sapi_getdata returned an error\n");
+		fprintf(stdout, "readFile : sapi_get_data returned an error\n");
 		fflush(stdout);
 		return -1;
 	}
@@ -429,7 +469,7 @@ int readNFiles(int N, const char* dirname)
 	void* buff = NULL;
 	size_t size = 0;
 	u_string destpath = su_string_from_literal("");
-	while (sapi_getdata(&buff, &size) != -1) // get filename
+	while (sapi_get_data(&buff, &size) != -1) // get filename
 	{
 		// there's data to read
 		// create destpath  = dirname + filename
@@ -448,7 +488,7 @@ int readNFiles(int N, const char* dirname)
 			continue;
 		}
 		// get filedata
-		if (sapi_getdata(&buff, &size) == -1)
+		if (sapi_get_data(&buff, &size) == -1)
 		{
 			fprintf(stdout, "readNFiles : sapi_senddata returned an error\n");
 			fflush(stdout);
@@ -492,69 +532,68 @@ int writeFile(const char* pathname, const char* dirname)
 		fflush(stdout);
 		return -1;
 	}
+	fprintf(stdout, "writeFile pathname = %s\n", pathname);
+	fflush(stdout);
 	if (fu_read_from_path(pathname, &data, &datalen) == -1)
 	{
+		mu_free(data);
 		fprintf(stdout, "writeFile : fu_readpath returned an error\n");
 		fflush(stdout);
 		return -1;
 	}
 	if (sapi_sendop(strlen(pathname), SAPI_WRITEFILE, (unsigned char)0) == -1)
 	{
+		mu_free(data);
 		fprintf(stdout, "writeFile : sapi_sendop returned an error\n");
 		fflush(stdout);
 		return -1;
 	}
 	if (sapi_senddata((void*)pathname, strlen(pathname)) == -1)
 	{
+		mu_free(data);
 		fprintf(stdout, "writeFile : sapi_senddata returned an error\n");
 		fflush(stdout);
 		return -1;
 	}
-	fprintf(stdout, "writeFile pathname = %s -60%%\n", pathname);
-	fflush(stdout);
 	if (sapi_senddatalen(datalen) == -1)
 	{
 		fprintf(stdout, "writeFile : sapi_senddatalen returned an error\n");
 		fflush(stdout);
 		return -1;
 	}
-	if ((m = sapi_getresponse()))
+	m = sapi_get_response();
+	if (m == SAPI_EVICT)
 	{
-		fprintf(stdout, "writeFile pathname = %s m = %x\n", pathname, m);
-		fflush(stdout);
-		if (m != SAPI_EVICT)
+		if (sapi_senddatalen(dirname != NULL))
 		{
-			fprintf(stdout, "writeFile : sapi_getresponse returned an error\n");
+			mu_free(data);
+			fprintf(stdout, "writeFile : sapi_sendop returned an error\n");
 			fflush(stdout);
-			sapi_printerror(stdout, m);
 			return -1;
 		}
-		if (dirname != NULL) // don't save evicted files
+		if (dirname != NULL && sapi_evict(dirname) == -1)
 		{
-			if (sapi_senddatalen(0))
-			{
-				fprintf(stdout, "writeFile : sapi_sendop returned an error\n");
-				fflush(stdout);
-				return -1;
-			}
+			mu_free(data);
+			fprintf(stdout, "writeFile : sapi_evict returned an error\n");
+			fflush(stdout);
+			return -1;
 		}
-		else    // save evicted files
-		{
-			if (sapi_evict(dirname) == -1)
-			{
-				fprintf(stdout, "writeFile : sapi_evict returned an error\n");
-				fflush(stdout);
-				return -1;
-			}
-		}
+	}
+	if (m != SAPI_SUCCESS)
+	{
+		mu_free(data);
+		sapi_printerror(stdout, m);
+		return -1;
 	}
 	if (sapi_senddata(data, datalen) == -1)
 	{
+		mu_free(data);
 		fprintf(stdout, "writeFile : sapi_senddata returned an error\n");
 		fflush(stdout);
 		return -1;
 	}
-	if ((m = sapi_getresponse()))
+	mu_free(data);
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "writeFile : sapi_getresponse returned an error\n");
 		fflush(stdout);
@@ -615,7 +654,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 		fflush(stdout);
 		return -1;
 	}
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		if (m != SAPI_EVICT)
 		{
@@ -649,7 +688,7 @@ int appendToFile(const char* pathname, void* buf, size_t size, const char* dirna
 		fflush(stdout);
 		return -1;
 	}
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "writeFile : sapi_getreponse returned an error\n");
 		fflush(stdout);
@@ -686,7 +725,7 @@ int lockFile(const char* pathname)
 		return -1;
 	}
 	s_message m;
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "lockFile : sapi_getresponse returned an error\n");
 		fflush(stdout);
@@ -723,7 +762,7 @@ int unlockFile(const char* pathname)
 		return -1;
 	}
 	s_message m;
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "unlockFile : sapi_getresponse returned an error\n");
 		fflush(stdout);
@@ -762,7 +801,7 @@ int closeFile(const char* pathname)
 		return -1;
 	}
 	s_message m;
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "closeFile : sapi_getresponse returned an error\n");
 		fflush(stdout);
@@ -801,7 +840,7 @@ int removeFile(const char* pathname)
 		return -1;
 	}
 	s_message m;
-	if ((m = sapi_getresponse()))
+	if ((m = sapi_get_response()))
 	{
 		fprintf(stdout, "removeFile : sapi_getresponse returned an error\n");
 		fflush(stdout);

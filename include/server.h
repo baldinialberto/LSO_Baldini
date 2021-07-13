@@ -18,7 +18,7 @@
 #define SERVER_CONFIGFILE_PATH "./config.txt"
 
 #define SAPI_RESPOND(MESSAGE, CLIENT)                    \
-if (sapi_respond(MESSAGE, CLIENT))                        \
+if (server_respond(MESSAGE, CLIENT))                        \
 {                                                        \
     fprintf(stdout, "sapi_respond at %s", __func__);    \
     fflush(stdout);                                    \
@@ -33,7 +33,7 @@ if (read(client, &(dest), size) < size)                        \
         perror(message);                                    \
         errno = 0;                                            \
     }                                                    \
-    if (sapi_respond(SAPI_FAILURE, client))                \
+    if (server_respond(SAPI_FAILURE, client))                \
     {                                                        \
         fprintf(stdout, "read at %s\n", __func__);            \
         fflush(stdout);                                        \
@@ -109,10 +109,10 @@ int server_lockFile(s_message message, int client, u_file_storage* storage);
 int server_unlockFile(s_message message, int client, u_file_storage* storage);
 int server_removeFile(s_message message, int client, u_file_storage* storage);
 int server_evict(int client, u_file_storage *storage, size_t bytes_to_free);
-char* sapi_getpath(s_message message, int client);
-int sapi_send_path(int client, const char *path);
-size_t sapi_getlen(int client);
-int sapi_respond(s_message message, int client);
-int sapi_send_data(int client, void* data, size_t data_len);
+char* server_get_path(s_message message, int client);
+int server_send_path(int client, const char *path);
+size_t server_get_len(int client);
+int server_respond(s_message message, int client);
+int server_send_data(int client, void* data, size_t data_len);
 
 #endif

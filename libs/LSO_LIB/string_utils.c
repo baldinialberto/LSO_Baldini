@@ -5,7 +5,6 @@
 #include "string_utils.h"
 #include "common_utils.h"
 #include "mem_utils.h"
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -90,6 +89,16 @@ int su_realloc(u_string* string, size_t newsize)
 	(string->data)[string->len] = (char)0;
 
 	return 0;
+}
+void su_print(u_string *string, FILE *stream)
+{
+	if (string == NULL)
+	{
+		fprintf(stdout, "su_print : param string == NULL\n");
+		fflush(stdout);
+		return;
+	}
+	fprintf(stream, "%s", string->data);
 }
 
 size_t su_strlen(u_string* string)

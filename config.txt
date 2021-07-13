@@ -16,7 +16,7 @@
 #   LOGFILE_NAME = MyServerLog.log
 #   CLIENT_MAX = 100
 
-NWORKERS = 1
+NWORKERS = 4
 CAPACITY = 1
 FILECAPACITY = 100
 SOCKET_NAME = MyServerSocket.socket

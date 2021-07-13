@@ -269,8 +269,8 @@ int read_files_list(u_list* filelist, const char* destdir, long int msec)
 	t.tv_sec = msec / 1000;
 	t.tv_nsec = msec % 1000 * 1000000;
 	int res = 0;
-	void* buff;
-	size_t size;
+	void* buff = NULL;
+	size_t size = 0;
 	u_string temp = su_string_from_literal("");
 	lu_foreach(filelist,
 		nanosleep(&t, NULL);
@@ -293,6 +293,7 @@ int read_files_list(u_list* filelist, const char* destdir, long int msec)
 		su_realloc(&temp, 0);
 	);
 	su_free_string(&temp);
+	mu_free(buff);
 	return res ? -1 : 0;
 }
 
