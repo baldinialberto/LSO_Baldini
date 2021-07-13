@@ -68,7 +68,7 @@ u_file_data* fu_alloc_file_data(void* data, size_t data_len)
 
 	return new_file;
 }
-ssize_t fu_storage_files_available(u_file_storage* file_storage)
+size_t fu_storage_files_available(u_file_storage* file_storage)
 {
 	DEBUG(puts(__func__));
 	if (file_storage == NULL)
@@ -79,7 +79,7 @@ ssize_t fu_storage_files_available(u_file_storage* file_storage)
 	}
 	return file_storage->max_files - file_storage->curr_files;
 }
-ssize_t fu_storage_bytes_available(u_file_storage* file_storage)
+size_t fu_storage_bytes_available(u_file_storage* file_storage)
 {
 	DEBUG(puts(__func__));
 	if (file_storage == NULL)
@@ -88,7 +88,7 @@ ssize_t fu_storage_bytes_available(u_file_storage* file_storage)
 		fflush(stdout);
 		return 0;
 	}
-	return file_storage->max_bytes - file_storage->curr_bytes;
+	return file_storage->curr_bytes > file_storage->max_bytes ? 0 : file_storage->max_bytes - file_storage->curr_bytes;
 }
 int fu_add_file(u_file_storage* file_storage, u_file_data* file, const char* filepath)
 {
@@ -357,7 +357,13 @@ int fu_writefile(u_file_storage* file_storage, u_file_data* file, size_t i, void
 	file->data_info++;
 
 	size_t new_size = (i + data_len);
-	file_storage->curr_bytes += new_size - file->data_len;
+	if (file_storage->curr_bytes + (new_size - file->data_len) > file_storage->max_bytes)
+	{
+		fprintf(stdout, "fu_writefile : not enough space to write\n");
+		fflush(stdout);
+		return -1;
+	}
+	file_storage->curr_bytes += (new_size - file->data_len);
 
 	file->data = mu_realloc(file->data, new_size);
 	file->data_len = new_size;

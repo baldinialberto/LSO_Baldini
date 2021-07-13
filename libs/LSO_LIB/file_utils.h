@@ -42,8 +42,8 @@ typedef struct utils_file_storage
 
 u_file_storage fu_init_file_storage(size_t max_files, size_t max_bytes);
 u_file_data* fu_alloc_file_data(void* data, size_t data_len);
-ssize_t fu_storage_files_available(u_file_storage* file_storage);
-ssize_t fu_storage_bytes_available(u_file_storage* file_storage);
+size_t fu_storage_files_available(u_file_storage* file_storage);
+size_t fu_storage_bytes_available(u_file_storage* file_storage);
 void fu_storage_print(u_file_storage* file_storage);
 int fu_add_file(u_file_storage* file_storage, u_file_data* file, const char* filepath);
 int fu_remove_file(u_file_storage* file_storage, const char* path);

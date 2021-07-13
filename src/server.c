@@ -1171,11 +1171,7 @@ int server_evict(int client, u_file_storage* storage, size_t bytes_to_free)
 	for (size_t i = 0; bytes_to_free && i < evict_arr.len; i++)
 	{
 		curr_file = *((u_file_data**)(au_get(&evict_arr, i)));
-		printf("%p\n", (void*)curr_file);
-		if (curr_file == NULL)
-		{
-			exit(0);
-		}
+
 
 		if (pthread_mutex_trylock(&(curr_file->mutex)) == 0)
 		{
@@ -1207,23 +1203,24 @@ int server_evict(int client, u_file_storage* storage, size_t bytes_to_free)
 			mutex_unlock(curr_file->mutex);
 			fu_remove_file(storage, curr_file->path);
 		}
-		else
+		else if (errno == EBUSY)
 		{
-			if (errno == EBUSY)
-			{
-				puts("thread was denied access to the mutex");
-			}
-			else
-			{
-				perror("pthread_mutex_trylock() error");
-				exit(1);
-			}
+			puts("thread was denied access to the mutex");
 		}
 	}
 	au_free(&evict_arr);
-	SAPI_RESPOND(SAPI_SUCCESS, client);
+	if (bytes_to_free == 0)
+	{
+		SAPI_RESPOND(SAPI_SUCCESS, client);
+		return 0;
+	}
+	else
+	{
+		SAPI_RESPOND(SAPI_FAILURE, client);
+		return -1;
+	}
 
-	return bytes_to_free != 0;
+
 }
 
 char* server_get_path(s_message message, int client)
