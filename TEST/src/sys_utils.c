@@ -39,6 +39,4 @@ int su_write(int fd, void *buff, size_t size)
         }
     }
     return -1;
-
-    return 0;
 }
