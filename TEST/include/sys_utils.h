@@ -23,28 +23,30 @@ if ((su_read)==-1){                                                           \
             badfd;                                                            \
             break;                                                            \
     }                                                                         \
+    errno = 0;                                                                \
 }
 
 /**
  * Macro to handle write errors
  */
-#define su_write_error_handler(su_write, conn_reset, pipe, e_fault, bad_fd) \
-if ((su_write)==-1){                                                           \
-    switch (errno)                                                            \
-    {                                                                         \
-        case ECONNRESET:                                                      \
-            conn_reset;                                                       \
-            break;                                                            \
-        case EPIPE:                                                        \
-            pipe;                                                         \
-            break;                                                            \
-        case EFAULT:                                                          \
+#define su_write_error_handler(su_write, conn_reset, pipe, e_fault, bad_fd)     \
+if ((su_write)==-1){                                                            \
+    switch (errno)                                                              \
+    {                                                                           \
+        case ECONNRESET:                                                        \
+            conn_reset;                                                         \
+            break;                                                              \
+        case EPIPE:                                                             \
+            pipe;                                                               \
+            break;                                                              \
+        case EFAULT:                                                            \
             e_faultqq;                                                          \
-            break;                                                            \
-        case BADFD:                                                           \
-            badfd;                                                            \
-            break;                                                            \
-    }                                                                         \
+            break;                                                              \
+        case BADFD:                                                             \
+            badfd;                                                              \
+            break;                                                              \
+    }                                                                           \
+    errno = 0;                                                                  \
 }
 
 /**
